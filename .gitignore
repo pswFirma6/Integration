@@ -1,5 +1,4 @@
-.vs
-/Hospital/IntegrationAPI/bin
-/Hospital/IntegrationAPI/obj 
-/Hospital/Integration library/bin
-/Hospital/Integration library/obj
+*.log
+.DS_Store
+node_modules
+dist
