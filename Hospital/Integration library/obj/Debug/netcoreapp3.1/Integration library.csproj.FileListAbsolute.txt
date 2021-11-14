@@ -11,3 +11,15 @@ D:\PSW\psw_hospital-develop\Hospital\Integration library\obj\Debug\netcoreapp3.1
 D:\PSW\psw_hospital-develop\Hospital\Integration library\obj\Debug\netcoreapp3.1\Integration library.dll
 D:\PSW\psw_hospital-develop\Hospital\Integration library\obj\Debug\netcoreapp3.1\Integration library.pdb
 D:\PSW\psw_hospital-develop\Hospital\Integration library\obj\Debug\netcoreapp3.1\Integration library.genruntimeconfig.cache
+C:\Users\bogda\OneDrive\Desktop\PSW-najnovije\Integration\Hospital\Integration library\bin\Debug\netcoreapp3.1\Integration library.deps.json
+C:\Users\bogda\OneDrive\Desktop\PSW-najnovije\Integration\Hospital\Integration library\bin\Debug\netcoreapp3.1\Integration library.runtimeconfig.json
+C:\Users\bogda\OneDrive\Desktop\PSW-najnovije\Integration\Hospital\Integration library\bin\Debug\netcoreapp3.1\Integration library.runtimeconfig.dev.json
+C:\Users\bogda\OneDrive\Desktop\PSW-najnovije\Integration\Hospital\Integration library\bin\Debug\netcoreapp3.1\Integration library.dll
+C:\Users\bogda\OneDrive\Desktop\PSW-najnovije\Integration\Hospital\Integration library\bin\Debug\netcoreapp3.1\Integration library.pdb
+C:\Users\bogda\OneDrive\Desktop\PSW-najnovije\Integration\Hospital\Integration library\obj\Debug\netcoreapp3.1\Integration library.csprojAssemblyReference.cache
+C:\Users\bogda\OneDrive\Desktop\PSW-najnovije\Integration\Hospital\Integration library\obj\Debug\netcoreapp3.1\Integration library.AssemblyInfoInputs.cache
+C:\Users\bogda\OneDrive\Desktop\PSW-najnovije\Integration\Hospital\Integration library\obj\Debug\netcoreapp3.1\Integration library.AssemblyInfo.cs
+C:\Users\bogda\OneDrive\Desktop\PSW-najnovije\Integration\Hospital\Integration library\obj\Debug\netcoreapp3.1\Integration library.csproj.CoreCompileInputs.cache
+C:\Users\bogda\OneDrive\Desktop\PSW-najnovije\Integration\Hospital\Integration library\obj\Debug\netcoreapp3.1\Integration library.dll
+C:\Users\bogda\OneDrive\Desktop\PSW-najnovije\Integration\Hospital\Integration library\obj\Debug\netcoreapp3.1\Integration library.pdb
+C:\Users\bogda\OneDrive\Desktop\PSW-najnovije\Integration\Hospital\Integration library\obj\Debug\netcoreapp3.1\Integration library.genruntimeconfig.cache

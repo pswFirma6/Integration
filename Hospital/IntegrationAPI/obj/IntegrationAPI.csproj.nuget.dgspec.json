@@ -1,24 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\PSW\\psw_hospital-develop\\Hospital\\IntegrationAPI\\IntegrationAPI.csproj": {}
+    "C:\\Users\\bogda\\OneDrive\\Desktop\\PSW-najnovije\\Integration\\Hospital\\IntegrationAPI\\IntegrationAPI.csproj": {}
   },
   "projects": {
-    "D:\\PSW\\psw_hospital-develop\\Hospital\\Integration library\\Integration library.csproj": {
+    "C:\\Users\\bogda\\OneDrive\\Desktop\\PSW-najnovije\\Integration\\Hospital\\Integration library\\Integration library.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\PSW\\psw_hospital-develop\\Hospital\\Integration library\\Integration library.csproj",
+        "projectUniqueName": "C:\\Users\\bogda\\OneDrive\\Desktop\\PSW-najnovije\\Integration\\Hospital\\Integration library\\Integration library.csproj",
         "projectName": "Integration library",
-        "projectPath": "D:\\PSW\\psw_hospital-develop\\Hospital\\Integration library\\Integration library.csproj",
-        "packagesPath": "C:\\Users\\Sara\\.nuget\\packages\\",
-        "outputPath": "D:\\PSW\\psw_hospital-develop\\Hospital\\Integration library\\obj\\",
+        "projectPath": "C:\\Users\\bogda\\OneDrive\\Desktop\\PSW-najnovije\\Integration\\Hospital\\Integration library\\Integration library.csproj",
+        "packagesPath": "C:\\Users\\bogda\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\bogda\\OneDrive\\Desktop\\PSW-najnovije\\Integration\\Hospital\\Integration library\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\install\\Microsoft Visual Studio\\2019\\Shared\\NuGetPackages"
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Sara\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\bogda\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -90,25 +89,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\PSW\\psw_hospital-develop\\Hospital\\IntegrationAPI\\IntegrationAPI.csproj": {
+    "C:\\Users\\bogda\\OneDrive\\Desktop\\PSW-najnovije\\Integration\\Hospital\\IntegrationAPI\\IntegrationAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\PSW\\psw_hospital-develop\\Hospital\\IntegrationAPI\\IntegrationAPI.csproj",
+        "projectUniqueName": "C:\\Users\\bogda\\OneDrive\\Desktop\\PSW-najnovije\\Integration\\Hospital\\IntegrationAPI\\IntegrationAPI.csproj",
         "projectName": "IntegrationAPI",
-        "projectPath": "D:\\PSW\\psw_hospital-develop\\Hospital\\IntegrationAPI\\IntegrationAPI.csproj",
-        "packagesPath": "C:\\Users\\Sara\\.nuget\\packages\\",
-        "outputPath": "D:\\PSW\\psw_hospital-develop\\Hospital\\IntegrationAPI\\obj\\",
+        "projectPath": "C:\\Users\\bogda\\OneDrive\\Desktop\\PSW-najnovije\\Integration\\Hospital\\IntegrationAPI\\IntegrationAPI.csproj",
+        "packagesPath": "C:\\Users\\bogda\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\bogda\\OneDrive\\Desktop\\PSW-najnovije\\Integration\\Hospital\\IntegrationAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\install\\Microsoft Visual Studio\\2019\\Shared\\NuGetPackages"
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Sara\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\bogda\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -122,8 +120,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "D:\\PSW\\psw_hospital-develop\\Hospital\\Integration library\\Integration library.csproj": {
-                "projectPath": "D:\\PSW\\psw_hospital-develop\\Hospital\\Integration library\\Integration library.csproj"
+              "C:\\Users\\bogda\\OneDrive\\Desktop\\PSW-najnovije\\Integration\\Hospital\\Integration library\\Integration library.csproj": {
+                "projectPath": "C:\\Users\\bogda\\OneDrive\\Desktop\\PSW-najnovije\\Integration\\Hospital\\Integration library\\Integration library.csproj"
               }
             }
           }
@@ -183,7 +181,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     }
