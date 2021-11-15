@@ -2,3 +2,8 @@
 .DS_Store
 node_modules
 dist
+.vs
+/IntegrationAPI/bin
+/Integration library/bin
+/IntegrationAPI/obj
+/Integration library/obj
