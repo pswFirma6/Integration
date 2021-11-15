@@ -20,7 +20,7 @@ namespace IntegrationAPI.Controller
     {
         private PharmacyService service;
 
-        public PharmacyController(PharmacyDbContext c)
+        public PharmacyController(DatabaseContext c)
         {
             service = new PharmacyService(c);
         }

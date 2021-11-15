@@ -1,4 +1,5 @@
-﻿using Integration_library.Pharmacy.Model;
+﻿using Integration_library.Pharmacy.IRepository;
+using Integration_library.Pharmacy.Model;
 using Integration_library.Pharmacy.Repository;
 using System;
 using System.Collections.Generic;
@@ -10,27 +11,31 @@ namespace Integration_library.Pharmacy.Service
     {
         private const int APIKEYLENGTH = 16;
 
-        private PharmacyRepository repository;
+        private IPharmacyRepository repository;
     
-        public PharmacyService(PharmacyDbContext context)
+        public PharmacyService(DatabaseContext context)
         {
             repository = new PharmacyRepository(context);
         }
-
+        public PharmacyService()
+        {
+            
+        }
         public List<string> GetPharmacyNames()
         {
             List<string> pharmacyNames = new List<string>();
-            repository.GetPharmacies().ForEach(pharmacy => pharmacyNames.Add(pharmacy.PharmacyName));
+            repository.GetAll().ForEach(pharmacy => pharmacyNames.Add(pharmacy.PharmacyName));
             return pharmacyNames;
         }
 
         public void AddPharmacy(Model.Pharmacy pharmacy)
         {
-            pharmacy.ApiKey = generateApiKey();
-            repository.AddPharmacy(pharmacy);
+            pharmacy.ApiKey = GenerateApiKey();
+            repository.Add(pharmacy);
+            repository.Save();
         }
 
-        private String generateApiKey()
+        private String GenerateApiKey()
         {
             const string src = "abcdefghijklmnopqrstuvwxyz0123456789";
             var sb = new StringBuilder();
@@ -42,5 +47,13 @@ namespace Integration_library.Pharmacy.Service
             }
             return sb.ToString();
         }
+
+        public String GetPharmacyApiKey(String pharmacyName)
+        {
+            Model.Pharmacy pharmacy = repository.GetAll().Find(pharmacy => pharmacyName == pharmacy.PharmacyName);
+            return pharmacy.ApiKey;
+        }
+
+
     }
 }
