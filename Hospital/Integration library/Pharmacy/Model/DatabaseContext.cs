@@ -17,6 +17,7 @@ namespace Integration_library.Pharmacy.Model
 
         }
 
+        public DbSet<MedicationConsumption> MedicationConsumptions { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Pharmacy> Pharmacies { get; set; }
 
