@@ -103,7 +103,7 @@ namespace Integration_library.Pharmacy.Service
 
         private bool IsWithinRange(DateTime testDate, TimePeriodDTO timePeriod)
         {
-            return testDate >= timePeriod.startDate && testDate < timePeriod.endDate;
+            return DateTime.Compare(timePeriod.startDate, testDate) <= 0 && DateTime.Compare(timePeriod.endDate, testDate) >= 0;
         }
 
 
