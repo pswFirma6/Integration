@@ -12,7 +12,6 @@ namespace Integration_library.Pharmacy.Model
         public string ApiKey { get; set; }
 
         public Pharmacy() { }
-
         public Pharmacy(string pharmacyName, string apiKey)
         {
             PharmacyName = pharmacyName;

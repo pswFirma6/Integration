@@ -5,18 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
 namespace Integration_library.Pharmacy.Repository
 {
-    public class PharmacyRepository : Repo<Model.Pharmacy>, IPharmacyRepository
+    public class FeedbackRepository : Repo<Model.Feedback>, IFeedbackRepository
     {
-        
-        public PharmacyRepository(DatabaseContext context):base(context)
+
+        public FeedbackRepository(DatabaseContext context) : base(context)
         {
         }
-
-       
-
-
     }
+
 }

@@ -12,6 +12,13 @@ namespace Integration_library.Pharmacy.Model
 
         }
 
+        public DatabaseContext()
+        {
+
+        }
+
         public DbSet<Feedback> Feedbacks { get; set; }
+        public DbSet<Pharmacy> Pharmacies { get; set; }
+
     }
 }
