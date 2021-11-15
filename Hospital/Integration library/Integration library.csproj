@@ -9,7 +9,6 @@
     <Folder Include="Partnership\Model\" />
     <Folder Include="Partnership\Repository\" />
     <Folder Include="Partnership\Service\" />
-    <Folder Include="Pharmacy\Model\" />
     <Folder Include="SharedModel\" />
     <Folder Include="Tendering\Model\" />
     <Folder Include="Tendering\Repository\" />

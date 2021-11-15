@@ -2,17 +2,15 @@
 using Integration_library.Pharmacy.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-
 
 namespace Integration_library.Pharmacy.Repository
 {
-    public class PharmacyRepository : Repo<Model.Pharmacy>, IPharmacyRepository
+    public class PharmacyOfferRepository : Repo<PharmacyOffer>, IPharmacyOfferRepository
     {
-
-        public PharmacyRepository(DatabaseContext context) : base(context)
+        public PharmacyOfferRepository(DatabaseContext context): base(context)
         {
+
         }
     }
 }
