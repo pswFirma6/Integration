@@ -11,15 +11,19 @@ namespace Integration_library.Pharmacy.Model
         {
 
         }
-
         public DatabaseContext()
         {
 
         }
-
         public DbSet<MedicationConsumption> MedicationConsumptions { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Pharmacy> Pharmacies { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseNpgsql("server=localhost;port=5432;database=integrationdb;username=root;password=root");
+            base.OnConfiguring(optionsBuilder);
+        }
 
     }
 }
