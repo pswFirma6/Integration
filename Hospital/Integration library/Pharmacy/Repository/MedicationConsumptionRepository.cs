@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Integration_library.Pharmacy.Repository
 {
-    class MedicationConsumptionRepository : Repo<Model.MedicationConsumption>, IMedicationConsumptionRepository
+    public class MedicationConsumptionRepository : Repo<Model.MedicationConsumption>, IMedicationConsumptionRepository
     {
         public MedicationConsumptionRepository(DatabaseContext context) : base(context)
         {

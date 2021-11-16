@@ -10,6 +10,8 @@ using RestSharp;
 using System.Text.Json;
 using System.Text;
 using Integration_library.Pharmacy.Service;
+using Integration_library.Pharmacy.IRepository;
+using Integration_library.Pharmacy.Repository;
 
 namespace IntegrationAPI.Controller
 {
@@ -19,10 +21,12 @@ namespace IntegrationAPI.Controller
     public class PharmacyController : ControllerBase
     {
         private PharmacyService service;
+        private IPharmacyRepository pharmacyRepository;
 
-        public PharmacyController(DatabaseContext c)
+        public PharmacyController(DatabaseContext context)
         {
-            service = new PharmacyService(c);
+            pharmacyRepository = new PharmacyRepository(context);
+            service = new PharmacyService(pharmacyRepository);
         }
 
         [HttpGet]

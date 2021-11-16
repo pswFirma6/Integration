@@ -13,9 +13,9 @@ namespace Integration_library.Pharmacy.Service
 
         private IPharmacyRepository repository;
     
-        public PharmacyService(DatabaseContext context)
+        public PharmacyService(IPharmacyRepository iRepository)
         {
-            repository = new PharmacyRepository(context);
+            repository = iRepository;
         }
         public PharmacyService()
         {

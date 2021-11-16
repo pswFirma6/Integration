@@ -10,6 +10,8 @@ using Integration_library.Pharmacy.Service;
 using RestSharp;
 using System.Text.Json;
 using System.Text;
+using Integration_library.Pharmacy.IRepository;
+using Integration_library.Pharmacy.Repository;
 
 namespace IntegrationAPI.Controller
 {
@@ -20,11 +22,15 @@ namespace IntegrationAPI.Controller
     {
         private FeedbackService service;
         private PharmacyService pharmacyService;
-    
+        private IFeedbackRepository feedbackRepository;
+        private IPharmacyRepository pharmacyRepository;
+
         public FeedbacksController(DatabaseContext context)
         {
-            service = new FeedbackService(context);
-            pharmacyService = new PharmacyService(context);
+            feedbackRepository = new FeedbackRepository(context);
+            pharmacyRepository = new PharmacyRepository(context);
+            service = new FeedbackService(feedbackRepository);
+            pharmacyService = new PharmacyService(pharmacyRepository);
         }
 
         // GET: api/Feedbacks
