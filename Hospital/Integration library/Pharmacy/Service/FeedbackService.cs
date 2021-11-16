@@ -10,11 +10,11 @@ namespace Integration_library.Pharmacy.Service
 {
     public class FeedbackService
     {
-
+        private string server = "https://localhost:44377/api";
         private IFeedbackRepository repository;
-        public FeedbackService(DatabaseContext context)
+        public FeedbackService(IFeedbackRepository iRepository)
         {
-            repository = new FeedbackRepository(context);
+            repository = iRepository;
         }
 
         public List<Model.Feedback> GetFeedbacks()
@@ -24,14 +24,14 @@ namespace Integration_library.Pharmacy.Service
 
         public String GetFeedbackResponses()
         {
-            string url = "https://localhost:44377/api/FeedbackResponses";
+            string url = server + "/FeedbackResponses";
             return GetRequest(url);
         }
 
         public void SendFeedback(Feedback feedback)
         {
             repository.Add(feedback);
-            string url = "https://localhost:44377/api/Feedbacks";
+            string url = server + "/Feedbacks";
             PostRequest(url, feedback);
             repository.Save();
         }    

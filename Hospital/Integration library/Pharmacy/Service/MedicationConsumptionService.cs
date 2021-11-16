@@ -14,9 +14,9 @@ namespace Integration_library.Pharmacy.Service
     public class MedicationConsumptionService
     {
         private IMedicationConsumptionRepository repository;
-        public MedicationConsumptionService(DatabaseContext context)
+        public MedicationConsumptionService(IMedicationConsumptionRepository iRepository)
         {
-            repository = new MedicationConsumptionRepository(context);
+            repository = iRepository;
         }
 
         public void GenerateReport(TimePeriodDTO timePeriod)
