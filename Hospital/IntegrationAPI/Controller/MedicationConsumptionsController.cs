@@ -29,5 +29,12 @@ namespace IntegrationAPI.Controller
             service = new MedicationConsumptionService(repository);
         }
 
+        [HttpGet]
+        [Route("report")]
+        public void MakeReport()
+        {
+            service.GenerateReport(new Integration_library.Pharmacy.DTO.TimePeriodDTO(DateTime.Now.AddDays(-2), DateTime.Now.AddDays(2)));
+        }
+
     }
 }

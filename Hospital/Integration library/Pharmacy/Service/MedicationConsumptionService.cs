@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Linq;
+using Renci.SshNet;
 
 namespace Integration_library.Pharmacy.Service
 {
@@ -21,15 +22,30 @@ namespace Integration_library.Pharmacy.Service
 
         public void GenerateReport(TimePeriodDTO timePeriod)
         {
-            String filePath = @"C:\Users\Milica\Desktop\PSW\psw_hospital\Hospital";
-            String fileName = "MedicationConsumptionReport ("
-                             + timePeriod.startDate.ToString("MM/dd/yyyy") + " - " + timePeriod.endDate.ToString("MM/dd/yyyy") + ").txt";
+            String filePath = Directory.GetCurrentDirectory();
+            String fileName = "MedicationConsumptionReport.txt";
 
 
-            StreamWriter File = new StreamWriter(Path.Combine(filePath, "MedicationConsumptionReport.txt"), true);
+            StreamWriter File = new StreamWriter(Path.Combine(filePath, fileName), true);
             File.Write(GetReportContent(timePeriod));
             File.Close();
 
+            SendReport(Path.Combine(filePath, fileName));
+
+        }
+
+        public void SendReport(String filePath)
+        {
+            using (SftpClient client = new SftpClient(new PasswordConnectionInfo("192.168.56.1", "tester", "password")))
+            {
+                client.Connect();
+
+                using (Stream stream = File.OpenRead(filePath))
+                {
+                    client.UploadFile(stream, @"\public\" + Path.GetFileName(filePath), null);
+                }
+                client.Disconnect();
+            }
         }
 
         private String GetReportContent(TimePeriodDTO timePeriod)
