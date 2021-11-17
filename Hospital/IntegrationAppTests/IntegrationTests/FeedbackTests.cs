@@ -28,7 +28,7 @@ namespace IntegrationAppTests
 
             feedbacks = service.GetFeedbacks();
 
-            feedbacks.ShouldNotBeNull();
+            feedbacks.ShouldNotBeEmpty();
         }
     }
 }

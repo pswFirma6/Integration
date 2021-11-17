@@ -25,11 +25,9 @@ namespace Integration_library.Pharmacy.Service
             String fileName = "MedicationConsumptionReport ("
                              + timePeriod.StartDate.ToString("MM/dd/yyyy") + " - " + timePeriod.EndDate.ToString("MM/dd/yyyy") + ").txt";
 
-
             StreamWriter File = new StreamWriter(Path.Combine(filePath, "MedicationConsumptionReport.txt"), true);
             File.Write(GetReportContent(timePeriod));
             File.Close();
-
         }
 
         private String GetReportContent(TimePeriodDTO timePeriod)
@@ -49,7 +47,7 @@ namespace Integration_library.Pharmacy.Service
             return content;
         }
 
-        private bool isEvaluated(List<String> list, String MedicationName)
+        public bool isEvaluated(List<String> list, String MedicationName)
         {
             return list.Any(p => p.Equals(MedicationName));
         }
@@ -69,7 +67,7 @@ namespace Integration_library.Pharmacy.Service
             return content;
         }
 
-        private List<MedicationConsumption> GetConsumptionsForCertainMedication(String medicationName, List<MedicationConsumption> consumptions)
+        public List<MedicationConsumption> GetConsumptionsForCertainMedication(String medicationName, List<MedicationConsumption> consumptions)
         {
             List<MedicationConsumption> consumptionsForMedication = new List<MedicationConsumption>();
 
@@ -81,7 +79,7 @@ namespace Integration_library.Pharmacy.Service
             return consumptionsForMedication;
         }
 
-        private int GetConsumptionsAmountForCertainMedication(List<MedicationConsumption> medicationConsumptions)
+        public int GetConsumptionsAmountForCertainMedication(List<MedicationConsumption> medicationConsumptions)
         {
             int amount = 0;
             foreach (MedicationConsumption consumption in medicationConsumptions)
@@ -105,14 +103,6 @@ namespace Integration_library.Pharmacy.Service
         {
             return DateTime.Compare(timePeriod.StartDate, consumptionDate) <= 0 && DateTime.Compare(timePeriod.EndDate, consumptionDate) >= 0;
         }
-
-        public List<MedicationConsumption> GetConsumptions()
-        {
-            List<MedicationConsumption> consumptions = repository.GetAll();
-
-            return consumptions;
-        }
-
 
 
     }
