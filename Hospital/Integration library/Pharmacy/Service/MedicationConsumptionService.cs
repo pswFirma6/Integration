@@ -50,7 +50,7 @@ namespace Integration_library.Pharmacy.Service
 
         private String GetReportContent(TimePeriodDTO timePeriod)
         {
-            String content = "Medication consumption report for " + timePeriod.startDate.ToString("MM/dd/yyyy") + " - " + timePeriod.startDate.ToString("MM/dd/yyyy") + " :\r\n\n";
+            String content = "Medication consumption report for " + timePeriod.startDate.ToString("MM/dd/yyyy") + " - " + timePeriod.endDate.ToString("MM/dd/yyyy") + " :\r\n\n";
             List<MedicationConsumption> requiredConsumptions = GetConsumptionsForTimePeriod(timePeriod);
             List<String> evaluatedMedications = new List<String>();
 

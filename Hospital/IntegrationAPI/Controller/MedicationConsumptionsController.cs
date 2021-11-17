@@ -7,16 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Integration_library.Pharmacy.Model;
 using Integration_library.Pharmacy.Service;
+using Integration_library.Pharmacy.DTO;
 using RestSharp;
 using System.Text.Json;
 using System.Text;
 using Integration_library.Pharmacy.IRepository;
 using Integration_library.Pharmacy.Repository;
-
+using IntegrationAPI.DTO;
 
 namespace IntegrationAPI.Controller
 {
-    [Route("api/[controller]")]
+    //[Route("api/[controller]")]
     [ApiController]
     public class MedicationConsumptionsController : ControllerBase
     {
@@ -29,11 +30,17 @@ namespace IntegrationAPI.Controller
             service = new MedicationConsumptionService(repository);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("report")]
-        public void MakeReport()
+        public void MakeReport(TimePeriodStringDTO period)
         {
-            service.GenerateReport(new Integration_library.Pharmacy.DTO.TimePeriodDTO(DateTime.Now.AddDays(-2), DateTime.Now.AddDays(2)));
+            DateTime startDate = DateTime.ParseExact(period.startDate, "yyyy-MM-dd",
+                                       System.Globalization.CultureInfo.InvariantCulture);
+            DateTime endDate = DateTime.ParseExact(period.endDate, "yyyy-MM-dd",
+                                       System.Globalization.CultureInfo.InvariantCulture);
+
+            TimePeriodDTO timePeriod = new TimePeriodDTO(startDate,endDate);
+            service.GenerateReport(timePeriod);
         }
 
     }
