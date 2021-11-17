@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Integration_library.Pharmacy.Service
 {
-    class PharmacyOfferService
+    public class PharmacyOfferService
     {
         private IPharmacyOfferRepository repository;
 
