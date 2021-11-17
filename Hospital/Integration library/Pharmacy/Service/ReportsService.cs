@@ -8,31 +8,51 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Linq;
+using Renci.SshNet;
 
 namespace Integration_library.Pharmacy.Service
 {
-    public class MedicationConsumptionService
+    public class ReportsService
     {
         private IMedicationConsumptionRepository repository;
-        public MedicationConsumptionService(IMedicationConsumptionRepository iRepository)
+        private string server = "https://localhost:44377/api/report";
+        public ReportsService(IMedicationConsumptionRepository iRepository)
         {
             repository = iRepository;
         }
 
         public void GenerateReport(TimePeriodDTO timePeriod)
         {
-            String filePath = @"C:\Users\Milica\Desktop\PSW\psw_hospital\Hospital";
-            String fileName = "MedicationConsumptionReport ("
-                             + timePeriod.StartDate.ToString("MM/dd/yyyy") + " - " + timePeriod.EndDate.ToString("MM/dd/yyyy") + ").txt";
+            String filePath = Directory.GetCurrentDirectory();
+            String fileName = "MedicationConsumptionReport.txt";
 
-            StreamWriter File = new StreamWriter(Path.Combine(filePath, "MedicationConsumptionReport.txt"), true);
+            StreamWriter File = new StreamWriter(Path.Combine(filePath, fileName), true);
             File.Write(GetReportContent(timePeriod));
             File.Close();
+
+            SendReport(Path.Combine(filePath, fileName));
+
+        }
+
+        public void SendReport(String filePath)
+        {
+            using (SftpClient client = new SftpClient(new PasswordConnectionInfo("192.168.56.1", "tester", "password")))
+            {
+                client.Connect();
+
+                using (Stream stream = File.OpenRead(filePath))
+                {
+                    client.UploadFile(stream, @"\public\" + Path.GetFileName(filePath), null);
+                }
+                client.Disconnect();
+            }
         }
 
         private String GetReportContent(TimePeriodDTO timePeriod)
         {
-            String content = "Medication consumption report for " + timePeriod.StartDate.ToString("MM/dd/yyyy") + " - " + timePeriod.StartDate.ToString("MM/dd/yyyy") + " :\r\n\n";
+
+            String content = "Medication consumption report for " + timePeriod.StartDate.ToString("MM/dd/yyyy") + " - " + timePeriod.EndDate.ToString("MM/dd/yyyy") + " :\r\n\n";
+
             List<MedicationConsumption> requiredConsumptions = GetConsumptionsForTimePeriod(timePeriod);
             List<String> evaluatedMedications = new List<String>();
 
@@ -104,6 +124,33 @@ namespace Integration_library.Pharmacy.Service
             return DateTime.Compare(timePeriod.StartDate, consumptionDate) <= 0 && DateTime.Compare(timePeriod.EndDate, consumptionDate) >= 0;
         }
 
+        public void RequestReport(String medicineName)
+        {
+            var client = new RestClient(server);
+            var request = new RestRequest();
+            request.AddJsonBody(medicineName);
+            var response = client.Post(request);
+
+            if (response.Content.ToString().Equals("OK"))
+                GetConsumptionReport(medicineName);
+
+        }
+        private void GetConsumptionReport(String medicineName)
+        {
+            String fileName = "MedicineSpecification(" + medicineName + ").txt";
+            String localFile = Path.Combine(Directory.GetCurrentDirectory(), fileName);
+            String serverFile = @"\public\" + fileName;
+
+            using (SftpClient client = new SftpClient(new PasswordConnectionInfo("192.168.56.1", "tester", "password")))
+            {
+                client.Connect();
+                using (Stream stream = File.OpenWrite(localFile))
+                {
+                    client.DownloadFile(serverFile, stream, null);
+                }
+                client.Disconnect();
+            }
+        }
 
     }
 }
