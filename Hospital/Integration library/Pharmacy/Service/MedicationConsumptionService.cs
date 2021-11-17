@@ -106,6 +106,13 @@ namespace Integration_library.Pharmacy.Service
             return DateTime.Compare(timePeriod.startDate, testDate) <= 0 && DateTime.Compare(timePeriod.endDate, testDate) >= 0;
         }
 
+        public List<MedicationConsumption> GetConsumptions()
+        {
+            List<MedicationConsumption> consumptions = repository.GetAll();
+
+            return consumptions;
+        }
+
 
 
     }
