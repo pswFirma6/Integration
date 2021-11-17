@@ -12,10 +12,11 @@ using Renci.SshNet;
 
 namespace Integration_library.Pharmacy.Service
 {
-    public class MedicationConsumptionService
+    public class ReportsService
     {
         private IMedicationConsumptionRepository repository;
-        public MedicationConsumptionService(IMedicationConsumptionRepository iRepository)
+        private string server = "https://localhost:44377/api/report";
+        public ReportsService(IMedicationConsumptionRepository iRepository)
         {
             repository = iRepository;
         }
@@ -122,7 +123,34 @@ namespace Integration_library.Pharmacy.Service
             return DateTime.Compare(timePeriod.startDate, testDate) <= 0 && DateTime.Compare(timePeriod.endDate, testDate) >= 0;
         }
 
+        public void RequestReport(String medicineName)
+        {
+            var client = new RestClient(server);
+            var request = new RestRequest();
+            request.AddJsonBody(medicineName);
+            var response = client.Post(request);
 
+            if (response.Content.ToString().Equals("OK"))
+                GetConsumptionReport(medicineName);
+
+        }
+        private void GetConsumptionReport(String medicineName)
+        {
+            String fileName = "MedicineSpecification(" + medicineName + ").txt";
+            String localFile = Path.Combine(Directory.GetCurrentDirectory(), fileName);
+            String serverFile = @"\public\" + fileName;
+
+            using (SftpClient client = new SftpClient(new PasswordConnectionInfo("192.168.56.1", "tester", "password")))
+            {
+                client.Connect();
+                using (Stream stream = File.OpenWrite(localFile))
+                {
+                    client.DownloadFile(serverFile, stream, null);
+                }
+                client.Disconnect();
+            }
+
+        }
 
     }
 }

@@ -19,15 +19,15 @@ namespace IntegrationAPI.Controller
 {
     //[Route("api/[controller]")]
     [ApiController]
-    public class MedicationConsumptionsController : ControllerBase
+    public class ReportsController : ControllerBase
     {
-        private MedicationConsumptionService service;
+        private ReportsService service;
         private IMedicationConsumptionRepository repository;
 
-        public MedicationConsumptionsController(DatabaseContext context)
+        public ReportsController(DatabaseContext context)
         {
             repository = new MedicationConsumptionRepository(context);
-            service = new MedicationConsumptionService(repository);
+            service = new ReportsService(repository);
         }
 
         [HttpPost]
@@ -41,6 +41,13 @@ namespace IntegrationAPI.Controller
 
             TimePeriodDTO timePeriod = new TimePeriodDTO(startDate,endDate);
             service.GenerateReport(timePeriod);
+        }
+
+        [HttpPost]
+        [Route("report")]
+        public void RequestReport(String medicineName)
+        {
+            service.RequestReport(medicineName);
         }
 
     }
