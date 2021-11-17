@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Integration library\Integration library.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="UnitTests\" />
-  </ItemGroup>
-
 </Project>

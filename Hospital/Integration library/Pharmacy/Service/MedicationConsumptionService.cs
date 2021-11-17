@@ -23,7 +23,7 @@ namespace Integration_library.Pharmacy.Service
         {
             String filePath = @"C:\Users\Milica\Desktop\PSW\psw_hospital\Hospital";
             String fileName = "MedicationConsumptionReport ("
-                             + timePeriod.startDate.ToString("MM/dd/yyyy") + " - " + timePeriod.endDate.ToString("MM/dd/yyyy") + ").txt";
+                             + timePeriod.StartDate.ToString("MM/dd/yyyy") + " - " + timePeriod.EndDate.ToString("MM/dd/yyyy") + ").txt";
 
 
             StreamWriter File = new StreamWriter(Path.Combine(filePath, "MedicationConsumptionReport.txt"), true);
@@ -34,7 +34,7 @@ namespace Integration_library.Pharmacy.Service
 
         private String GetReportContent(TimePeriodDTO timePeriod)
         {
-            String content = "Medication consumption report for " + timePeriod.startDate.ToString("MM/dd/yyyy") + " - " + timePeriod.startDate.ToString("MM/dd/yyyy") + " :\r\n\n";
+            String content = "Medication consumption report for " + timePeriod.StartDate.ToString("MM/dd/yyyy") + " - " + timePeriod.StartDate.ToString("MM/dd/yyyy") + " :\r\n\n";
             List<MedicationConsumption> requiredConsumptions = GetConsumptionsForTimePeriod(timePeriod);
             List<String> evaluatedMedications = new List<String>();
 
@@ -89,7 +89,7 @@ namespace Integration_library.Pharmacy.Service
             return amount;
         }
 
-        private List<MedicationConsumption> GetConsumptionsForTimePeriod(TimePeriodDTO timePeriod)
+        public List<MedicationConsumption> GetConsumptionsForTimePeriod(TimePeriodDTO timePeriod)
         {
             List<MedicationConsumption> consumptionsForTimePeriod = new List<MedicationConsumption>();
 
@@ -101,9 +101,9 @@ namespace Integration_library.Pharmacy.Service
             return consumptionsForTimePeriod;
         }
 
-        private bool IsWithinRange(DateTime testDate, TimePeriodDTO timePeriod)
+        public bool IsWithinRange(DateTime consumptionDate, TimePeriodDTO timePeriod)
         {
-            return DateTime.Compare(timePeriod.startDate, testDate) <= 0 && DateTime.Compare(timePeriod.endDate, testDate) >= 0;
+            return DateTime.Compare(timePeriod.StartDate, consumptionDate) <= 0 && DateTime.Compare(timePeriod.EndDate, consumptionDate) >= 0;
         }
 
         public List<MedicationConsumption> GetConsumptions()

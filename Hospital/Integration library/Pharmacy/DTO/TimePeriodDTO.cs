@@ -6,13 +6,15 @@ namespace Integration_library.Pharmacy.DTO
 {
     public class TimePeriodDTO
     {
-        public DateTime startDate { get; set; }
-        public DateTime endDate { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+
+        public TimePeriodDTO() { }
 
         public TimePeriodDTO(DateTime startDate, DateTime endDate)
         {
-            this.startDate = startDate;
-            this.endDate = endDate;
+            this.StartDate = startDate;
+            this.EndDate = endDate;
         }
 
     }
