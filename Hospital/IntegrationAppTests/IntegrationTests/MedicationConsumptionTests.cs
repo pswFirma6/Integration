@@ -14,13 +14,13 @@ namespace IntegrationAppTests.IntegrationTests
 {
     public class MedicationConsumptionTests
     {
-        private MedicationConsumptionService service;
+        private ReportsService service;
 
         [Fact]
         public void Get_consumptions_for_time_period()
         {
             var stubRepository = new Mock<IMedicationConsumptionRepository>();
-            service = new MedicationConsumptionService(stubRepository.Object);
+            service = new ReportsService(stubRepository.Object);
             List<MedicationConsumption> consumptions = new List<MedicationConsumption>();
             List<MedicationConsumption> requestedConsumptions = new List<MedicationConsumption>();
 
