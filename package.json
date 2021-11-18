@@ -39,5 +39,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/pswFirma6/Integration.git"
+  },
+  "release":{
+    "branches": ["master", "develop"]
   }
 }
