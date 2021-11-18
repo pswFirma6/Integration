@@ -14,7 +14,7 @@ namespace IntegrationAppTests.UnitTests
     
     public class MedicationConsumptionTests
     {
-        private MedicationConsumptionService service;
+        private ReportsService service;
 
         public MedicationConsumptionTests()
         {
@@ -25,7 +25,7 @@ namespace IntegrationAppTests.UnitTests
         public void Is_date_within_range()
         {
             var stubRepository = new Mock<IMedicationConsumptionRepository>();
-            service = new MedicationConsumptionService(stubRepository.Object);
+            service = new ReportsService(stubRepository.Object);
 
             DateTime date = new DateTime(2021, 09, 16);
             TimePeriodDTO range = new TimePeriodDTO { StartDate = new DateTime(2021, 07, 31), EndDate = new DateTime(2021, 09, 28) };
@@ -37,7 +37,7 @@ namespace IntegrationAppTests.UnitTests
         public void Get_consumptions_amount_for_medication() //sigurno ih ima vise od 0, i u listi su svi lekovi isti
         {
             var stubRepository = new Mock<IMedicationConsumptionRepository>();
-            service = new MedicationConsumptionService(stubRepository.Object);
+            service = new ReportsService(stubRepository.Object);
 
             List<MedicationConsumption> consumptions = new List<MedicationConsumption>();
             MedicationConsumption m1 = new MedicationConsumption { Id = 1, MedicationId = 1, MedicationName = "Brufen", Date = new DateTime(2021, 07, 31), AmountConsumed = 5 };
@@ -54,7 +54,7 @@ namespace IntegrationAppTests.UnitTests
         public void Get_consumptions_for_medication()
         {
             var stubRepository = new Mock<IMedicationConsumptionRepository>();
-            service = new MedicationConsumptionService(stubRepository.Object);
+            service = new ReportsService(stubRepository.Object);
 
             List<MedicationConsumption> consumptions = new List<MedicationConsumption>();
             MedicationConsumption m1 = new MedicationConsumption { Id = 1, MedicationId = 1, MedicationName = "Brufen", Date = new DateTime(2021, 07, 31), AmountConsumed = 5 };
@@ -71,7 +71,7 @@ namespace IntegrationAppTests.UnitTests
         public void Is_consumption_evaluated()
         {
             var stubRepository = new Mock<IMedicationConsumptionRepository>();
-            service = new MedicationConsumptionService(stubRepository.Object);
+            service = new ReportsService(stubRepository.Object);
 
             List<string> evaluetedConsumptions = new List<string>();
             evaluetedConsumptions.Add("Brufen");
