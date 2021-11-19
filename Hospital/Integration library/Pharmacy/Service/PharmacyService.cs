@@ -54,6 +54,11 @@ namespace Integration_library.Pharmacy.Service
             return pharmacy.ApiKey;
         }
 
+        public List<Model.Pharmacy> GetPharmacies()
+        {
+            return repository.GetAll();
+        }
+
 
     }
 }
