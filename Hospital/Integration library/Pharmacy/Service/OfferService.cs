@@ -38,6 +38,7 @@ namespace Integration_library.Pharmacy.Service
             if (CheckEndDate(offer))
             {
                 offer.Posted = true;
+                offerRepository.Save();
             }
             return offer.Posted;
         }

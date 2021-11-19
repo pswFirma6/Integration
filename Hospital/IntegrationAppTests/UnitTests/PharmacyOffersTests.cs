@@ -26,18 +26,7 @@ namespace IntegrationAppTests.UnitTests
             checkDates.ShouldBeTrue();
         }
 
-        [Fact]
-
-        public void Post_offer()
-        {
-            var stubRepository = new Mock<IOfferRepository>();
-            service = new OfferService(stubRepository.Object);
-            Offer offer = new Offer { Id = 1, Title = "Offer1", Content = "Offer1", StartDate = new DateTime(2021, 11, 11), EndDate = new DateTime(2021, 11, 17), PharmacyName = "Pharmacy1", Posted = false };
-
-            bool offerPosted = service.PostOffer(offer);
-
-            offerPosted.ShouldBeTrue();
-        }
+        
 
     }
 }
