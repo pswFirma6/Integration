@@ -18,7 +18,8 @@ namespace Integration_library.Pharmacy.Service
         public List<Offer> GetOffers()
         {
             List<Offer> offers = new List<Offer>();
-            foreach(Offer offer in offerRepository.GetAll())
+            List<Offer> all = offerRepository.GetAll();
+            foreach (Offer offer in all)
             {
                 if(CheckEndDate(offer))
                 {
@@ -30,7 +31,7 @@ namespace Integration_library.Pharmacy.Service
 
         public bool CheckEndDate(Offer offer)
         {
-            return offer.EndDate < DateTime.Now;
+            return DateTime.Compare(offer.EndDate, DateTime.Now) > 0;
         }
 
         public bool PostOffer(Offer offer)
@@ -41,6 +42,12 @@ namespace Integration_library.Pharmacy.Service
                 offerRepository.Save();
             }
             return offer.Posted;
+        }
+
+        public void AddOffer(Offer offer)
+        {
+            offerRepository.Add(offer);
+            offerRepository.Save();
         }
     }
 }
