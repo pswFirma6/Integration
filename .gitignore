@@ -3,7 +3,10 @@
 node_modules
 dist
 
+.vs/
 /IntegrationAPI/bin
 /IntegrationAPI/obj
 /Integration library/bin
 /Integration library/obj
+/IntegrationAppTest/obj
+/IntegrationAppTest/bin
