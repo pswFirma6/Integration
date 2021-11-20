@@ -36,6 +36,13 @@ namespace IntegrationAPI.Controller
             return service.GetPharmacyNames();
         }
 
+        [HttpGet]
+        [Route("pharmacies")]
+        public List<Pharmacy> GetPharmacies()
+        {
+            return service.GetPharmacies();
+        }
+
         [HttpPost]
         [Route("registerPharmacy")]
         public IActionResult AddPharmacy(Pharmacy pharmacy)
