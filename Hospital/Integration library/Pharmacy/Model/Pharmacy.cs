@@ -9,13 +9,17 @@ namespace Integration_library.Pharmacy.Model
     {
         [Key]
         public string PharmacyName { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
         public string ApiKey { get; set; }
 
         public Pharmacy() { }
-        public Pharmacy(string pharmacyName, string apiKey)
+        public Pharmacy(string pharmacyName, string apiKey, string address, string city)
         {
             PharmacyName = pharmacyName;
             ApiKey = apiKey;
+            Address = address;
+            City = city;
         }
     }
 }
