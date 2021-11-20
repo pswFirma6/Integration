@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Text;
 using Integration_library.Pharmacy.IRepository;
 using Integration_library.Pharmacy.Repository;
+using Integration_library.Pharmacy.DTO;
 using IntegrationAPI.DTO;
 
 namespace IntegrationAPI.Controller
@@ -31,7 +32,7 @@ namespace IntegrationAPI.Controller
         }
 
         [HttpPost]
-        [Route("report")]
+        [Route("generateReport")]
         public void MakeReport(TimePeriodStringDTO period)
         {
             DateTime startDate = DateTime.ParseExact(period.startDate, "yyyy-MM-dd",
@@ -39,15 +40,22 @@ namespace IntegrationAPI.Controller
             DateTime endDate = DateTime.ParseExact(period.endDate, "yyyy-MM-dd",
                                        System.Globalization.CultureInfo.InvariantCulture);
 
-            TimePeriodDTO timePeriod = new TimePeriodDTO(startDate,endDate);
+            TimePeriodDTO timePeriod = new TimePeriodDTO(startDate, endDate);
             service.GenerateReport(timePeriod);
         }
 
         [HttpPost]
-        [Route("report")]
-        public void RequestReport(String medicineName)
+        [Route("requestReport")]
+        public String RequestReport(ReportRequestDTO request)
         {
-            service.RequestReport(medicineName);
+            return service.RequestReport(request);
+        }
+
+        [HttpPost]
+        [Route("medicationNames")]
+        public String RequestMedicationNames(String pharmacyName)
+        {
+            return service.RequestMedicationNames(pharmacyName);
         }
 
     }
