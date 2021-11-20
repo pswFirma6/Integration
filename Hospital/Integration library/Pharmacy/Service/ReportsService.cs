@@ -15,7 +15,7 @@ namespace Integration_library.Pharmacy.Service
     public class ReportsService
     {
         private IMedicationConsumptionRepository repository;
-        private string server = "https://localhost:44377/api/report";
+        private string server = "https://localhost:44377/";
         public ReportsService(IMedicationConsumptionRepository iRepository)
         {
             repository = iRepository;
@@ -66,6 +66,7 @@ namespace Integration_library.Pharmacy.Service
             }
             return content;
         }
+
 
         public bool isEvaluated(List<String> list, String MedicationName)
         {
@@ -124,20 +125,21 @@ namespace Integration_library.Pharmacy.Service
             return DateTime.Compare(timePeriod.StartDate, consumptionDate) <= 0 && DateTime.Compare(timePeriod.EndDate, consumptionDate) >= 0;
         }
 
-        public void RequestReport(String medicineName)
+        public String RequestReport(ReportRequestDTO req)
         {
-            var client = new RestClient(server);
+            var client = new RestClient(server + "report");
             var request = new RestRequest();
-            request.AddJsonBody(medicineName);
+
+            request.AddJsonBody(req.MedicationName);
             var response = client.Post(request);
+            if (response.Content.ToString().Equals("\"OK\""))
+                GetSpecificationnReport(req.MedicationName);
 
-            if (response.Content.ToString().Equals("OK"))
-                GetConsumptionReport(medicineName);
-
+            return response.Content.ToString();
         }
-        private void GetConsumptionReport(String medicineName)
+        private void GetSpecificationnReport(String medicineName)
         {
-            String fileName = "MedicineSpecification(" + medicineName + ").txt";
+            String fileName = "MedicineSpecification (" + medicineName + ").txt";
             String localFile = Path.Combine(Directory.GetCurrentDirectory(), fileName);
             String serverFile = @"\public\" + fileName;
 
@@ -150,6 +152,15 @@ namespace Integration_library.Pharmacy.Service
                 }
                 client.Disconnect();
             }
+        }
+
+        public String RequestMedicationNames(string pharmacyName)
+        {
+            var client = new RestClient(server + "pharmacyMedicine");
+            var request = new RestRequest();
+            var response = client.Get(request);
+
+            return response.Content.ToString();
         }
 
     }
