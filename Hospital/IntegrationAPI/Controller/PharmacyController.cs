@@ -12,6 +12,8 @@ using System.Text;
 using Integration_library.Pharmacy.Service;
 using Integration_library.Pharmacy.IRepository;
 using Integration_library.Pharmacy.Repository;
+using Integration_library.Pharmacy.DTO;
+using System.Diagnostics;
 
 namespace IntegrationAPI.Controller
 {
@@ -51,6 +53,19 @@ namespace IntegrationAPI.Controller
             return Ok();
         }
 
-       
+        [HttpPost]
+        [Route("checkMedicine")]
+        public List<PharmacyMedicineAvailabilityDTO> CheckMedicine(MedicineDTO medicine)
+        {
+            return service.CheckPharmacyMedicines(medicine);
+        }
+
+        [HttpPost]
+        [Route("checkPharmacyMedicine")]
+        public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDTO availability)
+        {
+            return service.CheckMedicineOfCertainPharmacy(availability);
+        }
+
     }
 }

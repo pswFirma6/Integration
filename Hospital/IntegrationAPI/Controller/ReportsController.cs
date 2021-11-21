@@ -13,7 +13,6 @@ using System.Text.Json;
 using System.Text;
 using Integration_library.Pharmacy.IRepository;
 using Integration_library.Pharmacy.Repository;
-using Integration_library.Pharmacy.DTO;
 using IntegrationAPI.DTO;
 
 namespace IntegrationAPI.Controller

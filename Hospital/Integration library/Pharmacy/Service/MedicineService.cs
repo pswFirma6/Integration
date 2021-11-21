@@ -1,6 +1,8 @@
 ﻿using Integration_library.Pharmacy.DTO;
 using Integration_library.Pharmacy.IRepository;
 using Integration_library.Pharmacy.Model;
+using Integration_library.Pharmacy.Repository;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +12,7 @@ namespace Integration_library.Pharmacy.Service
     public class MedicineService
     {
         private string server = "https://localhost:44377/api";
+        private string orderServer = "https://localhost:44377";
         private IMedicineRepository repository;
 
         public MedicineService(IMedicineRepository iRepository)
@@ -25,6 +28,7 @@ namespace Integration_library.Pharmacy.Service
         public void AddMedicine(Medicine medicine)
         {
             repository.Add(medicine);
+            repository.Save();
         }
 
         public bool CheckIfMedicineIsAvailableInPharmacy(MedicineDTO medicine)
@@ -37,9 +41,16 @@ namespace Integration_library.Pharmacy.Service
             return repository.FindById(id);
         }
 
-        public void EditMedicine(Medicine medicine)
+        public void EditMedicine(MedicineDTO medicine)
         {
-            repository.Update(medicine);
+            foreach (Medicine med in GetMedicines())
+            {
+                if (med.Name == medicine.Name)
+                {
+                    med.Quantity += medicine.Quantity;
+                    repository.Save();
+                }
+            }
         }
 
         public void AddExistingMedicine(Medicine medicine)
@@ -48,6 +59,31 @@ namespace Integration_library.Pharmacy.Service
             Medicine newStateMedicine = oldStateMedicine;
             newStateMedicine.Quantity += medicine.Quantity;
             repository.Update(newStateMedicine);
+        }
+
+        public void OrderMedicine(CheckAvailabilityDTO order)
+        {
+            if (!CheckIfMedicineExists(order.Medicine.Name))
+            {
+                AddMedicine(new Medicine(order.Medicine.Name, order.Medicine.Quantity));
+            }
+            else
+            {
+                EditMedicine(order.Medicine);
+            }
+        }
+
+
+        private bool CheckIfMedicineExists(string medicineName)
+        {
+            foreach (Medicine medicine in GetMedicines())
+            {
+                if (medicine.Name == medicineName)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
