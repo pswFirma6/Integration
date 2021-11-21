@@ -18,6 +18,7 @@ namespace Integration_library.Pharmacy.Model
         public DbSet<MedicationConsumption> MedicationConsumptions { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Pharmacy> Pharmacies { get; set; }
+        public DbSet<Offer> Offers { get; set; }
         public DbSet<Medicine> Medicines { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
