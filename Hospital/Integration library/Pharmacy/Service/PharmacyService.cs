@@ -59,9 +59,27 @@ namespace Integration_library.Pharmacy.Service
             return pharmacy.ApiKey;
         }
 
-        public bool CheckMedicine(MedicineDTO medicine)
+        public List<PharmacyMedicineAvailabilityDTO> CheckPharmacyMedicines(MedicineDTO medicine)
         {
-            return PostRequest(server, medicine);
+            List<PharmacyMedicineAvailabilityDTO> pharmacies = new List<PharmacyMedicineAvailabilityDTO>();
+            foreach(Model.Pharmacy pharmacy in repository.GetAll())
+            {
+                bool isAvailable = PostRequest(server, medicine);
+                pharmacies.Add(new PharmacyMedicineAvailabilityDTO { PharmacyName = pharmacy.PharmacyName, IsAvailable = isAvailable });
+            }
+            return pharmacies;
+        }
+
+        public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDTO availability)
+        {
+            foreach(Model.Pharmacy pharmacy in repository.GetAll())
+            {
+                if (pharmacy.PharmacyName.Equals(availability.PharmacyName))
+                {
+                    return PostRequest(server, availability.Medicine);
+                }
+            }
+            return false;
         }
 
         private bool PostRequest(string url, MedicineDTO medicine)
@@ -76,6 +94,25 @@ namespace Integration_library.Pharmacy.Service
         public List<Model.Pharmacy> GetPharmacies()
         {
             return repository.GetAll();
+        }
+
+        public void OrderFromCertainPharmacy(CheckAvailabilityDTO order)
+        {
+            foreach(Model.Pharmacy pharmacy in GetPharmacies())
+            {
+                if(pharmacy.PharmacyName == order.PharmacyName)
+                {
+                    OrderMedicine(server, order.Medicine);
+                }
+            }
+        }
+
+        private void OrderMedicine(string url, MedicineDTO medicine)
+        {
+            var client = new RestClient(url);
+            var request = new RestRequest("/orderMedicine");
+            request.AddJsonBody(medicine);
+            var response = client.Post(request);
         }
 
 

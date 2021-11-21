@@ -55,10 +55,17 @@ namespace IntegrationAPI.Controller
 
         [HttpPost]
         [Route("checkMedicine")]
-        public bool CheckMedicine(MedicineDTO medicine)
+        public List<PharmacyMedicineAvailabilityDTO> CheckMedicine(MedicineDTO medicine)
         {
-            return service.CheckMedicine(medicine);
+            return service.CheckPharmacyMedicines(medicine);
         }
-       
+
+        [HttpPost]
+        [Route("checkPharmacyMedicine")]
+        public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDTO availability)
+        {
+            return service.CheckMedicineOfCertainPharmacy(availability);
+        }
+
     }
 }

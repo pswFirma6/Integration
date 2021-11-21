@@ -18,5 +18,10 @@ namespace Integration_library.Pharmacy.Model
             Quantity = quantity;
             Intensity = intensity;
         }
+        public Medicine(string name, int quantity)
+        {
+            Name = name;
+            Quantity = quantity;
+        }
     }
 }
