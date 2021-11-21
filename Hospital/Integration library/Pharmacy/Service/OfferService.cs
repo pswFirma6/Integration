@@ -34,14 +34,17 @@ namespace Integration_library.Pharmacy.Service
             return DateTime.Compare(offer.EndDate, DateTime.Now) > 0;
         }
 
-        public bool PostOffer(Offer offer)
+        public void PostOffer(Offer offer)
         {
-            if (CheckEndDate(offer))
+            foreach(Offer o in offerRepository.GetAll())
             {
-                offer.Posted = true;
-                offerRepository.Save();
+                if(o.Id == offer.Id)
+                {
+                    o.Posted = true;
+                    offerRepository.Save();
+                    break;
+                }
             }
-            return offer.Posted;
         }
 
         public void AddOffer(Offer offer)
