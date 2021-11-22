@@ -8,6 +8,7 @@ dist
 /Hospital/IntegrationAPI/obj
 /Hospital/IntegrationLibrary/bin
 /Hospital/IntegrationLibrary/obj
-/Hospital/IntegrationAppTest/obj
-/Hospital/IntegrationAppTest/bin
-
+/Hospital/IntegrationTests/bin
+/Hospital/IntegrationTests/obj
+/Hospital/UnitTests/bin
+/Hospital/UnitTests/obj
