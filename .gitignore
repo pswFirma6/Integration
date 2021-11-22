@@ -4,9 +4,11 @@ node_modules
 dist
 
 .vs/
-/IntegrationAPI/bin
-/IntegrationAPI/obj
-/Integration library/bin
-/Integration library/obj
-/IntegrationAppTest/obj
-/IntegrationAppTest/bin
+Hospital/IntegrationAPI/bin
+Hospital/IntegrationAPI/obj
+Hospital/Integration library/bin
+Hospital/Integration library/obj
+Hospital/UnitTest/obj
+Hospital/UnitTest/bin
+Hospital/IntegrationTest/obj
+Hospital/IntegrationTest/bin
