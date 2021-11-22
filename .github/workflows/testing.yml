@@ -6,6 +6,7 @@ on:
       
 env:
   DOTNET_VERSION: '3.1.x'
+  PROJECT_PATH: './Hospital/'
     
 jobs:
   build-and-test:

@@ -8,7 +8,7 @@ Hospital/IntegrationAPI/bin
 Hospital/IntegrationAPI/obj
 Hospital/Integration library/bin
 Hospital/Integration library/obj
-Hospital/UnitTest/obj
-Hospital/UnitTest/bin
-Hospital/IntegrationTest/obj
-Hospital/IntegrationTest/bin
+Hospital/UnitTests/obj
+Hospital/UnitTests/bin
+Hospital/IntegrationTests/obj
+Hospital/IntegrationTests/bin
