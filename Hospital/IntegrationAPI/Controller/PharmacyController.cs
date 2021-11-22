@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Integration_library.Pharmacy.Model;
+using IntegrationLibrary.Pharmacy.Model;
 using RestSharp;
 using System.Text.Json;
 using System.Text;
-using Integration_library.Pharmacy.Service;
-using Integration_library.Pharmacy.IRepository;
-using Integration_library.Pharmacy.Repository;
+using IntegrationLibrary.Pharmacy.Service;
+using IntegrationLibrary.Pharmacy.IRepository;
+using IntegrationLibrary.Pharmacy.Repository;
+using IntegrationLibrary.Pharmacy.DTO;
+using System.Diagnostics;
 
 namespace IntegrationAPI.Controller
 {
@@ -36,6 +38,13 @@ namespace IntegrationAPI.Controller
             return service.GetPharmacyNames();
         }
 
+        [HttpGet]
+        [Route("pharmacies")]
+        public List<Pharmacy> GetPharmacies()
+        {
+            return service.GetPharmacies();
+        }
+
         [HttpPost]
         [Route("registerPharmacy")]
         public IActionResult AddPharmacy(Pharmacy pharmacy)
@@ -44,6 +53,19 @@ namespace IntegrationAPI.Controller
             return Ok();
         }
 
-       
+        [HttpPost]
+        [Route("checkMedicine")]
+        public List<PharmacyMedicineAvailabilityDTO> CheckMedicine(MedicineDTO medicine)
+        {
+            return service.CheckPharmacyMedicines(medicine);
+        }
+
+        [HttpPost]
+        [Route("checkPharmacyMedicine")]
+        public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDTO availability)
+        {
+            return service.CheckMedicineOfCertainPharmacy(availability);
+        }
+
     }
 }
