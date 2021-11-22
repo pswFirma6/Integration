@@ -26,6 +26,7 @@ namespace IntegrationAPI.Controller
         [Route("getOffers")]
         public List<Offer> GetOffers()
         {
+            service.ReceiveOffer();
             return service.GetOffers();
         }
 
