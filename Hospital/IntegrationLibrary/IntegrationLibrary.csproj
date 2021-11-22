@@ -1,7 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageId>IntegrationLibrary</PackageId>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RepositoryType>git</RepositoryType>
+	  <RepositoryUrl>https://github.com/pswFirma6/Integration.git</RepositoryUrl>
+	  <IsPackable>true</IsPackable>
     <RootNamespace>IntegrationLibrary</RootNamespace>
   </PropertyGroup>
 
