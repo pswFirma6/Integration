@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Integration_library.Pharmacy.Model;
+using IntegrationLibrary.Pharmacy.Model;
 
 namespace IntegrationAPI
 {

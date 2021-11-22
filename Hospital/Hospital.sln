@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationAPI", "IntegrationAPI\IntegrationAPI.csproj", "{FAD27339-3E84-4E81-AF5F-ED4206E469BD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Integration library", "Integration library\Integration library.csproj", "{4AE92CFA-8FF5-48CC-B0A1-31120ABAC7FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationLibrary", "IntegrationLibrary\IntegrationLibrary.csproj", "{4AE92CFA-8FF5-48CC-B0A1-31120ABAC7FE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{2A0449FA-331B-496D-8A43-4BB8A0F5E7FE}"
 EndProject

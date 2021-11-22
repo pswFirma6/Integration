@@ -3,12 +3,11 @@
 node_modules
 dist
 
-.vs/
-Hospital/IntegrationAPI/bin
-Hospital/IntegrationAPI/obj
-Hospital/Integration library/bin
-Hospital/Integration library/obj
-Hospital/UnitTests/obj
-Hospital/UnitTests/bin
-Hospital/IntegrationTests/obj
-Hospital/IntegrationTests/bin
+/Hospital/.vs/
+/Hospital/IntegrationAPI/bin
+/Hospital/IntegrationAPI/obj
+/Hospital/IntegrationLibrary/bin
+/Hospital/IntegrationLibrary/obj
+/Hospital/IntegrationAppTest/obj
+/Hospital/IntegrationAppTest/bin
+
