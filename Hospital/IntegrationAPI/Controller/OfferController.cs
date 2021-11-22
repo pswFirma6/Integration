@@ -28,6 +28,13 @@ namespace IntegrationAPI.Controller
         {
             return service.GetOffers();
         }
+
+        [HttpPost]
+        [Route("postOffer")]
+        public void PostOffer(Offer offer)
+        {
+            service.PostOffer(offer);
+        }
     }
 
 }

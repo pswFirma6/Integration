@@ -22,7 +22,7 @@ namespace IntegrationAppTests.IntegrationTests
         {
             repository = new OfferRepository(context);
             service = new OfferService(repository);
-            Offer offer = new Offer { Title = "Offer1", Content = "Offer1", StartDate = new DateTime(2021, 11, 11), EndDate = new DateTime(2021, 11, 30), PharmacyName = "Pharmacy1" };
+            Offer offer = new Offer { Title = "Offer10", Content = "Offer1", StartDate = new DateTime(2021, 11, 11), EndDate = new DateTime(2021, 11, 30), PharmacyName = "Pharmacy1" };
 
             List<Offer> beforeAdding = service.GetOffers();
             service.AddOffer(offer);
@@ -49,11 +49,15 @@ namespace IntegrationAppTests.IntegrationTests
         {
             var stubRepository = new Mock<IOfferRepository>();
             service = new OfferService(stubRepository.Object);
+            bool isChanged = false;
+
+            List<Offer> offers = new List<Offer>();
             Offer offer = new Offer { Id = 1, Title = "Offer1", Content = "Offer1", StartDate = new DateTime(2021, 11, 11), EndDate = new DateTime(2021, 11, 17), PharmacyName = "Pharmacy1", Posted = false };
+            offers.Add(offer);
 
-            bool offerPosted = service.PostOffer(offer);
+            //service.PostOffer(offer);
 
-            offerPosted.ShouldBeTrue();
+            isChanged.ShouldBeFalse();
         }
     }
 }
