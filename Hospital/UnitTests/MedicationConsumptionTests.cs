@@ -1,7 +1,7 @@
-﻿using Integration_library.Pharmacy.DTO;
-using Integration_library.Pharmacy.IRepository;
-using Integration_library.Pharmacy.Model;
-using Integration_library.Pharmacy.Service;
+﻿using IntegrationLibrary.Pharmacy.DTO;
+using IntegrationLibrary.Pharmacy.IRepository;
+using IntegrationLibrary.Pharmacy.Model;
+using IntegrationLibrary.Pharmacy.Service;
 using Moq;
 using Shouldly;
 using System;
