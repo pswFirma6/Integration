@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Integration_library.Pharmacy.Model;
-using Integration_library.Pharmacy.Service;
-using Integration_library.Pharmacy.DTO;
+using IntegrationLibrary.Pharmacy.Model;
+using IntegrationLibrary.Pharmacy.Service;
+using IntegrationLibrary.Pharmacy.DTO;
 using RestSharp;
 using System.Text.Json;
 using System.Text;
-using Integration_library.Pharmacy.IRepository;
-using Integration_library.Pharmacy.Repository;
+using IntegrationLibrary.Pharmacy.IRepository;
+using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationAPI.DTO;
 
 namespace IntegrationAPI.Controller

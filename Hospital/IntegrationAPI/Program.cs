@@ -1,5 +1,4 @@
-using Integration_library.Pharmacy.Model;
-using Integration_library.Pharmacy.Service;
+using IntegrationLibrary.Pharmacy.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Integration_library.Pharmacy.Service;
 
 namespace IntegrationAPI
 {
