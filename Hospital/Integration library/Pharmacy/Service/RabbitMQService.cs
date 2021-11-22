@@ -48,7 +48,6 @@ namespace Integration_library.Pharmacy.Service
                 Offer message;
                 message = JsonConvert.DeserializeObject<Offer>(jsonMessage);
                 service.AddOffer(message);
-                //Program.Offers.Add(message);
             };
 
             channel.BasicConsume(queue: "offer-queue",
