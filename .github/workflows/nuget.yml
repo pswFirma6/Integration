@@ -6,7 +6,7 @@ on:
     - "v[0-9]+.[0-9]+.[0-9]+"
 
 env:
- PROJECT-DLL : 'Hospital/Integration Library/Integration Library.csproj'
+ PROJECT-DLL : 'Hospital/IntegrationLibrary/IntegrationLibrary.csproj'
  GITHUB_TOKEN:    '${{ secrets.GITHUB_TOKEN }}'  
  OUTPUT-DLL-DIR : '${{ github.workspace }}/output'
  NUGET-SOURCE-URL : 'https://nuget.pkg.github.com/pswFirma6/index.json'
@@ -32,5 +32,5 @@ jobs:
     - name: Pack
       run: dotnet pack ${{ env.PROJECT-DLL }} --configuration Release /p:Version=${VERSION} --no-build --output .
     - name: Push
-      run: dotnet nuget push PharmacyLibrary.${VERSION}.nupkg --source https://nuget.pkg.github.com/pswFirma6/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+      run: dotnet nuget push IntegrationLibrary.${VERSION}.nupkg --source https://nuget.pkg.github.com/pswFirma6/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
     
