@@ -38,7 +38,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          path: Hospital\
+          path: Hospital/Hospital.sln
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"pswFirma6_Integration" /o:"pswfirma6" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
