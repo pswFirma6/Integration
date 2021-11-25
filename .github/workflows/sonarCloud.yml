@@ -2,7 +2,9 @@ name: Build
 on:
   push:
     branches:
-      - feature-sonarCloud
+      [ master, develop]
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
   build:
     name: Build
