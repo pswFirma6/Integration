@@ -1,4 +1,9 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using IntegrationLibrary.Partnership.IRepo;
+using IntegrationLibrary.Partnership.Model;
+using IntegrationLibrary.Partnership.Repository;
+using IntegrationLibrary.Pharmacy.IRepository;
+using IntegrationLibrary.Pharmacy.Model;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -7,13 +12,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using IntegrationLibrary.Pharmacy.Model;
-using IntegrationLibrary.Pharmacy.IRepository;
-using IntegrationLibrary.Pharmacy.Service;
-using IntegrationLibrary.Pharmacy.Repository;
 
-namespace Integration_library.Pharmacy.Service
+namespace IntegrationLibrary.Partnership.Service
 {
     public class RabbitMQService : BackgroundService
     {
@@ -42,7 +42,7 @@ namespace Integration_library.Pharmacy.Service
             channel.QueueBind("offer-queue", "offer-exchange", string.Empty);
 
             var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += (model, e) => 
+            consumer.Received += (model, e) =>
             {
                 byte[] body = e.Body.ToArray();
                 var jsonMessage = Encoding.UTF8.GetString(body);

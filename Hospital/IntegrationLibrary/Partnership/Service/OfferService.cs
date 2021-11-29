@@ -1,10 +1,10 @@
-﻿using IntegrationLibrary.Pharmacy.IRepository;
-using IntegrationLibrary.Pharmacy.Model;
+﻿using IntegrationLibrary.Partnership.IRepo;
+using IntegrationLibrary.Partnership.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace IntegrationLibrary.Pharmacy.Service
+namespace IntegrationLibrary.Partnership.Service
 {
     public class OfferService
     {
@@ -21,7 +21,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             List<Offer> all = offerRepository.GetAll();
             foreach (Offer offer in all)
             {
-                if(CheckEndDate(offer))
+                if (CheckEndDate(offer))
                 {
                     offers.Add(offer);
                 }
@@ -36,9 +36,9 @@ namespace IntegrationLibrary.Pharmacy.Service
 
         public void PostOffer(Offer offer)
         {
-            foreach(Offer o in offerRepository.GetAll())
+            foreach (Offer o in offerRepository.GetAll())
             {
-                if(o.Id == offer.Id)
+                if (o.Id == offer.Id)
                 {
                     o.Posted = true;
                     offerRepository.Save();

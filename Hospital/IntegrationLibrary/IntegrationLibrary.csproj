@@ -10,9 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Partnership\Model\" />
-    <Folder Include="Partnership\Repository\" />
-    <Folder Include="Partnership\Service\" />
     <Folder Include="SharedModel\" />
     <Folder Include="Tendering\Model\" />
     <Folder Include="Tendering\Repository\" />
