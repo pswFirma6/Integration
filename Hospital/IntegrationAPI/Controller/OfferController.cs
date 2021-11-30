@@ -1,7 +1,10 @@
-﻿using IntegrationLibrary.Pharmacy.IRepository;
+﻿using IntegrationLibrary.Partnership.IRepo;
+using IntegrationLibrary.Partnership.Model;
+using IntegrationLibrary.Partnership.Repository;
+using IntegrationLibrary.Partnership.Service;
+using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Pharmacy.Repository;
-using IntegrationLibrary.Pharmacy.Service;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

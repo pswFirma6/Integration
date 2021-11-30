@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace IntegrationLibrary.Pharmacy.Model
+namespace IntegrationLibrary.Partnership.Model
 {
     public class Offer
     {
