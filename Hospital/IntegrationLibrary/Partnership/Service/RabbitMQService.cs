@@ -19,13 +19,12 @@ namespace IntegrationLibrary.Partnership.Service
     {
         IConnection connection;
         IModel channel;
-        private DatabaseContext databaseContext = new DatabaseContext();
-        private IOfferRepository repository;
+        private readonly DatabaseContext databaseContext = new DatabaseContext();
         private OfferService service;
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            repository = new OfferRepository(databaseContext);
+            IOfferRepository repository = new OfferRepository(databaseContext);
             service = new OfferService(repository);
 
             var factory = new ConnectionFactory() { HostName = "localhost" };
@@ -67,7 +66,7 @@ namespace IntegrationLibrary.Partnership.Service
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            return Task.CompletedTask; ;
+            return Task.CompletedTask;
         }
     }
 }

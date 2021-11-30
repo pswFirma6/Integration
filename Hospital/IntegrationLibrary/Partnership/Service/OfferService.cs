@@ -8,7 +8,7 @@ namespace IntegrationLibrary.Partnership.Service
 {
     public class OfferService
     {
-        private IOfferRepository offerRepository;
+        private readonly IOfferRepository offerRepository;
 
         public OfferService(IOfferRepository IRepository)
         {
@@ -21,10 +21,7 @@ namespace IntegrationLibrary.Partnership.Service
             List<Offer> all = offerRepository.GetAll();
             foreach (Offer offer in all)
             {
-                if (CheckEndDate(offer))
-                {
-                    offers.Add(offer);
-                }
+                if (CheckEndDate(offer)) offers.Add(offer);
             }
             return offers;
         }
