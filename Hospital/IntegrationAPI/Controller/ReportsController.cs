@@ -26,11 +26,10 @@ namespace IntegrationAPI.Controller
         private readonly MedicineConsumptionService consumptionService;
         private readonly MedicineSpecificationService specificationService;
         private readonly PrescriptionService prescriptionService;
-        private readonly IMedicationConsumptionRepository repository;
 
         public ReportsController(DatabaseContext context)
         {
-            repository = new MedicationConsumptionRepository(context);
+            IMedicationConsumptionRepository repository = new MedicationConsumptionRepository(context);
             consumptionService = new MedicineConsumptionService(repository);
             specificationService = new MedicineSpecificationService();
             prescriptionService = new PrescriptionService();
