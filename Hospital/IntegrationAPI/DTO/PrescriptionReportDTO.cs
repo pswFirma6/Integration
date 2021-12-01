@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace IntegrationAPI.DTO
 {
-    public class PrescriptionReportDTO
+    public class PrescriptionReportDto
     {
         public Prescription Prescription { get; set; }
         public String Method { get; set; }
 
-        public PrescriptionReportDTO(Prescription prescription, string method)
+        public PrescriptionReportDto(Prescription prescription, string method)
         {
             this.Prescription = prescription;
             this.Method = method;
         }
 
-        public PrescriptionReportDTO()
+        public PrescriptionReportDto()
         {
         }
     }

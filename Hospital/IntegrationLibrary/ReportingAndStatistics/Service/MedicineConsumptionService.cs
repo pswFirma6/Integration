@@ -1,12 +1,9 @@
 ﻿using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Pharmacy.DTO;
-using IntegrationLibrary.Pharmacy.Repository;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Linq;
 using Renci.SshNet;
 using Spire.Pdf;
@@ -17,8 +14,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
 {
     public class MedicineConsumptionService
     {
-        private IMedicationConsumptionRepository repository;
-        private string server = "https://localhost:44377/";
+        private readonly IMedicationConsumptionRepository repository;
 
         public MedicineConsumptionService(IMedicationConsumptionRepository iRepository)
         {

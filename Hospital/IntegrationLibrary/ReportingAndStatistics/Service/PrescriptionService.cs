@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using RestSharp;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Linq;
 using Renci.SshNet;
 using IntegrationLibrary.ReportingAndStatistics.Model;
 using Spire.Pdf;
@@ -14,7 +7,7 @@ using Spire.Pdf.Graphics;
 using System.Drawing;
 using ZXing.QrCode;
 using ZXing;
-using System.Drawing.Imaging;
+
 
 namespace IntegrationLibrary.ReportingAndStatistics.Service
 {

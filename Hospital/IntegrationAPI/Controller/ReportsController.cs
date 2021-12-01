@@ -23,9 +23,9 @@ namespace IntegrationAPI.Controller
     [ApiController]
     public class ReportsController : ControllerBase
     {
-        private MedicineConsumptionService consumptionService;
-        private MedicineSpecificationService specificationService;
-        private PrescriptionService prescriptionService;
+        private readonly MedicineConsumptionService consumptionService;
+        private readonly MedicineSpecificationService specificationService;
+        private readonly PrescriptionService prescriptionService;
         private readonly IMedicationConsumptionRepository repository;
 
         public ReportsController(DatabaseContext context)
@@ -65,7 +65,7 @@ namespace IntegrationAPI.Controller
 
         [HttpPost]
         [Route("sendPrescription")]
-        public String GeneratePrescriptionFile(PrescriptionReportDTO prescription)
+        public String GeneratePrescriptionFile(PrescriptionReportDto prescription)
         {
             prescriptionService.GenerateReport(prescription.Prescription, prescription.Method);
             return "OK";

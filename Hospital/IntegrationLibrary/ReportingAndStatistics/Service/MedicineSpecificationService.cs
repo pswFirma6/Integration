@@ -1,21 +1,17 @@
 ﻿using IntegrationLibrary.Pharmacy.IRepository;
-using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Pharmacy.DTO;
-using IntegrationLibrary.Pharmacy.Repository;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Linq;
 using Renci.SshNet;
 
 namespace IntegrationLibrary.ReportingAndStatistics.Service
 {
     public class MedicineSpecificationService
     {
-        private IMedicationConsumptionRepository repository;
-        private string server = "https://localhost:44377/";
+        private readonly IMedicationConsumptionRepository repository;
+        private readonly string server = "https://localhost:44377/";
 
         public MedicineSpecificationService(IMedicationConsumptionRepository iRepository)
         {
