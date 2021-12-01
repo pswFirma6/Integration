@@ -24,6 +24,7 @@ namespace IntegrationAPI.Controller
     {
         private MedicineConsumptionService consumptionService;
         private MedicineSpecificationService specificationService;
+        private PrescriptionService prescriptionService;
         private IMedicationConsumptionRepository repository;
 
         public ReportsController(DatabaseContext context)
@@ -31,6 +32,7 @@ namespace IntegrationAPI.Controller
             repository = new MedicationConsumptionRepository(context);
             consumptionService = new MedicineConsumptionService(repository);
             specificationService = new MedicineSpecificationService(repository);
+            prescriptionService = new PrescriptionService();
         }
 
         [HttpPost]
@@ -58,6 +60,14 @@ namespace IntegrationAPI.Controller
         public String RequestMedicationNames(String pharmacyName)
         {
             return specificationService.RequestMedicationNames(pharmacyName);
+        }
+
+        [HttpGet]
+        [Route("makePrescription")]
+        public String GeneratePrescriptionFile()
+        {
+            prescriptionService.GenerateReport(new IntegrationLibrary.ReportingAndStatistics.Model.Prescription("1", "Analgin","2", "Opis ovog lijeka","ne pregoni","1.12.2021", "Djordjo Kljajic", "Teodora Dzehverovic", "1", "1.12.2021.", "10.12.2021", "bice to okei"));
+            return "OK";
         }
 
     }

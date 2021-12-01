@@ -18,5 +18,26 @@ namespace IntegrationLibrary.ReportingAndStatistics.Model
         public string TherapyStart { get; set; }
         public string TherapyEnd { get; set; }
         public string Diagnosis { get; set; }
+
+        public Prescription(string id, string medicineName, string quantity, string description, string recommendedDose, string prescriptionDate, string doctorName, string patientName, string patientId, string therapyStart, string therapyEnd, string diagnosis)
+        {
+            Id = id;
+            MedicineName = medicineName;
+            Quantity = quantity;
+            Description = description;
+            RecommendedDose = recommendedDose;
+            PrescriptionDate = prescriptionDate;
+            DoctorName = doctorName;
+            PatientName = patientName;
+            PatientId = patientId;
+            TherapyStart = therapyStart;
+            TherapyEnd = therapyEnd;
+            Diagnosis = diagnosis;
+        }
+
+        public Prescription()
+        {
+        }
     }
+
 }
