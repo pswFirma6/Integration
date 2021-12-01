@@ -15,6 +15,7 @@ using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationAPI.DTO;
 using IntegrationLibrary.ReportingAndStatistics.Service;
+using IntegrationLibrary.ReportingAndStatistics.Model;
 
 namespace IntegrationAPI.Controller
 {
@@ -25,7 +26,7 @@ namespace IntegrationAPI.Controller
         private MedicineConsumptionService consumptionService;
         private MedicineSpecificationService specificationService;
         private PrescriptionService prescriptionService;
-        private IMedicationConsumptionRepository repository;
+        private readonly IMedicationConsumptionRepository repository;
 
         public ReportsController(DatabaseContext context)
         {
@@ -62,11 +63,11 @@ namespace IntegrationAPI.Controller
             return specificationService.RequestMedicationNames(pharmacyName);
         }
 
-        [HttpGet]
-        [Route("makePrescription")]
-        public String GeneratePrescriptionFile()
+        [HttpPost]
+        [Route("sendPrescription")]
+        public String GeneratePrescriptionFile(PrescriptionReportDTO prescription)
         {
-            prescriptionService.GenerateReport(new IntegrationLibrary.ReportingAndStatistics.Model.Prescription("1", "Analgin","2", "Opis ovog lijeka","ne pregoni","1.12.2021", "Djordjo Kljajic", "Teodora Dzehverovic", "1", "1.12.2021.", "10.12.2021", "bice to okei"),"HTTP");
+            prescriptionService.GenerateReport(prescription.Prescription, prescription.Method);
             return "OK";
         }
 
