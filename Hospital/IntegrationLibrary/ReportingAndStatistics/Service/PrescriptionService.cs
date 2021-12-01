@@ -25,46 +25,51 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
         public PrescriptionService()
         {
         }
-        public void GenerateReport(Prescription prescription)
+        public void GenerateReport(Prescription prescription,String sendingMethod)
         {
-            String filePath = Directory.GetCurrentDirectory();
-            String fileName = "Prescription.pdf";
+            String filePath = GetPrescriptionsDirectory();
+            String fileName = "Prescription" +prescription.Id +".pdf";
 
             PdfDocument doc = new PdfDocument();
             PdfPageBase page = doc.Pages.Add();
 
             page.Canvas.DrawString(GetContent(prescription), new PdfFont(PdfFontFamily.Helvetica, 11f), new PdfSolidBrush(Color.Black), 10, 10);
 
+            if (sendingMethod.Equals("HTTP"))
+            {
+                CreateQRCode(prescription.Id, filePath);
+                PdfImage pdfimage = PdfImage.FromFile(Path.Combine(filePath, "QRcode" + prescription.Id + ".png"));
+                PdfPageBase qrpage = doc.Pages.Add();
+                qrpage.Canvas.DrawImage(pdfimage, new PointF(5, 5));
+            }
 
-            CreateQRCode(prescription.Id,filePath);
-            PdfImage pdfimage = PdfImage.FromFile(Path.Combine(filePath, "qrcode"+prescription.Id +".png"));
-            PdfPageBase qrpage = doc.Pages.Add();
-            qrpage.Canvas.DrawImage(pdfimage, new PointF(5, 5));
 
             StreamWriter File = new StreamWriter(Path.Combine(filePath, fileName), true);
             doc.SaveToStream(File.BaseStream);
             File.Close();
 
-            //SendReport(Path.Combine(filePath, fileName));
+            SendReport(sendingMethod,fileName);
+        }
+
+        public string GetPrescriptionsDirectory()
+        {
+            return Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).ToString(),"Data\\Prescriptions\\");
         }
 
         public String GetContent(Prescription prescription)
         {
             String content = "\n";
-            content += "Prescription for medicine: " + prescription.MedicineName + ".\r\n\n"
-                    + "Quantity: " + prescription.Quantity + ".\r\n"
-                    + "Medicine description: " + prescription.Description + ".\r\n"
+            content += "Prescription for medicine: " + prescription.MedicineName + "\r\n\n"
+                    + "Quantity: " + prescription.Quantity + "\r\n"
+                    + "Medicine description: " + prescription.Description + "\r\n"
                     + "Recommended dose is: " + ".\r\n\n"
-
                     + "Patiend: " + prescription.DoctorName + ".\r\n"
-                    + "Patient diagnosis: " + prescription.Diagnosis + ".\r\n\n"
-
+                    + "Patient diagnosis: " + prescription.Diagnosis + "\r\n\n"
                     + "Therapy start: " + prescription.TherapyStart + ".\r\n"
-                    + "Therapy end: " + prescription.TherapyEnd + ".\r\n\n\n"
-
-                    + "Doctor: " + prescription.DoctorName + ".\r\n"
-                    + "Prescription date:" + prescription.PrescriptionDate + ".\r\n"
-                    + "Expiration date:" + prescription.PrescriptionDate + ".\r\n";
+                    + "Therapy end: " + prescription.TherapyEnd + "\r\n\n\n"
+                    + "Doctor: " + prescription.DoctorName + "\r\n"
+                    + "Prescription date:" + prescription.PrescriptionDate + "\r\n"
+                    + "Expiration date:" + prescription.PrescriptionDate + "\r\n";
             return content;
         }
 
@@ -91,6 +96,33 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             Image image = (Image)result;
             image.Save(Path.Combine(filePath, "qrcode" + qrvalue + ".png"));
             return result;
+        }
+
+        public void SendReport(string method,string filePath)
+        {
+            if (method.Equals("HTTP"))
+            {
+
+            }
+            else
+            {
+                SendUsingSftp(Path.Combine(GetPrescriptionsDirectory(),filePath));
+            }
+        }
+
+        public void SendUsingSftp(string fileName)
+        {
+            using (SftpClient client = new SftpClient(new PasswordConnectionInfo("192.168.56.1", "tester", "password")))
+            {
+                client.Connect();
+
+                using (Stream stream = File.OpenRead(fileName))
+                {
+                    client.UploadFile(stream, @"\public\prescriptions\" + Path.GetFileName(fileName), null);
+                }
+                client.Disconnect();
+            }
+
         }
     }
 }

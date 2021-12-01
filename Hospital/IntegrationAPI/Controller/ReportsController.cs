@@ -66,7 +66,7 @@ namespace IntegrationAPI.Controller
         [Route("makePrescription")]
         public String GeneratePrescriptionFile()
         {
-            prescriptionService.GenerateReport(new IntegrationLibrary.ReportingAndStatistics.Model.Prescription("1", "Analgin","2", "Opis ovog lijeka","ne pregoni","1.12.2021", "Djordjo Kljajic", "Teodora Dzehverovic", "1", "1.12.2021.", "10.12.2021", "bice to okei"));
+            prescriptionService.GenerateReport(new IntegrationLibrary.ReportingAndStatistics.Model.Prescription("1", "Analgin","2", "Opis ovog lijeka","ne pregoni","1.12.2021", "Djordjo Kljajic", "Teodora Dzehverovic", "1", "1.12.2021.", "10.12.2021", "bice to okei"),"SFTP");
             return "OK";
         }
 
