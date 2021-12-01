@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="ReportingAndStatistics\Model\" />
     <Folder Include="SharedModel\" />
     <Folder Include="Tendering\Model\" />
     <Folder Include="Tendering\Repository\" />

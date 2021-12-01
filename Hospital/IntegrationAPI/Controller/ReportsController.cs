@@ -14,6 +14,7 @@ using System.Text;
 using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationAPI.DTO;
+using IntegrationLibrary.ReportingAndStatistics.Service;
 
 namespace IntegrationAPI.Controller
 {
@@ -21,13 +22,15 @@ namespace IntegrationAPI.Controller
     [ApiController]
     public class ReportsController : ControllerBase
     {
-        private ReportsService service;
+        private MedicineConsumptionService consumptionService;
+        private MedicineSpecificationService specificationService;
         private IMedicationConsumptionRepository repository;
 
         public ReportsController(DatabaseContext context)
         {
             repository = new MedicationConsumptionRepository(context);
-            service = new ReportsService(repository);
+            consumptionService = new MedicineConsumptionService(repository);
+            specificationService = new MedicineSpecificationService(repository);
         }
 
         [HttpPost]
@@ -40,21 +43,21 @@ namespace IntegrationAPI.Controller
                                        System.Globalization.CultureInfo.InvariantCulture);
 
             TimePeriodDTO timePeriod = new TimePeriodDTO(startDate, endDate);
-            service.GenerateReport(timePeriod);
+            consumptionService.GenerateReport(timePeriod);
         }
 
         [HttpPost]
         [Route("requestReport")]
         public String RequestReport(ReportRequestDTO request)
         {
-            return service.RequestReport(request);
+            return specificationService.RequestReport(request);
         }
 
         [HttpPost]
         [Route("medicationNames")]
         public String RequestMedicationNames(String pharmacyName)
         {
-            return service.RequestMedicationNames(pharmacyName);
+            return specificationService.RequestMedicationNames(pharmacyName);
         }
 
     }
