@@ -32,7 +32,7 @@ namespace IntegrationAPI.Controller
         {
             repository = new MedicationConsumptionRepository(context);
             consumptionService = new MedicineConsumptionService(repository);
-            specificationService = new MedicineSpecificationService(repository);
+            specificationService = new MedicineSpecificationService();
             prescriptionService = new PrescriptionService();
         }
 

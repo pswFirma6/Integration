@@ -10,12 +10,10 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
 {
     public class MedicineSpecificationService
     {
-        private readonly IMedicationConsumptionRepository repository;
         private readonly string server = "https://localhost:44377/";
 
-        public MedicineSpecificationService(IMedicationConsumptionRepository iRepository)
+        public MedicineSpecificationService()
         {
-            repository = iRepository;
         }
         public String RequestReport(ReportRequestDTO req)
         {
