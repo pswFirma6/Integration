@@ -34,11 +34,16 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             return response.Content.ToString();
         }
 
+        public string GetSpecificationsDirectory()
+        {
+            return Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).ToString(), "Data\\Specifications\\");
+        }
+
         private void GetSpecificationnReport(String medicineName)
         {
-            String fileName = "MedicineSpecification (" + medicineName + ").txt";
-            String localFile = Path.Combine(Directory.GetCurrentDirectory(), fileName);
-            String serverFile = @"\public\" + fileName;
+            String fileName = "MedicineSpecification (" + medicineName + ").pdf";
+            String localFile = Path.Combine(GetSpecificationsDirectory(), fileName);
+            String serverFile = @"\public\specifications" + fileName;
 
             using (SftpClient client = new SftpClient(new PasswordConnectionInfo("192.168.56.1", "tester", "password")))
             {

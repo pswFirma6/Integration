@@ -20,14 +20,13 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
 {
     public class PrescriptionService
     {
-        private string server = "https://localhost:44377/";
-
         public PrescriptionService()
         {
         }
         public void GenerateReport(Prescription prescription,String sendingMethod)
         {
             String filePath = GetPrescriptionsDirectory();
+            String QRCodesDirectoryPath = GetQRcodesDirectory();
             String fileName = "Prescription" +prescription.Id +".pdf";
 
             PdfDocument doc = new PdfDocument();
@@ -37,8 +36,8 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
 
             if (sendingMethod.Equals("HTTP"))
             {
-                CreateQRCode(prescription.Id, filePath);
-                PdfImage pdfimage = PdfImage.FromFile(Path.Combine(filePath, "QRcode" + prescription.Id + ".png"));
+                CreateQRCode(prescription.Id, QRCodesDirectoryPath);
+                PdfImage pdfimage = PdfImage.FromFile(Path.Combine(QRCodesDirectoryPath, "QRcode" + prescription.Id + ".png"));
                 PdfPageBase qrpage = doc.Pages.Add();
                 qrpage.Canvas.DrawImage(pdfimage, new PointF(5, 5));
             }
@@ -47,7 +46,6 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             StreamWriter File = new StreamWriter(Path.Combine(filePath, fileName), true);
             doc.SaveToStream(File.BaseStream);
             File.Close();
-
             SendReport(sendingMethod,fileName);
         }
 
@@ -56,16 +54,21 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             return Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).ToString(),"Data\\Prescriptions\\");
         }
 
+        public string GetQRcodesDirectory()
+        {
+            return Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).ToString(), "Data\\QRcodes\\");
+        }
+
         public String GetContent(Prescription prescription)
         {
             String content = "\n";
             content += "Prescription for medicine: " + prescription.MedicineName + "\r\n\n"
                     + "Quantity: " + prescription.Quantity + "\r\n"
                     + "Medicine description: " + prescription.Description + "\r\n"
-                    + "Recommended dose is: " + ".\r\n\n"
-                    + "Patiend: " + prescription.DoctorName + ".\r\n"
+                    + "Recommended dose is: " + "\r\n\n"
+                    + "Patiend: " + prescription.DoctorName + "\r\n"
                     + "Patient diagnosis: " + prescription.Diagnosis + "\r\n\n"
-                    + "Therapy start: " + prescription.TherapyStart + ".\r\n"
+                    + "Therapy start: " + prescription.TherapyStart + "\r\n"
                     + "Therapy end: " + prescription.TherapyEnd + "\r\n\n\n"
                     + "Doctor: " + prescription.DoctorName + "\r\n"
                     + "Prescription date:" + prescription.PrescriptionDate + "\r\n"
@@ -94,7 +97,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             }
 
             Image image = (Image)result;
-            image.Save(Path.Combine(filePath, "qrcode" + qrvalue + ".png"));
+            image.Save(Path.Combine(filePath, "QRcode" + qrvalue + ".png"));
             return result;
         }
 
@@ -102,7 +105,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
         {
             if (method.Equals("HTTP"))
             {
-
+                //TODO: Send file using http requets
             }
             else
             {

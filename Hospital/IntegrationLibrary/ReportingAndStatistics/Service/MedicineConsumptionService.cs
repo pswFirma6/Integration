@@ -9,6 +9,9 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using Renci.SshNet;
+using Spire.Pdf;
+using Spire.Pdf.Graphics;
+using System.Drawing;
 
 namespace IntegrationLibrary.ReportingAndStatistics.Service
 {
@@ -24,15 +27,25 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
 
         public void GenerateReport(TimePeriodDTO timePeriod)
         {
-            String filePath = Directory.GetCurrentDirectory();
-            String fileName = "MedicationConsumptionReport.txt";
+            String filePath = GetConsumptionsDirectory();
+            String fileName = "MedicationConsumptionReport.pdf";
+
+            PdfDocument doc = new PdfDocument();
+            PdfPageBase page = doc.Pages.Add();
+
+            page.Canvas.DrawString(GetReportContent(timePeriod), new PdfFont(PdfFontFamily.Helvetica, 11f), new PdfSolidBrush(Color.Black), 10, 10);
 
             StreamWriter File = new StreamWriter(Path.Combine(filePath, fileName), true);
-            File.Write(GetReportContent(timePeriod));
+            doc.SaveToStream(File.BaseStream);
             File.Close();
 
             SendReport(Path.Combine(filePath, fileName));
 
+        }
+
+        public string GetConsumptionsDirectory()
+        {
+            return Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).ToString(), "Data\\Consumptions\\");
         }
 
         public void SendReport(String filePath)
@@ -43,7 +56,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
 
                 using (Stream stream = File.OpenRead(filePath))
                 {
-                    client.UploadFile(stream, @"\public\" + Path.GetFileName(filePath), null);
+                    client.UploadFile(stream, @"\public\consumptions" + Path.GetFileName(filePath), null);
                 }
                 client.Disconnect();
             }
