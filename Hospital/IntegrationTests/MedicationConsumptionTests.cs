@@ -3,6 +3,7 @@ using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationLibrary.Pharmacy.Service;
+using IntegrationLibrary.ReportingAndStatistics.Service;
 using Moq;
 using Shouldly;
 using System;
@@ -14,13 +15,14 @@ namespace IntegrationAppTests.IntegrationTests
 {
     public class MedicationConsumptionTests
     {
-        private ReportsService service;
+        private MedicineConsumptionService service;
 
         [Fact]
         public void Get_consumptions_for_time_period()
         {
+            
             var stubRepository = new Mock<IMedicationConsumptionRepository>();
-            service = new ReportsService(stubRepository.Object);
+            service = new MedicineConsumptionService(stubRepository.Object);
             List<MedicationConsumption> consumptions = new List<MedicationConsumption>();
             List<MedicationConsumption> requestedConsumptions = new List<MedicationConsumption>();
 
@@ -33,6 +35,7 @@ namespace IntegrationAppTests.IntegrationTests
             requestedConsumptions = service.GetConsumptionsForTimePeriod(timePeriod);
 
             requestedConsumptions.ShouldNotBeEmpty();
+            
         }
     }
 }

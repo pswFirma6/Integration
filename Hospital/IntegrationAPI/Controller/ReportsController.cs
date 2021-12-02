@@ -14,6 +14,8 @@ using System.Text;
 using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationAPI.DTO;
+using IntegrationLibrary.ReportingAndStatistics.Service;
+using IntegrationLibrary.ReportingAndStatistics.Model;
 
 namespace IntegrationAPI.Controller
 {
@@ -21,13 +23,16 @@ namespace IntegrationAPI.Controller
     [ApiController]
     public class ReportsController : ControllerBase
     {
-        private ReportsService service;
-        private IMedicationConsumptionRepository repository;
+        private readonly MedicineConsumptionService consumptionService;
+        private readonly MedicineSpecificationService specificationService;
+        private readonly PrescriptionService prescriptionService;
 
         public ReportsController(DatabaseContext context)
         {
-            repository = new MedicationConsumptionRepository(context);
-            service = new ReportsService(repository);
+            IMedicationConsumptionRepository repository = new MedicationConsumptionRepository(context);
+            consumptionService = new MedicineConsumptionService(repository);
+            specificationService = new MedicineSpecificationService();
+            prescriptionService = new PrescriptionService();
         }
 
         [HttpPost]
@@ -40,21 +45,29 @@ namespace IntegrationAPI.Controller
                                        System.Globalization.CultureInfo.InvariantCulture);
 
             TimePeriodDTO timePeriod = new TimePeriodDTO(startDate, endDate);
-            service.GenerateReport(timePeriod);
+            consumptionService.GenerateReport(timePeriod);
         }
 
         [HttpPost]
         [Route("requestReport")]
         public String RequestReport(ReportRequestDTO request)
         {
-            return service.RequestReport(request);
+            return specificationService.RequestReport(request);
         }
 
         [HttpPost]
         [Route("medicationNames")]
         public String RequestMedicationNames(String pharmacyName)
         {
-            return service.RequestMedicationNames(pharmacyName);
+            return specificationService.RequestMedicationNames(pharmacyName);
+        }
+
+        [HttpPost]
+        [Route("sendPrescription")]
+        public String GeneratePrescriptionFile(PrescriptionReportDto prescription)
+        {
+            prescriptionService.GenerateReport(prescription.Prescription, prescription.Method);
+            return "OK";
         }
 
     }
