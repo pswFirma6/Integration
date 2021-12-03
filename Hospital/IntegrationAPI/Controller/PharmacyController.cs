@@ -67,5 +67,12 @@ namespace IntegrationAPI.Controller
             return service.CheckMedicineOfCertainPharmacy(availability);
         }
 
+        [HttpGet]
+        [Route("pharmacyByName/{pharmacyName}")]
+        public Pharmacy GetPharmacyByName([FromRoute] string pharmacyName)
+        {
+            return service.GetPharmacyByName(pharmacyName);
+        }
+        
     }
 }

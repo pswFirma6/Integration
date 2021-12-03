@@ -115,6 +115,20 @@ namespace IntegrationLibrary.Pharmacy.Service
             var response = client.Post(request);
         }
 
+        public Model.Pharmacy GetPharmacyByName(string pharmacyName)
+        {
+            Model.Pharmacy pharmacy = new Model.Pharmacy();
+            foreach(var p in repository.GetAll())
+            {
+                if (p.PharmacyName.Equals(pharmacyName))
+                {
+                    pharmacy = p;
+                    break;
+                }
+            }
+            return pharmacy;
+        }
+
 
     }
 }
