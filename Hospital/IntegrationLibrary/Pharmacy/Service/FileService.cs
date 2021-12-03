@@ -9,7 +9,7 @@ namespace IntegrationLibrary.Pharmacy.Service
 {
     public class FileService
     {
-        private string path = Directory.GetCurrentDirectory();
+        private readonly string path = Directory.GetCurrentDirectory();
         public FileService()
         {
 
@@ -50,7 +50,6 @@ namespace IntegrationLibrary.Pharmacy.Service
                     {
                         zip.AddFile(file.FullName, "");
                         zip.Save(file.FullName.Substring(0, file.FullName.Length - 4) + ".zip");
-                        //File.Delete(file.FullName);
                     }
                 
             }

@@ -20,7 +20,7 @@ namespace IntegrationAPI.Controller
     [ApiController]
     public class FileController : ControllerBase
     {
-        private FileService service;
+        private readonly FileService service;
 
         public FileController()
         {
