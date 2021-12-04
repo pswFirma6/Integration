@@ -34,7 +34,7 @@ namespace IntegrationAPI
             {
                 MedicineAvailabilityResponse response = await client.communicateAsync(new MedicineAvailabilityMessage() { MedicineName = "Brufen", MediciQuantity = 10});
                 //reading response => do something with it
-                Console.WriteLine("PRIMA KLIJENT");
+                Console.WriteLine(response);
             }
             catch (Exception ex)
             {
