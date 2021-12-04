@@ -8,7 +8,7 @@ namespace IntegrationLibrary.Pharmacy.Service
 {
     public class CommentService
     {
-        private ICommentRepository repository;
+        private readonly ICommentRepository repository;
 
         public CommentService(ICommentRepository iRepository)
         {

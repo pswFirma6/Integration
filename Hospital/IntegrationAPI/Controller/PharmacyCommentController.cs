@@ -13,12 +13,11 @@ namespace IntegrationAPI.Controller
     [ApiController]
     public class PharmacyCommentController
     {
-        private CommentService service;
-        private ICommentRepository repository;
+        private readonly CommentService service;
 
         public PharmacyCommentController(DatabaseContext context)
         {
-            repository = new CommentRepository(context);
+            ICommentRepository repository = new CommentRepository(context);
             service = new CommentService(repository);
         }
 
@@ -27,6 +26,13 @@ namespace IntegrationAPI.Controller
         public List<PharmacyComment> GetPharmacyByName([FromRoute] string pharmacyName)
         {
             return service.GetCommentsFromPharmacy(pharmacyName);
+        }
+
+        [HttpPost]
+        [Route("addComment")]
+        public void AddComment()
+        {
+
         }
     }
 }
