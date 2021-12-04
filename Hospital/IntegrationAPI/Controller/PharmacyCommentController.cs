@@ -28,11 +28,5 @@ namespace IntegrationAPI.Controller
             return service.GetCommentsFromPharmacy(pharmacyName);
         }
 
-        [HttpPost]
-        [Route("addComment")]
-        public void AddComment()
-        {
-
-        }
     }
 }
