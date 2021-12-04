@@ -12,14 +12,16 @@ namespace IntegrationLibrary.Pharmacy.Model
         public string Address { get; set; }
         public string City { get; set; }
         public string ApiKey { get; set; }
+        public string PharmacyPicture { get; set; }
 
         public Pharmacy() { }
-        public Pharmacy(string pharmacyName, string apiKey, string address, string city)
+        public Pharmacy(string pharmacyName, string apiKey, string address, string city, string pharmacyPicture)
         {
             PharmacyName = pharmacyName;
             ApiKey = apiKey;
             Address = address;
             City = city;
+            PharmacyPicture = pharmacyPicture;
         }
     }
 }
