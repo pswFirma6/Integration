@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IntegrationLibrary.Pharmacy.Model;
+using IntegrationLibrary.Pharmacy.DTO;
 
 namespace IntegrationAPI.Controller
 {
@@ -26,6 +27,21 @@ namespace IntegrationAPI.Controller
         public List<PharmacyComment> GetPharmacyByName([FromRoute] string pharmacyName)
         {
             return service.GetCommentsFromPharmacy(pharmacyName);
+        }
+
+        [HttpPost]
+        [Route("addComment")]
+        public void AddComment(PharmacyCommentDto pharmacyComment)
+        {
+            PharmacyComment comment = new PharmacyComment( pharmacyComment.PharmacyName, pharmacyComment.Content);
+            service.AddComment(comment);
+        }
+
+        [HttpDelete]
+        [Route("deleteComment/{id}")]
+        public void DeleteComment ([FromRoute] int id)
+        {
+            service.DeleteComment(id);
         }
 
     }

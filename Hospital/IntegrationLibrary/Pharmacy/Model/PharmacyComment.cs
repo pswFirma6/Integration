@@ -11,13 +11,14 @@ namespace IntegrationLibrary.Pharmacy.Model
         public int Id { get; set; }
         public string PharmacyName { get; set; }
         public string Content { get; set; }
+        public DateTime CommentDate { get; set; }
 
         public PharmacyComment() { }
-        public PharmacyComment (int id, string pharmacyName, string content)
+        public PharmacyComment (string pharmacyName, string content)
         {
-            Id = id;
             PharmacyName = pharmacyName;
             Content = content;
+            CommentDate = DateTime.Now;
         }
     }
 }

@@ -45,7 +45,7 @@ namespace IntegrationLibrary.Pharmacy.Repository
 
         public void Update(T obj)
         {
-            throw new NotImplementedException();
+            table.Update(obj);
         }
     }
 }

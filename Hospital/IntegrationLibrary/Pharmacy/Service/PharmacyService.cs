@@ -129,6 +129,12 @@ namespace IntegrationLibrary.Pharmacy.Service
             return pharmacy;
         }
 
+        public void EditPharmacy(Model.Pharmacy pharmacy)
+        {
+            repository.Update(pharmacy);
+            repository.Save();
+        }
+
 
     }
 }
