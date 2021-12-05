@@ -33,5 +33,11 @@ namespace IntegrationLibrary.Pharmacy.Service
             }
             return pharmacyComments;
         }
+
+        public void DeleteComment(int id)
+        {
+            repository.Delete(id);
+            repository.Save();
+        }
     }
 }
