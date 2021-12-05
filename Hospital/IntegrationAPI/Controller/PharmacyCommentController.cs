@@ -31,7 +31,7 @@ namespace IntegrationAPI.Controller
 
         [HttpPost]
         [Route("addComment")]
-        public void AddComment(PharmacyCommentDTO pharmacyComment)
+        public void AddComment(PharmacyCommentDto pharmacyComment)
         {
             PharmacyComment comment = new PharmacyComment( pharmacyComment.PharmacyName, pharmacyComment.Content);
             service.AddComment(comment);
