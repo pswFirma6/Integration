@@ -73,6 +73,13 @@ namespace IntegrationAPI.Controller
         {
             return service.GetPharmacyByName(pharmacyName);
         }
+
+        [HttpPut]
+        [Route("editPharmacy")]
+        public void EditPharmacy(Pharmacy pharmacy)
+        {
+            service.EditPharmacy(pharmacy);
+        }
         
     }
 }
