@@ -13,15 +13,17 @@ namespace IntegrationLibrary.Pharmacy.Model
         public string City { get; set; }
         public string ApiKey { get; set; }
         public string PharmacyPicture { get; set; }
+        public string FileProtocol { get; set; }
 
         public Pharmacy() { }
-        public Pharmacy(string pharmacyName, string apiKey, string address, string city, string pharmacyPicture)
+        public Pharmacy(string pharmacyName, string apiKey, string address, string city, string pharmacyPicture, string fileProtocol)
         {
             PharmacyName = pharmacyName;
             ApiKey = apiKey;
             Address = address;
             City = city;
             PharmacyPicture = pharmacyPicture;
+            FileProtocol = fileProtocol;
         }
     }
 }

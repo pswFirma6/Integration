@@ -65,7 +65,10 @@ namespace IntegrationLibrary.Pharmacy.Service
             foreach(Model.Pharmacy pharmacy in repository.GetAll())
             {
                 bool isAvailable = PostRequest(server, medicine);
-                pharmacies.Add(new PharmacyMedicineAvailabilityDTO { PharmacyName = pharmacy.PharmacyName, IsAvailable = isAvailable });
+                if (isAvailable)
+                {
+                    pharmacies.Add(new PharmacyMedicineAvailabilityDTO { PharmacyName = pharmacy.PharmacyName, IsAvailable = isAvailable });
+                }
             }
             return pharmacies;
         }
@@ -127,12 +130,6 @@ namespace IntegrationLibrary.Pharmacy.Service
                 }
             }
             return pharmacy;
-        }
-
-        public void EditPharmacy(Model.Pharmacy pharmacy)
-        {
-            repository.Update(pharmacy);
-            repository.Save();
         }
 
 
