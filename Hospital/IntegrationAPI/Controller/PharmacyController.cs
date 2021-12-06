@@ -14,6 +14,8 @@ using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationLibrary.Pharmacy.DTO;
 using System.Diagnostics;
+using System.IO;
+using System.Net.Http.Headers;
 
 namespace IntegrationAPI.Controller
 {
@@ -80,6 +82,38 @@ namespace IntegrationAPI.Controller
         {
             service.EditPharmacy(pharmacy);
         }
-        
+
+        [HttpPost]
+        [Route("uploadImage/{pharmacyName}")]
+        public IActionResult UploadImage([FromRoute] string pharmacyName)
+        {
+            try
+            {
+                var file = Request.Form.Files[0];
+                var folderName = Path.Combine("Images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+                if (file.Length > 0)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fullpath = Path.Combine(pathToSave, fileName);
+
+                    using (var stream = new FileStream(fullpath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    //service.AddPictureToPharmacy(pharmacyName, fileName);
+                    return Ok();
+                } else
+                {
+                    return BadRequest();
+                }
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
+        }
+ 
     }
 }
