@@ -17,12 +17,11 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
     public class PrescriptionService
     {
         private readonly PharmacyService pharmacyService;
-        private readonly IPharmacyRepository pharmacyRepository;
 
         public PrescriptionService()
         {
             DatabaseContext context = new DatabaseContext();
-            pharmacyRepository = new PharmacyRepository(context);
+            IPharmacyRepository pharmacyRepository = new PharmacyRepository(context);
             pharmacyService = new PharmacyService(pharmacyRepository);
         }
 
