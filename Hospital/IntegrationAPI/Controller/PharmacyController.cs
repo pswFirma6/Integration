@@ -102,7 +102,7 @@ namespace IntegrationAPI.Controller
                     {
                         file.CopyTo(stream);
                     }
-                    //service.AddPictureToPharmacy(pharmacyName, fileName);
+                    service.AddPictureToPharmacy(pharmacyName, fileName);
                     return Ok();
                 } else
                 {
