@@ -62,13 +62,6 @@ namespace IntegrationAPI.Controller
             return specificationService.RequestMedicationNames(pharmacyName);
         }
 
-        [HttpPost]
-        [Route("sendPrescription")]
-        public String GeneratePrescriptionFile(PrescriptionReportDto prescription)
-        {
-            prescriptionService.GenerateReport(prescription.Prescription, prescription.Method);
-            return "OK";
-        }
 
     }
 }
