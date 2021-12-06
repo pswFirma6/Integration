@@ -21,18 +21,20 @@ namespace UnitTests
             pharmacyService = new PharmacyService(stubRepository.Object);
 
             List<Pharmacy> pharmacies = new List<Pharmacy>();
-            Pharmacy pharmacy = new Pharmacy("Benu", "Benu", "Cankareva 15", "Novi Sad", "image.jpg");
-            Pharmacy pharmacy1 = new Pharmacy("Jankovic", "Jankovic", "Branka Bajica 80", "Novi Sad", "image.jpg");
+            Pharmacy pharmacy = new Pharmacy("Benu", "Benu", "Cankareva 15", "Novi Sad", "image.jpg", "HTTP");
+            Pharmacy pharmacy1 = new Pharmacy("Jankovic", "Jankovic", "Branka Bajica 80", "Novi Sad", "image.jpg", "SFTP");
             pharmacies.Add(pharmacy);
             pharmacies.Add(pharmacy1);
 
-            Pharmacy pharmacy2 = new Pharmacy("Benu", "Benu", "Cankareva 5", "Novi Sad", "imageNEW.jpg");
+            Pharmacy pharmacy2 = new Pharmacy("Benu", "Benu", "Cankareva 5", "Novi Sad", "imageNEW.jpg", "HTTP");
 
             stubRepository.Setup(m => m.Update(pharmacy2)).Verifiable();
+            stubRepository.Setup(m => m.GetAll()).Returns(pharmacies);
 
             pharmacyService.EditPharmacy(pharmacy2);
+            Pharmacy p = pharmacyService.GetPharmacyByName(pharmacy.PharmacyName);
 
-            pharmacies[0].PharmacyPicture.ShouldBe("imageNEW.jpg");
+            p.PharmacyPicture.ShouldBe("imageNEW.jpg");
         }
 
         [Fact]
@@ -42,16 +44,16 @@ namespace UnitTests
             pharmacyService = new PharmacyService(stubRepository.Object);
 
             List<Pharmacy> pharmacies = new List<Pharmacy>();
-            Pharmacy pharmacy = new Pharmacy("Benu", "Benu", "Cankareva 15", "Novi Sad", "image.jpg");
-            Pharmacy pharmacy1 = new Pharmacy("Jankovic", "Jankovic", "Branka Bajica 80", "Novi Sad", "image.jpg");
+            Pharmacy pharmacy = new Pharmacy("Benu", "Benu", "Cankareva 15", "Novi Sad", "image.jpg", "HTTP");
+            Pharmacy pharmacy1 = new Pharmacy("Jankovic", "Jankovic", "Branka Bajica 80", "Novi Sad", "image.jpg", "SFTP");
             pharmacies.Add(pharmacy);
             pharmacies.Add(pharmacy1);
 
-            Pharmacy pharmacy2 = new Pharmacy("Benu", "Benu", "Cankareva 5", "Novi Sad", "imageNEW.jpg");
+            Pharmacy pharmacy2 = new Pharmacy("Benu", "Benu", "Cankareva 5", "Novi Sad", "imageNEW.jpg", "HTTP");
 
             stubRepository.Setup(m => m.Add(pharmacy2)).Callback((Pharmacy p) => pharmacies.Add(p));
 
-            pharmacyService.EditPharmacy(pharmacy2);
+            pharmacyService.AddPharmacy(pharmacy2);
 
             pharmacies.Count.ShouldBe(3);
         }
