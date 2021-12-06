@@ -7,16 +7,26 @@ using Spire.Pdf.Graphics;
 using System.Drawing;
 using ZXing.QrCode;
 using ZXing;
-
+using IntegrationLibrary.Pharmacy.Service;
+using IntegrationLibrary.Pharmacy.IRepository;
+using IntegrationLibrary.Pharmacy.Model;
+using IntegrationLibrary.Pharmacy.Repository;
 
 namespace IntegrationLibrary.ReportingAndStatistics.Service
 {
     public class PrescriptionService
     {
+        private readonly PharmacyService pharmacyService;
+        private readonly IPharmacyRepository pharmacyRepository;
+
         public PrescriptionService()
         {
+            DatabaseContext context = new DatabaseContext();
+            pharmacyRepository = new PharmacyRepository(context);
+            pharmacyService = new PharmacyService(pharmacyRepository);
         }
-        public void GenerateReport(Prescription prescription,String sendingMethod)
+
+        public void GenerateReport(Prescription prescription)
         {
             String filePath = GetPrescriptionsDirectory();
             String QRCodesDirectoryPath = GetQRcodesDirectory();
@@ -25,11 +35,13 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             PdfDocument doc = new PdfDocument();
             PdfPageBase page = doc.Pages.Add();
 
+            Pharmacy.Model.Pharmacy pharmacy = pharmacyService.GetPharmacyByName(prescription.PharmacyName);
+
             page.Canvas.DrawString(GetContent(prescription), new PdfFont(PdfFontFamily.Helvetica, 11f), new PdfSolidBrush(Color.Black), 10, 10);
 
-            if (sendingMethod.Equals("HTTP"))
+            if (pharmacy.FileProtocol.Equals("HTTP"))
             {
-                CreateQRCode(prescription.Id, QRCodesDirectoryPath);
+                CreateQRCode(prescription.Id.ToString(), QRCodesDirectoryPath);
                 PdfImage pdfimage = PdfImage.FromFile(Path.Combine(QRCodesDirectoryPath, "QRcode" + prescription.Id + ".png"));
                 PdfPageBase qrpage = doc.Pages.Add();
                 qrpage.Canvas.DrawImage(pdfimage, new PointF(5, 5));
@@ -39,7 +51,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             StreamWriter File = new StreamWriter(Path.Combine(filePath, fileName), true);
             doc.SaveToStream(File.BaseStream);
             File.Close();
-            SendReport(sendingMethod,fileName);
+            SendReport(pharmacy.FileProtocol,fileName);
         }
 
         public string GetPrescriptionsDirectory()
