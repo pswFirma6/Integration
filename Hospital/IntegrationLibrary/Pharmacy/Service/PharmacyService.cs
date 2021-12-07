@@ -132,6 +132,31 @@ namespace IntegrationLibrary.Pharmacy.Service
             return pharmacy;
         }
 
+        public void EditPharmacy(Model.Pharmacy pharmacy)
+        {
+            repository.Update(pharmacy);
+            repository.Save();
+        }
+
+        public void AddPictureToPharmacy(string pharmacyName, string pharmacyPicture)
+        {
+            List<Model.Pharmacy> pharmacies = repository.GetAll();
+            Model.Pharmacy pharmacy = new Model.Pharmacy();
+            foreach(var p in pharmacies)
+            {
+                if(p.PharmacyName.Equals(pharmacyName))
+                {
+                    pharmacy = p;
+                    break;
+                }
+            }
+
+            pharmacy.PharmacyPicture = pharmacyPicture;
+            repository.Update(pharmacy);
+            repository.Save();
+
+        }
+
 
     }
 }
