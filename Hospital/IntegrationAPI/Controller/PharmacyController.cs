@@ -1,4 +1,5 @@
 using System;
+using System.Runtime;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ using IntegrationLibrary.Pharmacy.DTO;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http.Headers;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace IntegrationAPI.Controller
 {
@@ -113,6 +115,17 @@ namespace IntegrationAPI.Controller
             {
                 return StatusCode(500, $"Internal server error: {ex}");
             }
+        }
+
+        [HttpGet]
+        [Route("getImage/{imageName}")]
+        public string GetImageBase64([FromRoute] string imageName)
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Images", imageName);
+            var bytes = System.IO.File.ReadAllBytes(filePath);
+            string file = Convert.ToBase64String(bytes);
+
+            return JsonSerializer.Serialize(file);
         }
  
     }
