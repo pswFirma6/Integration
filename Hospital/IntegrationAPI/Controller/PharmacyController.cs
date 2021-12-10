@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.StaticFiles;
+using Grpc.Core;
 
 namespace IntegrationAPI.Controller
 {
@@ -66,9 +67,25 @@ namespace IntegrationAPI.Controller
 
         [HttpPost]
         [Route("checkPharmacyMedicine")]
-        public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDTO availability)
+        public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDTO isAvailable)
         {
-            return service.CheckMedicineOfCertainPharmacy(availability);
+            //return service.CheckMedicineOfCertainPharmacy(isAvailable);
+            return checkMedicineViaGrpc(isAvailable);
+        }
+
+        private bool checkMedicineViaGrpc(CheckAvailabilityDTO medicine)
+        {
+            bool response = false;
+            var request = new MedicineAvailabilityMessage
+            {
+                MedicineName = medicine.Medicine.Name,
+                MedicineQuantity = medicine.Medicine.Quantity
+            };
+            var channel = new Channel("localhost:4111", ChannelCredentials.Insecure);
+            var client = new MedicineService.MedicineServiceClient(channel);
+            var reply = client.checkMedicineAvailability(request);
+            response = reply.IsAvailable;
+            return response;
         }
 
         [HttpGet]
