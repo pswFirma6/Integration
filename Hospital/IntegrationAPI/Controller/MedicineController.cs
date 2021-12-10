@@ -35,7 +35,6 @@ namespace IntegrationAPI.Controller
         [Route("orderMedicine")]
         public IActionResult OrderMedicine(CheckAvailabilityDTO medicineForOrder)
         {
-            //pharmacyService.OrderFromCertainPharmacy(medicineForOrder);
             orderMedicineViaGrpc(medicineForOrder);
             return Ok();
         }
@@ -49,7 +48,7 @@ namespace IntegrationAPI.Controller
             };
             var channel = new Channel("localhost:4111", ChannelCredentials.Insecure);
             var client = new MedicineService.MedicineServiceClient(channel);
-            var reply = client.medicineUrgentProcurement(request);
+            client.medicineUrgentProcurement(request);
         }
 
 

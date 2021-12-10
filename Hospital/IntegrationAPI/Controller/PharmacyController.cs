@@ -69,7 +69,6 @@ namespace IntegrationAPI.Controller
         [Route("checkPharmacyMedicine")]
         public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDTO isAvailable)
         {
-            //return service.CheckMedicineOfCertainPharmacy(isAvailable);
             return checkMedicineViaGrpc(isAvailable);
         }
 
