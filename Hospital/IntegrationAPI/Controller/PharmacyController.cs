@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using IntegrationLibrary.Pharmacy.Model;
 using RestSharp;
 using System.Text.Json;
 using System.Text;
@@ -18,6 +17,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.StaticFiles;
+using IntegrationLibrary.Pharmacy.Model;
 
 namespace IntegrationAPI.Controller
 {
@@ -44,14 +44,14 @@ namespace IntegrationAPI.Controller
 
         [HttpGet]
         [Route("pharmacies")]
-        public List<Pharmacy> GetPharmacies()
+        public List<IntegrationLibrary.Pharmacy.Model.Pharmacy> GetPharmacies()
         {
             return service.GetPharmacies();
         }
 
         [HttpPost]
         [Route("registerPharmacy")]
-        public IActionResult AddPharmacy(Pharmacy pharmacy)
+        public IActionResult AddPharmacy(IntegrationLibrary.Pharmacy.Model.Pharmacy pharmacy)
         {
             service.AddPharmacy(pharmacy);
             return Ok();
@@ -73,14 +73,14 @@ namespace IntegrationAPI.Controller
 
         [HttpGet]
         [Route("pharmacyByName/{pharmacyName}")]
-        public Pharmacy GetPharmacyByName([FromRoute] string pharmacyName)
+        public IntegrationLibrary.Pharmacy.Model.Pharmacy GetPharmacyByName([FromRoute] string pharmacyName)
         {
             return service.GetPharmacyByName(pharmacyName);
         }
 
         [HttpPut]
         [Route("editPharmacy")]
-        public void EditPharmacy(Pharmacy pharmacy)
+        public void EditPharmacy(IntegrationLibrary.Pharmacy.Model.Pharmacy pharmacy)
         {
             service.EditPharmacy(pharmacy);
         }
