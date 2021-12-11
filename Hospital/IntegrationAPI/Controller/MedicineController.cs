@@ -14,6 +14,7 @@ using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationLibrary.Pharmacy.DTO;
 using System.Diagnostics;
+using Grpc.Core;
 
 namespace IntegrationAPI.Controller
 {
@@ -34,8 +35,20 @@ namespace IntegrationAPI.Controller
         [Route("orderMedicine")]
         public IActionResult OrderMedicine(CheckAvailabilityDTO medicineForOrder)
         {
-            pharmacyService.OrderFromCertainPharmacy(medicineForOrder);
+            orderMedicineViaGrpc(medicineForOrder);
             return Ok();
+        }
+
+        private void orderMedicineViaGrpc(CheckAvailabilityDTO medicine)
+        {
+            var request = new MedicineAvailabilityMessage
+            {
+                MedicineName = medicine.Medicine.Name,
+                MedicineQuantity = medicine.Medicine.Quantity
+            };
+            var channel = new Channel("localhost:4111", ChannelCredentials.Insecure);
+            var client = new MedicineService.MedicineServiceClient(channel);
+            client.medicineUrgentProcurement(request);
         }
 
 

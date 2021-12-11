@@ -43,10 +43,11 @@
     <ProjectReference Include="..\IntegrationLibrary\IntegrationLibrary.csproj" />
   </ItemGroup>
 
-    <ItemGroup>
+	<ItemGroup>
 		<Protobuf Include="Protos\model.proto" GrpcServices="None" />
-		<Protobuf Include="Protos\netGrpcService.proto" GrpcServices="Client" />
-    </ItemGroup>
+		<Protobuf Include="Protos\medicineService.proto" GrpcServices="Client" />
+	</ItemGroup>
+
 
 
 </Project>

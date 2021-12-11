@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using IntegrationLibrary.Pharmacy.Model;
 using RestSharp;
 using System.Text.Json;
 using System.Text;
@@ -17,7 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.StaticFiles;
-using IntegrationLibrary.Pharmacy.Model;
+using Grpc.Core;
 
 namespace IntegrationAPI.Controller
 {
@@ -44,14 +45,14 @@ namespace IntegrationAPI.Controller
 
         [HttpGet]
         [Route("pharmacies")]
-        public List<IntegrationLibrary.Pharmacy.Model.Pharmacy> GetPharmacies()
+        public List<Pharmacy> GetPharmacies()
         {
             return service.GetPharmacies();
         }
 
         [HttpPost]
         [Route("registerPharmacy")]
-        public IActionResult AddPharmacy(IntegrationLibrary.Pharmacy.Model.Pharmacy pharmacy)
+        public IActionResult AddPharmacy(Pharmacy pharmacy)
         {
             service.AddPharmacy(pharmacy);
             return Ok();
@@ -66,21 +67,36 @@ namespace IntegrationAPI.Controller
 
         [HttpPost]
         [Route("checkPharmacyMedicine")]
-        public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDTO availability)
+        public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDTO isAvailable)
         {
-            return service.CheckMedicineOfCertainPharmacy(availability);
+            return checkMedicineViaGrpc(isAvailable);
+        }
+
+        private bool checkMedicineViaGrpc(CheckAvailabilityDTO medicine)
+        {
+            bool response = false;
+            var request = new MedicineAvailabilityMessage
+            {
+                MedicineName = medicine.Medicine.Name,
+                MedicineQuantity = medicine.Medicine.Quantity
+            };
+            var channel = new Channel("localhost:4111", ChannelCredentials.Insecure);
+            var client = new MedicineService.MedicineServiceClient(channel);
+            var reply = client.checkMedicineAvailability(request);
+            response = reply.IsAvailable;
+            return response;
         }
 
         [HttpGet]
         [Route("pharmacyByName/{pharmacyName}")]
-        public IntegrationLibrary.Pharmacy.Model.Pharmacy GetPharmacyByName([FromRoute] string pharmacyName)
+        public Pharmacy GetPharmacyByName([FromRoute] string pharmacyName)
         {
             return service.GetPharmacyByName(pharmacyName);
         }
 
         [HttpPut]
         [Route("editPharmacy")]
-        public void EditPharmacy(IntegrationLibrary.Pharmacy.Model.Pharmacy pharmacy)
+        public void EditPharmacy(Pharmacy pharmacy)
         {
             service.EditPharmacy(pharmacy);
         }
