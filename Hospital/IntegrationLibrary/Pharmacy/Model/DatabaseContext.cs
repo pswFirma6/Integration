@@ -22,6 +22,7 @@ namespace IntegrationLibrary.Pharmacy.Model
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Medicine> Medicines { get; set; }
         public DbSet<PharmacyComment> PharmacyComments { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
