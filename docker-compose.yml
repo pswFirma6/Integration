@@ -2,20 +2,35 @@ version: "3.9"
 
 services:
   postgres:
-    image: postgres:13.1
+    image: postgres
+    container_name: i_db
+    restart: always
     environment:
       POSTGRES_PASSWORD: "root"
       POSTGRES_USER: "root"
       POSTGRES_DB: "integrationdb"
+    volumes:
+      - type: volume
+        source: database-data
+        target: /var/lib/postgresql/data
+      - type: bind
+        source: ./scripts/data.sql
+        target: /docker-entrypoint-initdb.d/init.sql
     ports: 
-      - "5432:5432"
+      - "5554:5432"
     networks: 
       - network
-    volumes:
-      - sql-scripts:/docker-entrypoint-initdb.d/
-      - data:/var/lib/postgresql/data
+
+  rabbit:
+    image: rabbitmq:management-alpine
+    container_name: rabbitmq
+    ports:
+      - "15672:15672"
+    networks:
+      - network
+
   integration:
-      image: student161/integration
+      image: student161/integration:latest
       container_name: integrisemoSe
       build:
         context: .
@@ -24,7 +39,9 @@ services:
       ports:
         - "44317:80"
       networks: 
+        - application
         - network
+      
       environment:
         ASPNETCORE_ENVIRONMENT: Development
         DATABASE_HOST: "postgres"
@@ -32,16 +49,30 @@ services:
         DATABASE_USERNAME: "root"
         DATABASE_PASSWORD: "root"
         DATABASE_SCHEMA: "integrationdb"
-        DATABASE_RETRYCOUNT: 100
-        DATABASE_RETRYWAITINSECONDS: 30
-        DATABASE_URL: "postgres://root:root@postgres:5432/integrationdb"
       depends_on:
         - postgres
+        - rabbit
+  front:
+    depends_on:
+      - integration
+    image: student161/appformanagers:latest
+    ports:
+      - "4201:4201"
+    restart: on-failure
+    networks:
+      - public
+      - application
 volumes:
-  sql-scripts:
-  data:
-
+  database-data:
+    name: integrationdb
 networks:
+  public:
+    name: public
+    driver: bridge
+  application:
+    name: application
+    driver: bridge
   network:
     name: network
     driver: bridge
+    external: true
