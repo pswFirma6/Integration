@@ -1,7 +1,0 @@
-﻿syntax = "proto3";
-
-import "Protos/model.proto";
-
-service NetGrpcService {	
-	rpc communicate (MedicineAvailabilityMessage) returns (MedicineAvailabilityResponse);	
-}

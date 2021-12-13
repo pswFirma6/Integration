@@ -2,10 +2,9 @@
 
 message MedicineAvailabilityMessage {
 	string medicineName = 1;	
-	int64 mediciQuantity = 2;	
+	int64 medicineQuantity = 2;	
 }
 
 message MedicineAvailabilityResponse{
-	string response = 1;
-	string status = 2;
+	bool isAvailable = 1;
 }

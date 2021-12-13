@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Renci.SshNet;
+using System.Diagnostics;
 
 namespace IntegrationLibrary.ReportingAndStatistics.Service
 {
@@ -24,22 +25,23 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             var response = client.Post(request);
             if (response.Content.ToString().Equals("\"OK\""))
                 GetSpecificationnReport(req.MedicationName);
-
+            
             return response.Content.ToString();
         }
 
         public string GetSpecificationsDirectory()
         {
-            return Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).ToString(), "Data\\Specifications\\");
+            return Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).ToString(), "Data\\Specifications");
         }
 
         private void GetSpecificationnReport(String medicineName)
         {
             String fileName = "MedicineSpecification (" + medicineName + ").pdf";
             String localFile = Path.Combine(GetSpecificationsDirectory(), fileName);
+            Debug.Write(localFile);
             String serverFile = @"\public\specifications" + fileName;
 
-            using (SftpClient client = new SftpClient(new PasswordConnectionInfo("192.168.56.1", "tester", "password")))
+            using (SftpClient client = new SftpClient(new PasswordConnectionInfo("127.0.0.1 ", "tester", "password")))
             {
                 client.Connect();
                 using (Stream stream = File.OpenWrite(localFile))
