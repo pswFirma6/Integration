@@ -60,11 +60,11 @@ namespace IntegrationAPI
             app.UseAuthorization();
 
             app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions
+            /*app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Images")),
                 RequestPath = new PathString("/Images")
-            });
+            });*/
 
             app.UseEndpoints(endpoints =>
             {

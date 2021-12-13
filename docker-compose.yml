@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:13.1
+    environment:
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_USER: "root"
+      POSTGRES_DB: "integrationdb"
+    ports: 
+      - "5432:5432"
+    networks: 
+      - network
+    volumes:
+      - sql-scripts:/docker-entrypoint-initdb.d/
+      - data:/var/lib/postgresql/data
+  integration:
+      image: student161/integration
+      container_name: integrisemoSe
+      build:
+        context: .
+        dockerfile: Dockerfile
+      restart: on-failure
+      ports:
+        - "44317:80"
+      networks: 
+        - network
+      environment:
+        ASPNETCORE_ENVIRONMENT: Development
+        DATABASE_HOST: "postgres"
+        DATABASE_PORT: "5432"
+        DATABASE_USERNAME: "root"
+        DATABASE_PASSWORD: "root"
+        DATABASE_SCHEMA: "integrationdb"
+        DATABASE_RETRYCOUNT: 100
+        DATABASE_RETRYWAITINSECONDS: 30
+        DATABASE_URL: "postgres://root:root@postgres:5432/integrationdb"
+      depends_on:
+        - postgres
+volumes:
+  sql-scripts:
+  data:
+
+networks:
+  network:
+    name: network
+    driver: bridge
