@@ -11,7 +11,7 @@ namespace IntegrationLibrary.Tendering.Model
         public int Quantity { get; set; }
         public int TenderId { get; set; }
 
-        TenderItem() { }
+        public TenderItem() { }
 
         public TenderItem(int id, string name, int quantity, int tenderId)
         {

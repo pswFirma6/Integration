@@ -5,6 +5,7 @@ using IntegrationLibrary.Tendering.Model;
 using IntegrationLibrary.Tendering.Repository;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace IntegrationLibrary.Tendering.Service
@@ -18,23 +19,46 @@ namespace IntegrationLibrary.Tendering.Service
             tenderRepository = iRepository;
         }
 
-        public void addTender(TenderDTO dto)
+        public List<Tender> GetTenders()
         {
-            Tender tender = new Tender();
-            tender.CreationDate = DateTime.Now;
-            tender.StartDate = DateTime.Parse(dto.StartDate);
-            tender.EndDate = DateTime.Parse(dto.EndDate);
-            tenderRepository.Add(tender);
-            //addItems(dto.TenderItems);
+            return tenderRepository.GetAll();
         }
 
+        public void AddTender(TenderDTO dto)
+        {
+            Tender tender = new Tender
+            {
+                CreationDate = DateTime.Now,
+                StartDate = DateTime.Parse(dto.StartDate),
+                EndDate = DateTime.Parse(dto.EndDate)
+            };
+            tenderRepository.Add(tender);
+            tenderRepository.Save();
+            AddItems(dto.TenderItems, tender.Id);
+        }
 
-        private void addItems(List<TenderItem> items)
+        private void AddItems(List<TenderItemDTO> items, int tenderId)
         {
             DatabaseContext context = new DatabaseContext();
             ITenderItemRepository repository = new TenderItemRepository(context);
             TenderItemService itemService = new TenderItemService(repository);
-            itemService.addTenderItems(items);
+            itemService.AddTenderItems(SetTenderItems(items, tenderId));
+        }
+
+        private List<TenderItem> SetTenderItems(List<TenderItemDTO> dtos, int tenderId)
+        {
+            List<TenderItem> items = new List<TenderItem>();
+            foreach(TenderItemDTO dto in dtos)
+            {
+                TenderItem item = new TenderItem()
+                {
+                    Name = dto.Name,
+                    Quantity = dto.Quantity,
+                    TenderId = tenderId
+                };
+                items.Add(item);
+            }
+            return items;
         }
 
     }

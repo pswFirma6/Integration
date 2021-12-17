@@ -27,6 +27,14 @@ namespace IntegrationLibrary.Pharmacy.Model
         public DbSet<Tender> Tenders { get; set; }
         public DbSet<TenderItem> TenderItems { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TenderItem>()
+                .HasOne<Tender>()
+                .WithMany()
+                .HasForeignKey(item => item.TenderId);
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql(CreateConnectionStringFromEnvironment());

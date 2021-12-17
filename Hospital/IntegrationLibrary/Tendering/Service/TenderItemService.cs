@@ -16,11 +16,12 @@ namespace IntegrationLibrary.Tendering.Service
             tenderItemRepository = iRepository;
         }
 
-        public void addTenderItems(List<TenderItem> items)
+        public void AddTenderItems(List<TenderItem> items)
         {
             foreach(TenderItem item in items)
             {
                 tenderItemRepository.Add(item);
+                tenderItemRepository.Save();
             }
         }
     }

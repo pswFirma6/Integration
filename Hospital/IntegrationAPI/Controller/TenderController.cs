@@ -27,7 +27,7 @@ namespace IntegrationAPI.Controller
         [Route("addTender")]
         public void addTender(TenderDTO tender)
         {
-            tenderService.addTender(tender);
+            tenderService.AddTender(tender);
         }
 
     }
