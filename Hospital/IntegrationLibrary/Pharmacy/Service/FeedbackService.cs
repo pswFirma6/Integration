@@ -10,7 +10,7 @@ namespace IntegrationLibrary.Pharmacy.Service
 {
     public class FeedbackService
     {
-        private string server = "https://localhost:44377/api";
+        private string server = "http://localhost:44377/api";
         private IFeedbackRepository repository;
         public FeedbackService(IFeedbackRepository iRepository)
         {
@@ -30,6 +30,7 @@ namespace IntegrationLibrary.Pharmacy.Service
 
         public void SendFeedback(Feedback feedback)
         {
+            feedback.Id = repository.GetAll().Count + 1;
             repository.Add(feedback);
             string url = server + "/Feedbacks";
             PostRequest(url, feedback);

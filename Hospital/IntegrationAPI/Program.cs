@@ -29,7 +29,7 @@ namespace IntegrationAPI
                     webBuilder.UseStartup<Startup>();
                 }).ConfigureServices((hostContext, services) =>
                 {
-                   // services.AddHostedService<RabbitMQService>();
+                    services.AddHostedService<RabbitMQService>();
                 });
     }
 }
