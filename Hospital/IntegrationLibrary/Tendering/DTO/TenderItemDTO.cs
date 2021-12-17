@@ -4,14 +4,14 @@ using System.Text;
 
 namespace IntegrationLibrary.Tendering.DTO
 {
-    public class TenderItemDTO
+    public class TenderItemDto
     {
         public string Name { get; set; }
         public int Quantity { get; set; }
 
-        public TenderItemDTO() { }
+        public TenderItemDto() { }
 
-        public TenderItemDTO(string name, int quantity)
+        public TenderItemDto(string name, int quantity)
         {
             Name = name;
             Quantity = quantity;

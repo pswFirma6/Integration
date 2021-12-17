@@ -14,18 +14,17 @@ namespace IntegrationAPI.Controller
     [ApiController]
     public class TenderController
     {
-        private ITenderRepository tenderRepository;
-        private TenderService tenderService;
+        private readonly TenderService tenderService;
 
         public TenderController(DatabaseContext context)
         {
-            tenderRepository = new TenderRepository(context);
+            ITenderRepository tenderRepository = new TenderRepository(context);
             tenderService = new TenderService(tenderRepository);
         }
 
         [HttpPost]
         [Route("addTender")]
-        public void addTender(TenderDTO tender)
+        public void addTender(TenderDto tender)
         {
             tenderService.AddTender(tender);
         }

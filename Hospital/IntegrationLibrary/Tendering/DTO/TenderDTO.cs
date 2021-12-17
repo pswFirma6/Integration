@@ -5,15 +5,15 @@ using System.Text;
 
 namespace IntegrationLibrary.Tendering.DTO
 {
-    public class TenderDTO
+    public class TenderDto
     {
         public string StartDate { get; set; }
         public string EndDate { get; set; }
-        public List<TenderItemDTO> TenderItems { get; set; }
+        public List<TenderItemDto> TenderItems { get; set; }
 
-        public TenderDTO() { }
+        public TenderDto() { }
 
-        public TenderDTO(string startDate, string endDate, List<TenderItemDTO> tenderItems)
+        public TenderDto(string startDate, string endDate, List<TenderItemDto> tenderItems)
         {
             StartDate = startDate;
             EndDate = endDate;

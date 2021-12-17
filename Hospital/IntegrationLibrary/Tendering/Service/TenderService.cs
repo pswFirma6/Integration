@@ -24,7 +24,7 @@ namespace IntegrationLibrary.Tendering.Service
             return tenderRepository.GetAll();
         }
 
-        public void AddTender(TenderDTO dto)
+        public void AddTender(TenderDto dto)
         {
             Tender tender = new Tender
             {
@@ -37,7 +37,7 @@ namespace IntegrationLibrary.Tendering.Service
             AddItems(dto.TenderItems, tender.Id);
         }
 
-        private void AddItems(List<TenderItemDTO> items, int tenderId)
+        private void AddItems(List<TenderItemDto> items, int tenderId)
         {
             DatabaseContext context = new DatabaseContext();
             ITenderItemRepository repository = new TenderItemRepository(context);
@@ -45,10 +45,10 @@ namespace IntegrationLibrary.Tendering.Service
             itemService.AddTenderItems(SetTenderItems(items, tenderId));
         }
 
-        private List<TenderItem> SetTenderItems(List<TenderItemDTO> dtos, int tenderId)
+        private List<TenderItem> SetTenderItems(List<TenderItemDto> dtos, int tenderId)
         {
             List<TenderItem> items = new List<TenderItem>();
-            foreach(TenderItemDTO dto in dtos)
+            foreach(TenderItemDto dto in dtos)
             {
                 TenderItem item = new TenderItem()
                 {
