@@ -19,6 +19,7 @@ namespace IntegrationLibrary.Pharmacy.Service
 
         public void AddComment(PharmacyComment pharmacyComment)
         {
+            pharmacyComment.Id = repository.GetAll().Count + 1;
             repository.Add(pharmacyComment);
             repository.Save();
         }
