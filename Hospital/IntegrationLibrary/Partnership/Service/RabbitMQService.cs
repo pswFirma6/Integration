@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace IntegrationLibrary.Partnership.Service
 {
-    public class RabbitMQService : BackgroundService
+   /* public class RabbitMQService : BackgroundService
     {
         IConnection connection;
         IModel channel;
@@ -68,5 +68,5 @@ namespace IntegrationLibrary.Partnership.Service
         {
             return Task.CompletedTask;
         }
-    }
+    }*/
 }
