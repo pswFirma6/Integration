@@ -1,15 +1,9 @@
 using IntegrationLibrary.Partnership.Model;
 using IntegrationLibrary.Partnership.Service;
-using IntegrationLibrary.Pharmacy.Model;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace IntegrationAPI
 {
@@ -29,7 +23,7 @@ namespace IntegrationAPI
                     webBuilder.UseStartup<Startup>();
                 }).ConfigureServices((hostContext, services) =>
                 {
-                   // services.AddHostedService<RabbitMQService>();
+                    services.AddHostedService<RabbitMQService>();
                 });
     }
 }
