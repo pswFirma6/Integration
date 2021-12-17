@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IntegrationLibrary.Pharmacy.IRepository
 {
-    public interface IFeedbackRepository:IRepo<Feedback>
+    public interface IFeedbackRepository : IRepo<Feedback>
     {
     }
 }

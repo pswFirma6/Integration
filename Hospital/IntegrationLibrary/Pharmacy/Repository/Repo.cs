@@ -21,6 +21,7 @@ namespace IntegrationLibrary.Pharmacy.Repository
         public void Add(T newObject)
         {
             table.Add(newObject);
+            Save();
         }
 
         public void Delete(int id)
