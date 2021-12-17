@@ -75,4 +75,3 @@ networks:
   network:
     name: network
     driver: bridge
-    external: true
