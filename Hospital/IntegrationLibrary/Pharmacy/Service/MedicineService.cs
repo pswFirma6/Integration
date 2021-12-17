@@ -11,8 +11,8 @@ namespace IntegrationLibrary.Pharmacy.Service
 {
     public class MedicineService
     {
-        private string server = "https://localhost:44377/api";
-        private string orderServer = "https://localhost:44377";
+        private string server = "http://localhost:44377/api";
+        private string orderServer = "http://localhost:44377";
         private IMedicineRepository repository;
 
         public MedicineService(IMedicineRepository iRepository)

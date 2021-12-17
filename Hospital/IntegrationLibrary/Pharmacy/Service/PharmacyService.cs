@@ -15,7 +15,7 @@ namespace IntegrationLibrary.Pharmacy.Service
     public class PharmacyService
     {
         private const int APIKEYLENGTH = 16;
-        private string server = "https://localhost:44377";
+        private string server = "http://localhost:44377";
         private IPharmacyRepository repository;
     
         public PharmacyService(IPharmacyRepository iRepository)
