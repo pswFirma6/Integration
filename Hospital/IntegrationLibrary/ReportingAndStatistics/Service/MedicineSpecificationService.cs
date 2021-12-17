@@ -11,7 +11,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
 {
     public class MedicineSpecificationService
     {
-        private readonly string server = "https://localhost:44377/";
+        private readonly string server = "http://localhost:44377/";
 
         public MedicineSpecificationService()
         {
