@@ -22,9 +22,16 @@ namespace IntegrationAPI.Controller
             tenderService = new TenderService(tenderRepository);
         }
 
+        [HttpGet]
+        [Route("getTenders")]
+        public List<TenderDto> GetTenders()
+        {
+            return tenderService.GetTendersWithItems();
+        }
+
         [HttpPost]
         [Route("addTender")]
-        public void addTender(TenderDto tender)
+        public void AddTender(TenderDto tender)
         {
             tenderService.AddTender(tender);
         }
