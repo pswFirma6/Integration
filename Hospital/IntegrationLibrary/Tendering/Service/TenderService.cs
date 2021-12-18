@@ -61,9 +61,7 @@ namespace IntegrationLibrary.Tendering.Service
 
         private DateTime AssignEndDate(string endDate)
         {
-            if (endDate.Equals(""))
-                return new DateTime(2050, 01, 01);
-            return DateTime.Parse(endDate);
+            return string.IsNullOrEmpty(endDate) ? new DateTime(2050, 01, 01) : DateTime.Parse(endDate);
         }
 
         private List<TenderItem> SetTenderItems(List<TenderItemDto> dtos, int tenderId)
