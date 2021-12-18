@@ -13,15 +13,37 @@ namespace IntegrationLibrary.Tendering.Service
     public class TenderService
     {
         private readonly ITenderRepository tenderRepository;
+        private readonly TenderItemService tenderItemService;
 
         public TenderService(ITenderRepository iRepository)
         {
             tenderRepository = iRepository;
+            DatabaseContext context = new DatabaseContext();
+            ITenderItemRepository itemRepository = new TenderItemRepository(context);
+            tenderItemService = new TenderItemService(itemRepository);
         }
 
         public List<Tender> GetTenders()
         {
             return tenderRepository.GetAll();
+        }
+
+        public List<TenderDto> GetTendersWithItems()
+        {
+            List<TenderDto> tendersWithItems = new List<TenderDto>();
+            foreach(Tender tender in GetTenders())
+            {
+                TenderDto dto = new TenderDto
+                {
+                    Id = tender.Id,
+                    CreationDate = tender.CreationDate.ToString(),
+                    StartDate = tender.StartDate.ToString(),
+                    EndDate = tender.EndDate.ToString(),
+                    TenderItems = tenderItemService.GetTenderItems(tender.Id)
+                };
+                tendersWithItems.Add(dto);
+            }
+            return tendersWithItems;
         }
 
         public void AddTender(TenderDto dto)
@@ -30,19 +52,18 @@ namespace IntegrationLibrary.Tendering.Service
             {
                 CreationDate = DateTime.Now,
                 StartDate = DateTime.Parse(dto.StartDate),
-                EndDate = DateTime.Parse(dto.EndDate)
+                EndDate = AssignEndDate(dto.EndDate)
             };
             tenderRepository.Add(tender);
             tenderRepository.Save();
-            AddItems(dto.TenderItems, tender.Id);
+            tenderItemService.AddTenderItems(SetTenderItems(dto.TenderItems, tender.Id));
         }
 
-        private void AddItems(List<TenderItemDto> items, int tenderId)
+        private DateTime AssignEndDate(string endDate)
         {
-            DatabaseContext context = new DatabaseContext();
-            ITenderItemRepository repository = new TenderItemRepository(context);
-            TenderItemService itemService = new TenderItemService(repository);
-            itemService.AddTenderItems(SetTenderItems(items, tenderId));
+            if (endDate.Equals(""))
+                return new DateTime(2050, 01, 01);
+            return DateTime.Parse(endDate);
         }
 
         private List<TenderItem> SetTenderItems(List<TenderItemDto> dtos, int tenderId)
