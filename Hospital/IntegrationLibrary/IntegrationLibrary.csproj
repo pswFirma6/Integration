@@ -11,9 +11,6 @@
 
   <ItemGroup>
     <Folder Include="SharedModel\" />
-    <Folder Include="Tendering\Model\" />
-    <Folder Include="Tendering\Repository\" />
-    <Folder Include="Tendering\Service\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using IntegrationLibrary.Partnership.Model;
+using IntegrationLibrary.Tendering.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,16 @@ namespace IntegrationLibrary.Pharmacy.Model
         public DbSet<Medicine> Medicines { get; set; }
         public DbSet<PharmacyComment> PharmacyComments { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Tender> Tenders { get; set; }
+        public DbSet<TenderItem> TenderItems { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TenderItem>()
+                .HasOne<Tender>()
+                .WithMany()
+                .HasForeignKey(item => item.TenderId);
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
