@@ -4,6 +4,7 @@ using IntegrationLibrary.Tendering.IRepository;
 using IntegrationLibrary.Tendering.Repository;
 using IntegrationLibrary.Tendering.Service;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,13 @@ namespace IntegrationAPI.Controller
     public class TenderController
     {
         private readonly TenderService tenderService;
+        private readonly IConfiguration _config;
 
-        public TenderController(DatabaseContext context)
+        public TenderController(DatabaseContext context, IConfiguration config)
         {
             ITenderRepository tenderRepository = new TenderRepository(context);
             tenderService = new TenderService(tenderRepository);
+            _config = config;
         }
 
         [HttpGet]
@@ -33,8 +36,10 @@ namespace IntegrationAPI.Controller
         [HttpPost]
         [Route("addTender")]
         public void AddTender(TenderDto tender)
-        {  
-            tenderService.AddTender(tender);
+        {
+            var apiKey = _config.GetValue<string>("ApiKey");
+            tenderService.AddTender(tender, apiKey);
+
         }
 
     }

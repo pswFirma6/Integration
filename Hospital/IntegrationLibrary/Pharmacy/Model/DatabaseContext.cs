@@ -26,6 +26,8 @@ namespace IntegrationLibrary.Pharmacy.Model
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Tender> Tenders { get; set; }
         public DbSet<TenderItem> TenderItems { get; set; }
+        public DbSet<TenderOffer> TenderOffers { get; set; }
+        public DbSet<TenderOfferItem> TenderOfferItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
