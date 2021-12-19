@@ -3,6 +3,8 @@ using IntegrationLibrary.Tendering.DTO;
 using IntegrationLibrary.Tendering.IRepository;
 using IntegrationLibrary.Tendering.Model;
 using IntegrationLibrary.Tendering.Repository;
+using Newtonsoft.Json;
+using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +50,25 @@ namespace IntegrationLibrary.Tendering.Service
 
         public void AddTender(TenderDto dto)
         {
+            var factory = new ConnectionFactory
+            {
+                HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost",
+                UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? "guest",
+                Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest",
+            };
+
+            using (var connection = factory.CreateConnection())
+            using (var channel = connection.CreateModel())
+            {
+                channel.ExchangeDeclare(exchange: "tender-exchange", type: ExchangeType.Fanout);
+
+                dto.Id = tenderRepository.GetAll().Count;
+                var message = dto;
+                var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
+
+                channel.BasicPublish("tender-exchange", String.Empty, null, body);
+            }
+
             Tender tender = new Tender
             {
                 CreationDate = DateTime.Now,

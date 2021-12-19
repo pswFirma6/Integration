@@ -4,6 +4,7 @@ using IntegrationLibrary.Tendering.IRepository;
 using IntegrationLibrary.Tendering.Repository;
 using IntegrationLibrary.Tendering.Service;
 using Microsoft.AspNetCore.Mvc;
+using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace IntegrationAPI.Controller
         [HttpPost]
         [Route("addTender")]
         public void AddTender(TenderDto tender)
-        {
+        {  
             tenderService.AddTender(tender);
         }
 
