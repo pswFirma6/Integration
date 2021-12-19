@@ -3,6 +3,7 @@ using IntegrationLibrary.Tendering.DTO;
 using IntegrationLibrary.Tendering.IRepository;
 using IntegrationLibrary.Tendering.Model;
 using IntegrationLibrary.Tendering.Repository;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
@@ -48,7 +49,7 @@ namespace IntegrationLibrary.Tendering.Service
             return tendersWithItems;
         }
 
-        public void AddTender(TenderDto dto)
+        public void AddTender(TenderDto dto, string apiKey)
         {
             var factory = new ConnectionFactory
             {
