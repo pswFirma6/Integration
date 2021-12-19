@@ -33,12 +33,11 @@ namespace IntegrationAPI.Controller
             return tenderService.GetTendersWithItems();
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("addTender")]
-        public string AddTender(TenderDto tender)
+        public void AddTender(TenderDto tender)
         {
             var apiKey = _config.GetValue<string>("ApiKey");
-            return apiKey.ToString();
             tenderService.AddTender(tender, apiKey);
 
         }
