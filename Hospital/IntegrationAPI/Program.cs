@@ -1,5 +1,6 @@
 using IntegrationLibrary.Partnership.Model;
 using IntegrationLibrary.Partnership.Service;
+using IntegrationLibrary.Tendering.Service;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +25,7 @@ namespace IntegrationAPI
                 }).ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<RabbitMQService>();
+                    services.AddHostedService<TenderOfferRabbitMQService>();
                 });
     }
 }
