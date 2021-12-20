@@ -18,7 +18,6 @@ namespace IntegrationLibrary.Tendering.Service
         public TenderOfferItemService(ITenderOfferItemRepository iRepository)
         {
             tenderOfferItemRepository = iRepository;
-            DatabaseContext databaseContext = new DatabaseContext();
         }
 
         public List<TenderOfferItem> GetAll()

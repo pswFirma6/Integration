@@ -11,6 +11,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,21 +20,19 @@ namespace IntegrationLibrary.Tendering.Service
 {
     public class TenderOfferRabbitMQService : BackgroundService
     {
-        IConnection connection;
-        IModel channel;
         private readonly DatabaseContext databaseContext = new DatabaseContext();
-        private PharmacyService pharmacyService;
-        private TenderOfferService offerService;
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
+            IConnection connection;
+            IModel channel;
             IPharmacyRepository pharmacyRepository = new PharmacyRepository(databaseContext);
             ITenderOfferRepository tenderOfferRepository = new TenderOfferRepository(databaseContext);
-            pharmacyService = new PharmacyService(pharmacyRepository);
-            offerService = new TenderOfferService(tenderOfferRepository);
+            PharmacyService pharmacyService = new PharmacyService(pharmacyRepository);
+            TenderOfferService offerService = new TenderOfferService(tenderOfferRepository);
             List<Pharmacy.Model.Pharmacy> pharmacies = pharmacyService.GetPharmacies();
 
-            foreach(Pharmacy.Model.Pharmacy pharmacy in pharmacies)
+            foreach(string apiKey in pharmacies.Select(pharmacy => pharmacy.ApiKey))
             {
                 var factory = new ConnectionFactory
                 {
@@ -45,14 +44,14 @@ namespace IntegrationLibrary.Tendering.Service
                 connection = factory.CreateConnection();
                 channel = connection.CreateModel();
 
-                channel.ExchangeDeclare("tender-offer-exchange-" + pharmacy.ApiKey, type: ExchangeType.Fanout);
-                channel.QueueDeclare("tender-offer-queue-" + pharmacy.ApiKey,
+                channel.ExchangeDeclare("tender-offer-exchange-" + apiKey, type: ExchangeType.Fanout);
+                channel.QueueDeclare("tender-offer-queue-" + apiKey,
                                         durable: false,
                                         exclusive: false,
                                         autoDelete: false,
                                         arguments: null);
 
-                channel.QueueBind("tender-offer-queue-" + pharmacy.ApiKey, "tender-offer-exchange-" + pharmacy.ApiKey, string.Empty);
+                channel.QueueBind("tender-offer-queue-" + apiKey, "tender-offer-exchange-" + apiKey, string.Empty);
 
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += (model, e) =>
@@ -64,7 +63,7 @@ namespace IntegrationLibrary.Tendering.Service
                     offerService.AddTenderOffer(message);
                 };
 
-                channel.BasicConsume(queue: "tender-offer-queue-" + pharmacy.ApiKey,
+                channel.BasicConsume(queue: "tender-offer-queue-" + apiKey,
                                         autoAck: true,
                                         consumer: consumer);
             }
