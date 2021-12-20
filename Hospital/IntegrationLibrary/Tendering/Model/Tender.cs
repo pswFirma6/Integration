@@ -17,7 +17,6 @@ namespace IntegrationLibrary.Tendering.Model
 
         public Tender(int id, DateTime creationDate, DateTime startDate, DateTime endDate)
         {
-            // this.Opened = true;
             Id = id;
             CreationDate = creationDate;
             StartDate = startDate;
