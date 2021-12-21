@@ -49,7 +49,8 @@ namespace IntegrationAPI.Controller
         public void AddTender(TenderDto tender)
         {
             var apiKey = _config.GetValue<string>("ApiKey");
-            tenderService.AddTender(tender, apiKey);
+            tender.HospitalApiKey = apiKey;
+            tenderService.AddTender(tender);
 
         }
 

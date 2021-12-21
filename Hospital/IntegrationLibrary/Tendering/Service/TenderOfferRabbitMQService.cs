@@ -60,7 +60,7 @@ namespace IntegrationLibrary.Tendering.Service
                     var jsonMessage = Encoding.UTF8.GetString(body);
                     TenderOfferDto message;
                     message = JsonConvert.DeserializeObject<TenderOfferDto>(jsonMessage);
-                    offerService.AddTenderOffer(message);
+                    if (message.HospitalApiKey.Equals(apiKey)) offerService.AddTenderOffer(message);
                 };
 
                 channel.BasicConsume(queue: "tender-offer-queue-" + apiKey,
