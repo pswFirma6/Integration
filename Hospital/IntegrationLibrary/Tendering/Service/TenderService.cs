@@ -32,17 +32,20 @@ namespace IntegrationLibrary.Tendering.Service
         public List<TenderDto> GetTendersWithItems()
         {
             List<TenderDto> tendersWithItems = new List<TenderDto>();
-            foreach(Tender tender in GetTenders())
+            foreach (Tender tender in GetTenders())
             {
-                TenderDto dto = new TenderDto
+                if (tender.Opened)
                 {
-                    Id = tender.Id,
-                    CreationDate = tender.CreationDate.ToString(),
-                    StartDate = tender.StartDate.ToString(),
-                    EndDate = tender.EndDate.ToString(),
-                    TenderItems = tenderItemService.GetTenderItems(tender.Id)
-                };
-                tendersWithItems.Add(dto);
+                    TenderDto dto = new TenderDto
+                    {
+                        Id = tender.Id,
+                        CreationDate = tender.CreationDate.ToString(),
+                        StartDate = tender.StartDate.ToString(),
+                        EndDate = tender.EndDate.ToString(),
+                        TenderItems = tenderItemService.GetTenderItems(tender.Id)
+                    };
+                    tendersWithItems.Add(dto);
+                }
             }
             return tendersWithItems;
         }
@@ -59,17 +62,18 @@ namespace IntegrationLibrary.Tendering.Service
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.ExchangeDeclare(exchange: "tender-exchange-"+apiKey, type: ExchangeType.Fanout);
+                channel.ExchangeDeclare(exchange: "tender-exchange-" + apiKey, type: ExchangeType.Fanout);
 
                 dto.Id = tenderRepository.GetAll().Count;
                 var message = dto;
                 var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
 
-                channel.BasicPublish("tender-exchange-"+apiKey, String.Empty, null, body);
+                channel.BasicPublish("tender-exchange-" + apiKey, String.Empty, null, body);
             }
 
             Tender tender = new Tender
             {
+                Opened = true,
                 CreationDate = DateTime.Now,
                 StartDate = DateTime.Parse(dto.StartDate),
                 EndDate = AssignEndDate(dto.EndDate)
@@ -87,7 +91,7 @@ namespace IntegrationLibrary.Tendering.Service
         private List<TenderItem> SetTenderItems(List<TenderItemDto> dtos, int tenderId)
         {
             List<TenderItem> items = new List<TenderItem>();
-            foreach(TenderItemDto dto in dtos)
+            foreach (TenderItemDto dto in dtos)
             {
                 TenderItem item = new TenderItem()
                 {
@@ -98,6 +102,14 @@ namespace IntegrationLibrary.Tendering.Service
                 items.Add(item);
             }
             return items;
+        }
+
+        public void CloseTender(int tenderId)
+        {
+            Tender tender = GetTenders().Find(tender => tenderId == tender.Id);
+            tender.Opened = false;
+            tenderRepository.Update(tender);
+            tenderRepository.Save();
         }
 
     }

@@ -12,6 +12,7 @@ namespace IntegrationLibrary.Tendering.Model
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
+        public bool Opened { get; set; }
         public Tender() { }
 
         public Tender(int id, DateTime creationDate, DateTime startDate, DateTime endDate)
