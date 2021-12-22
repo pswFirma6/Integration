@@ -50,7 +50,7 @@ namespace IntegrationLibrary.Tendering.Service
             return tendersWithItems;
         }
 
-        public void AddTender(TenderDto dto, string apiKey)
+        public void AddTender(TenderDto dto)
         {
             var factory = new ConnectionFactory
             {
@@ -62,13 +62,13 @@ namespace IntegrationLibrary.Tendering.Service
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.ExchangeDeclare(exchange: "tender-exchange-" + apiKey, type: ExchangeType.Fanout);
+                channel.ExchangeDeclare(exchange: "tender-exchange-" + dto.HospitalApiKey, type: ExchangeType.Fanout);
 
-                dto.Id = tenderRepository.GetAll().Count;
+                dto.Id = tenderRepository.GetAll().Count+1;
                 var message = dto;
                 var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
 
-                channel.BasicPublish("tender-exchange-" + apiKey, String.Empty, null, body);
+                channel.BasicPublish("tender-exchange-" + dto.HospitalApiKey, String.Empty, null, body);
             }
 
             Tender tender = new Tender
