@@ -59,7 +59,8 @@ namespace IntegrationAPI.Controller
         public void CloseTender(TenderOffer offer)
         {
             tenderService.CloseTender(offer.TenderId);
-
+            tenderOfferService.MakeOfferWinner(offer);
+            tenderService.SendNotification(offer);
         }
 
     }

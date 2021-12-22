@@ -57,6 +57,13 @@ namespace IntegrationLibrary.Tendering.Service
             tenderOfferItemService.AddTenderOfferItems(SetTenderOfferItems(dto.TenderOfferItems, tenderOffer.Id));
         }
 
+        public void MakeOfferWinner(TenderOffer offer)
+        {
+            offer.isWinner = true;
+            tenderOfferRepository.Update(offer);
+            tenderOfferRepository.Save();
+        }
+
         private List<TenderOfferItem> SetTenderOfferItems(List<TenderOfferItemDto> dtos, int tenderOfferId)
         {
             List<TenderOfferItem> items = new List<TenderOfferItem>();
