@@ -25,23 +25,23 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             pharmacyService = new PharmacyService(pharmacyRepository);
         }
 
-        public void GenerateReport(Prescription prescription)
+        public void GenerateReport(PharmacyPrescription prescription)
         {
             String filePath = GetPrescriptionsDirectory();
             String QRCodesDirectoryPath = GetQRcodesDirectory();
-            String fileName = "Prescription" +prescription.Id +".pdf";
+            String fileName = "Prescription" +prescription.Prescription.Id +".pdf";
 
             PdfDocument doc = new PdfDocument();
             PdfPageBase page = doc.Pages.Add();
 
             Pharmacy.Model.Pharmacy pharmacy = pharmacyService.GetPharmacyByName(prescription.PharmacyName);
 
-            page.Canvas.DrawString(GetContent(prescription), new PdfFont(PdfFontFamily.Helvetica, 11f), new PdfSolidBrush(Color.Black), 10, 10);
+            page.Canvas.DrawString(GetContent(prescription.Prescription), new PdfFont(PdfFontFamily.Helvetica, 11f), new PdfSolidBrush(Color.Black), 10, 10);
 
             if (pharmacy.PharmacyConnectionInfo.FileProtocol.Equals("HTTP"))
             {
-                CreateQRCode(prescription.Id.ToString(), QRCodesDirectoryPath);
-                PdfImage pdfimage = PdfImage.FromFile(Path.Combine(QRCodesDirectoryPath, "QRcode" + prescription.Id + ".png"));
+                CreateQRCode(prescription.Prescription.Id.ToString(), QRCodesDirectoryPath);
+                PdfImage pdfimage = PdfImage.FromFile(Path.Combine(QRCodesDirectoryPath, "QRcode" + prescription.Prescription.Id + ".png"));
                 PdfPageBase qrpage = doc.Pages.Add();
                 qrpage.Canvas.DrawImage(pdfimage, new PointF(5, 5));
             }
@@ -66,15 +66,14 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
         public String GetContent(Prescription prescription)
         {
             String content = "\n";
-            content += "Prescription for medicine: " + prescription.MedicineName + "\r\n\n"
-                    + "Quantity: " + prescription.Quantity + "\r\n"
-                    + "Medicine description: " + prescription.Description + "\r\n"
+            content += "Prescription for medicine: " + prescription.Medicine.Name + "\r\n\n"
+                    + "Quantity: " + prescription.Medicine.Quantity + "\r\n"
                     + "Recommended dose is: " + "\r\n\n"
-                    + "Patiend: " + prescription.DoctorName + "\r\n"
-                    + "Patient diagnosis: " + prescription.Diagnosis + "\r\n\n"
-                    + "Therapy start: " + prescription.TherapyStart + "\r\n"
-                    + "Therapy end: " + prescription.TherapyEnd + "\r\n\n\n"
-                    + "Doctor: " + prescription.DoctorName + "\r\n"
+                    + "Patiend: " + prescription.InvolvedParties.PatientName + "\r\n"
+                    + "Patient diagnosis: " + prescription.Therapy.Diagnosis + "\r\n\n"
+                    + "Therapy start: " + prescription.Therapy.TherapyDuration.StartDate + "\r\n"
+                    + "Therapy end: " + prescription.Therapy.TherapyDuration.EndDate + "\r\n\n\n"
+                    + "Doctor: " + prescription.InvolvedParties.DoctorName + "\r\n"
                     + "Prescription date:" + prescription.PrescriptionDate + "\r\n"
                     + "Expiration date:" + prescription.PrescriptionDate + "\r\n";
             return content;
