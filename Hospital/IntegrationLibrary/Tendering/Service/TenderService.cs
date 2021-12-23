@@ -5,6 +5,7 @@ using IntegrationLibrary.Tendering.Model;
 using IntegrationLibrary.Tendering.Repository;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,7 +16,7 @@ namespace IntegrationLibrary.Tendering.Service
     {
         private readonly ITenderRepository tenderRepository;
         private readonly TenderItemService tenderItemService;
-
+        private readonly string url = "http://localhost:44377/tenderNotification";
         public TenderService(ITenderRepository iRepository)
         {
             tenderRepository = iRepository;
@@ -52,6 +53,18 @@ namespace IntegrationLibrary.Tendering.Service
 
         public void AddTender(TenderDto dto)
         {
+           
+
+            Tender tender = new Tender
+            {
+                Opened = true,
+                CreationDate = DateTime.Now,
+                StartDate = DateTime.Parse(dto.StartDate),
+                EndDate = AssignEndDate(dto.EndDate)
+            };
+            tenderRepository.Add(tender);
+            tenderRepository.Save();
+            tenderItemService.AddTenderItems(SetTenderItems(dto.TenderItems, tender.Id));
             var factory = new ConnectionFactory
             {
                 HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost",
@@ -64,23 +77,27 @@ namespace IntegrationLibrary.Tendering.Service
             {
                 channel.ExchangeDeclare(exchange: "tender-exchange-" + dto.HospitalApiKey, type: ExchangeType.Fanout);
 
-                dto.Id = tenderRepository.GetAll().Count+1;
+                dto.Id = GetLastID();
                 var message = dto;
                 var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
 
                 channel.BasicPublish("tender-exchange-" + dto.HospitalApiKey, String.Empty, null, body);
             }
+        }
 
-            Tender tender = new Tender
-            {
-                Opened = true,
-                CreationDate = DateTime.Now,
-                StartDate = DateTime.Parse(dto.StartDate),
-                EndDate = AssignEndDate(dto.EndDate)
-            };
-            tenderRepository.Add(tender);
-            tenderRepository.Save();
-            tenderItemService.AddTenderItems(SetTenderItems(dto.TenderItems, tender.Id));
+        public void SendNotification(TenderOffer offer)
+        {
+            var client = new RestClient(url);
+            var request = new RestRequest();
+            request.AddJsonBody(offer);
+            client.Post(request);
+        }
+
+
+        private int GetLastID()
+        {
+            List<Tender> tenders = GetTenders();
+            return tenders[tenders.Count - 1].Id;
         }
 
         private DateTime AssignEndDate(string endDate)

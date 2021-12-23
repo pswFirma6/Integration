@@ -9,6 +9,7 @@ namespace IntegrationLibrary.Tendering.Model
         public int Id { get; set; }
         public int TenderId { get; set; }
         public String PharmacyName { get; set; }
+        public bool isWinner { get; set; } = false;
         public TenderOffer() { }
         public TenderOffer(int id, int tenderId, string pharmacyName)
         {
