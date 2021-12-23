@@ -35,7 +35,7 @@ namespace IntegrationLibrary.Pharmacy.Service
 
         public void AddPharmacy(Model.Pharmacy pharmacy)
         {
-            pharmacy.ApiKey = GenerateApiKey();
+            pharmacy.PharmacyConnectionInfo.ApiKey = GenerateApiKey();
             repository.Add(pharmacy);
             repository.Save();
         }
@@ -56,7 +56,7 @@ namespace IntegrationLibrary.Pharmacy.Service
         public String GetPharmacyApiKey(String pharmacyName)
         {
             Model.Pharmacy pharmacy = repository.GetAll().Find(pharmacy => pharmacyName == pharmacy.PharmacyName);
-            return pharmacy.ApiKey;
+            return pharmacy.PharmacyConnectionInfo.ApiKey;
         }
 
         public List<PharmacyMedicineAvailabilityDTO> CheckPharmacyMedicines(MedicineDTO medicine)

@@ -35,6 +35,10 @@ namespace IntegrationLibrary.Pharmacy.Model
                 .HasOne<Tender>()
                 .WithMany()
                 .HasForeignKey(item => item.TenderId);
+
+
+            modelBuilder.Entity<Pharmacy>().OwnsOne(typeof(Address), "PharmacyAddress");
+            modelBuilder.Entity<Pharmacy>().OwnsOne(typeof(ConnectionInfo), "PharmacyConnectionInfo");
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -38,7 +38,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
 
             page.Canvas.DrawString(GetContent(prescription), new PdfFont(PdfFontFamily.Helvetica, 11f), new PdfSolidBrush(Color.Black), 10, 10);
 
-            if (pharmacy.FileProtocol.Equals("HTTP"))
+            if (pharmacy.PharmacyConnectionInfo.FileProtocol.Equals("HTTP"))
             {
                 CreateQRCode(prescription.Id.ToString(), QRCodesDirectoryPath);
                 PdfImage pdfimage = PdfImage.FromFile(Path.Combine(QRCodesDirectoryPath, "QRcode" + prescription.Id + ".png"));
@@ -50,7 +50,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             StreamWriter File = new StreamWriter(Path.Combine(filePath, fileName), true);
             doc.SaveToStream(File.BaseStream);
             File.Close();
-            SendReport(pharmacy.FileProtocol,fileName);
+            SendReport(pharmacy.PharmacyConnectionInfo.FileProtocol,fileName);
         }
 
         public string GetPrescriptionsDirectory()

@@ -30,7 +30,7 @@ namespace IntegrationLibrary.Pharmacy.Repository
 
         public T FindById(int id)
         {
-            throw new NotImplementedException();
+            return _context.Set<T>().Find(id);
         }
 
         public List<T> GetAll()

@@ -17,22 +17,27 @@ namespace UnitTests
         [Fact]
         public void AddPharmacy()
         {
+
             var stubRepository = new Mock<IPharmacyRepository>();
             pharmacyService = new PharmacyService(stubRepository.Object);
 
             List<Pharmacy> pharmacies = new List<Pharmacy>();
-            Pharmacy pharmacy = new Pharmacy("Benu", "Benu", "Cankareva 15", "Novi Sad", "image.jpg", "HTTP");
-            Pharmacy pharmacy1 = new Pharmacy("Jankovic", "Jankovic", "Branka Bajica 80", "Novi Sad", "image.jpg", "SFTP");
+            Address ad1 = new Address("Novi Sad", "Cankareva 15");
+            ConnectionInfo c1 = new ConnectionInfo("Benu", "HTTP", "url");
+            Pharmacy pharmacy = new Pharmacy(31, "Benu", "image.jpg", ad1, c1);
+            Pharmacy pharmacy1 = new Pharmacy(32, "Jankovic", "image.jpg", ad1, c1);
+
             pharmacies.Add(pharmacy);
             pharmacies.Add(pharmacy1);
 
-            Pharmacy pharmacy2 = new Pharmacy("Benu", "Benu", "Cankareva 5", "Novi Sad", "imageNEW.jpg", "HTTP");
+            Pharmacy pharmacy2 = new Pharmacy(23, "Jankovic", "image.jpg", ad1, c1);
 
             stubRepository.Setup(m => m.Add(pharmacy2)).Callback((Pharmacy p) => pharmacies.Add(p));
 
             pharmacyService.AddPharmacy(pharmacy2);
 
             pharmacies.Count.ShouldBe(3);
+
         }
     }
 }
