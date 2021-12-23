@@ -48,7 +48,7 @@ namespace IntegrationAPI.Controller
         {
             service.AddPharmacy(info);
             var apiKey = _config.GetValue<string>("ApiKey");
-            return Ok(apiKey);
+            return Ok(apiKey.ToString());
         }
 
         [HttpPost]
