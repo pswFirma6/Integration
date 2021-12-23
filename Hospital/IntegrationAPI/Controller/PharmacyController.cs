@@ -10,6 +10,7 @@ using IntegrationLibrary.Pharmacy.Model;
 using System.IO;
 using System.Net.Http.Headers;
 using Grpc.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace IntegrationAPI.Controller
 {
@@ -18,11 +19,13 @@ namespace IntegrationAPI.Controller
     public class PharmacyController : ControllerBase
     {
         private readonly PharmacyService service;
+        private readonly IConfiguration _config;
 
-        public PharmacyController(DatabaseContext context)
+        public PharmacyController(DatabaseContext context, IConfiguration config)
         {
             IPharmacyRepository pharmacyRepository = new PharmacyRepository(context);
             service = new PharmacyService(pharmacyRepository);
+            _config = config;
         }
 
         [HttpGet]
@@ -41,18 +44,11 @@ namespace IntegrationAPI.Controller
 
         [HttpPost]
         [Route("registerPharmacy")]
-        public IActionResult AddPharmacy(IntegrationLibrary.Pharmacy.Model.Pharmacy pharmacy)
-        {
-            service.AddPharmacy(pharmacy);
-            return Ok();
-        }
-
-        [HttpPost]
-        [Route("registerPharmacyy")]
         public IActionResult RegisterPharmacy(PharmacyInfo info)
         {
-            service.RegisterPharmacy(info);
-            return Ok();
+            service.AddPharmacy(info);
+            var apiKey = _config.GetValue<string>("ApiKey");
+            return Ok(apiKey);
         }
 
         [HttpPost]
@@ -142,4 +138,5 @@ namespace IntegrationAPI.Controller
         }
  
     }
+
 }

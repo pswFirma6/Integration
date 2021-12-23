@@ -1,20 +1,15 @@
 ﻿using IntegrationLibrary.Pharmacy.DTO;
 using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Model;
-using IntegrationLibrary.Pharmacy.Repository;
 using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace IntegrationLibrary.Pharmacy.Service
 {
     public class PharmacyService
     {
-        private string server = "http://localhost:44377";
         private IPharmacyRepository repository;
     
         public PharmacyService(IPharmacyRepository iRepository)
@@ -22,7 +17,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             repository = iRepository;
         }
 
-        public void RegisterPharmacy(PharmacyInfo info)
+        public void AddPharmacy(PharmacyInfo info)
         {
             Model.Pharmacy newPharmacy = new Model.Pharmacy(info);
             repository.Add(newPharmacy);
@@ -37,12 +32,6 @@ namespace IntegrationLibrary.Pharmacy.Service
             return pharmacyNames;
         }
 
-        public void AddPharmacy(Model.Pharmacy pharmacy)
-        {
-            repository.Add(pharmacy);
-            repository.Save();
-        }
-
         public Model.Pharmacy GetPharmacyByName(String pharmacyName)
         {
             return repository.GetAll().Find(pharmacy => pharmacyName == pharmacy.PharmacyName);
@@ -53,7 +42,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             List<PharmacyMedicineAvailabilityDTO> pharmacies = new List<PharmacyMedicineAvailabilityDTO>();
             foreach(Model.Pharmacy pharmacy in repository.GetAll())
             {
-                bool isAvailable = PostRequest(server, medicine);
+                bool isAvailable = PostRequest(pharmacy.PharmacyConnectionInfo.Url, medicine);
                 if (isAvailable)
                 {
                     pharmacies.Add(new PharmacyMedicineAvailabilityDTO { PharmacyName = pharmacy.PharmacyName, IsAvailable = isAvailable });
@@ -68,7 +57,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             {
                 if (pharmacy.PharmacyName.Equals(availability.PharmacyName))
                 {
-                    return PostRequest(server, availability.Medicine);
+                    return PostRequest(pharmacy.PharmacyConnectionInfo.Url, availability.Medicine);
                 }
             }
             return false;
@@ -94,7 +83,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             {
                 if(pharmacy.PharmacyName == order.PharmacyName)
                 {
-                    OrderMedicine(server, order.Medicine);
+                    OrderMedicine(pharmacy.PharmacyConnectionInfo.Url, order.Medicine);
                 }
             }
         }
@@ -115,19 +104,9 @@ namespace IntegrationLibrary.Pharmacy.Service
 
         public void AddPictureToPharmacy(string pharmacyName, string pharmacyPicture)
         {
-            List<Model.Pharmacy> pharmacies = repository.GetAll();
-            Model.Pharmacy pharmacy = new Model.Pharmacy();
-            foreach(var p in pharmacies)
-            {
-                if(p.PharmacyName.Equals(pharmacyName))
-                {
-                    pharmacy = p;
-                    break;
-                }
-            }
-
-            pharmacy.PharmacyPicture = pharmacyPicture;
-            repository.Update(pharmacy);
+          
+            GetPharmacyByName(pharmacyName).PharmacyPicture = pharmacyPicture;
+            repository.Update(GetPharmacyByName(pharmacyName));
             repository.Save();
 
         }
