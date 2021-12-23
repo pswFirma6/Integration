@@ -14,7 +14,6 @@ namespace IntegrationLibrary.Pharmacy.Service
 {
     public class PharmacyService
     {
-        private const int APIKEYLENGTH = 16;
         private string server = "http://localhost:44377";
         private IPharmacyRepository repository;
     
@@ -22,10 +21,15 @@ namespace IntegrationLibrary.Pharmacy.Service
         {
             repository = iRepository;
         }
-        public PharmacyService()
+
+        public void RegisterPharmacy(PharmacyInfo info)
         {
-            
+            Model.Pharmacy newPharmacy = new Model.Pharmacy(info);
+            repository.Add(newPharmacy);
+            repository.Save();
+
         }
+
         public List<string> GetPharmacyNames()
         {
             List<string> pharmacyNames = new List<string>();
@@ -35,28 +39,13 @@ namespace IntegrationLibrary.Pharmacy.Service
 
         public void AddPharmacy(Model.Pharmacy pharmacy)
         {
-            pharmacy.PharmacyConnectionInfo.ApiKey = GenerateApiKey();
             repository.Add(pharmacy);
             repository.Save();
         }
 
-        private String GenerateApiKey()
+        public Model.Pharmacy GetPharmacyByName(String pharmacyName)
         {
-            const string src = "abcdefghijklmnopqrstuvwxyz0123456789";
-            var sb = new StringBuilder();
-            Random RNG = new Random();
-            for (var i = 0; i < APIKEYLENGTH; i++)
-            {
-                var c = src[RNG.Next(0, src.Length)];
-                sb.Append(c);
-            }
-            return sb.ToString();
-        }
-
-        public String GetPharmacyApiKey(String pharmacyName)
-        {
-            Model.Pharmacy pharmacy = repository.GetAll().Find(pharmacy => pharmacyName == pharmacy.PharmacyName);
-            return pharmacy.PharmacyConnectionInfo.ApiKey;
+            return repository.GetAll().Find(pharmacy => pharmacyName == pharmacy.PharmacyName);
         }
 
         public List<PharmacyMedicineAvailabilityDTO> CheckPharmacyMedicines(MedicineDTO medicine)
@@ -116,20 +105,6 @@ namespace IntegrationLibrary.Pharmacy.Service
             var request = new RestRequest("/orderMedicine");
             request.AddJsonBody(medicine);
             var response = client.Post(request);
-        }
-
-        public Model.Pharmacy GetPharmacyByName(string pharmacyName)
-        {
-            Model.Pharmacy pharmacy = new Model.Pharmacy();
-            foreach(var p in repository.GetAll())
-            {
-                if (p.PharmacyName.Equals(pharmacyName))
-                {
-                    pharmacy = p;
-                    break;
-                }
-            }
-            return pharmacy;
         }
 
         public void EditPharmacy(Model.Pharmacy pharmacy)

@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Pharmacy.Service;
-using RestSharp;
-using System.Text.Json;
-using System.Text;
 using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Repository;
 
@@ -51,7 +44,8 @@ namespace IntegrationAPI.Controller
         public IActionResult PostFeedback(Feedback feedback)
         {
             service.SendFeedback(feedback);
-            Response.Headers.Add("ApiKey", pharmacyService.GetPharmacyApiKey(feedback.PharmacyName));
+            Response.Headers.Add("ApiKey",
+                pharmacyService.GetPharmacyByName(feedback.PharmacyName).PharmacyConnectionInfo.ApiKey);
             return Ok();
         }
 

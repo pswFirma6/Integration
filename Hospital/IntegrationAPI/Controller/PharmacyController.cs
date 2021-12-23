@@ -1,38 +1,27 @@
 using System;
-using System.Runtime;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using RestSharp;
 using System.Text.Json;
-using System.Text;
 using IntegrationLibrary.Pharmacy.Service;
 using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationLibrary.Pharmacy.DTO;
 using IntegrationLibrary.Pharmacy.Model;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http.Headers;
-using Microsoft.AspNetCore.StaticFiles;
 using Grpc.Core;
 
 namespace IntegrationAPI.Controller
 {
-    //[Route("api/[controller]")]
 
     [ApiController]
     public class PharmacyController : ControllerBase
     {
-        private PharmacyService service;
-        private IPharmacyRepository pharmacyRepository;
+        private readonly PharmacyService service;
 
         public PharmacyController(DatabaseContext context)
         {
-            pharmacyRepository = new PharmacyRepository(context);
+            IPharmacyRepository pharmacyRepository = new PharmacyRepository(context);
             service = new PharmacyService(pharmacyRepository);
         }
 
@@ -55,6 +44,14 @@ namespace IntegrationAPI.Controller
         public IActionResult AddPharmacy(IntegrationLibrary.Pharmacy.Model.Pharmacy pharmacy)
         {
             service.AddPharmacy(pharmacy);
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("registerPharmacyy")]
+        public IActionResult RegisterPharmacy(PharmacyInfo info)
+        {
+            service.RegisterPharmacy(info);
             return Ok();
         }
 

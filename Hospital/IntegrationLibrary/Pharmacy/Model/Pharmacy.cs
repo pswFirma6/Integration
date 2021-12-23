@@ -13,13 +13,20 @@ namespace IntegrationLibrary.Pharmacy.Model
         public ConnectionInfo PharmacyConnectionInfo { get; set; }
 
         public Pharmacy() { }
-        public Pharmacy(int id, string pharmacyName, string pharmacyPicture, Address pharmacyAddress, ConnectionInfo pharmacyConnectionInfo)
+        public Pharmacy(int id,string pharmacyName, string picture,Address pharmacyAddress, ConnectionInfo pharmacyConnectionInfo)
         {
             Id = id;
             PharmacyName = pharmacyName;
-            PharmacyPicture = pharmacyPicture;
+            PharmacyPicture = picture;
             PharmacyAddress = pharmacyAddress;
             PharmacyConnectionInfo = pharmacyConnectionInfo;
+        }
+
+        public Pharmacy(PharmacyInfo info)
+        {
+            PharmacyName = info.PharmacyName;
+            PharmacyAddress = new Address(info.Street, info.City);
+            PharmacyConnectionInfo = new ConnectionInfo(info.ApiKey, info.FileProtocol, info.Url);
         }
     }
 }
