@@ -90,8 +90,9 @@ namespace IntegrationLibrary.Tendering.Service
             var client = new RestClient(url);
             var request = new RestRequest();
             request.AddJsonBody(offer);
+            client.Post(request);
         }
-        
+
 
         private int GetLastID()
         {
