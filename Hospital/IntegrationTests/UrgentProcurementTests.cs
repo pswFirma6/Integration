@@ -22,7 +22,8 @@ namespace IntegrationAppTests.UnitTests
             pharmacyService = new PharmacyService(stubRepository.Object);
 
             List<Pharmacy> pharmacies = new List<Pharmacy>();
-            Pharmacy pharmacy = new Pharmacy { ApiKey = "Zlatni Lav", PharmacyName = "Zlatni Lav" };
+            ConnectionInfo info = new ConnectionInfo("Zlatni Lav", "HTTP", "url");
+            Pharmacy pharmacy = new Pharmacy { PharmacyConnectionInfo = info, PharmacyName = "Zlatni Lav" };
             pharmacies.Add(pharmacy);
 
             stubRepository.Setup(m => m.GetAll()).Returns(pharmacies);

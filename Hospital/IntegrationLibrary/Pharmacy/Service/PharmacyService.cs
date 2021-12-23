@@ -1,31 +1,36 @@
 ﻿using IntegrationLibrary.Pharmacy.DTO;
 using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Model;
-using IntegrationLibrary.Pharmacy.Repository;
 using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace IntegrationLibrary.Pharmacy.Service
 {
     public class PharmacyService
     {
-        private const int APIKEYLENGTH = 16;
-        private string server = "http://localhost:44377";
         private IPharmacyRepository repository;
     
         public PharmacyService(IPharmacyRepository iRepository)
         {
             repository = iRepository;
         }
-        public PharmacyService()
+
+        public void AddPharmacy(PharmacyInfo info)
         {
-            
+            Model.Pharmacy newPharmacy = new Model.Pharmacy(info);
+            repository.Add(newPharmacy);
+            repository.Save();
+
         }
+        public void AddPharmacy(Model.Pharmacy pharmacy)
+        {
+            repository.Add(pharmacy);
+            repository.Save();
+
+        }
+
         public List<string> GetPharmacyNames()
         {
             List<string> pharmacyNames = new List<string>();
@@ -33,30 +38,9 @@ namespace IntegrationLibrary.Pharmacy.Service
             return pharmacyNames;
         }
 
-        public void AddPharmacy(Model.Pharmacy pharmacy)
+        public Model.Pharmacy GetPharmacyByName(String pharmacyName)
         {
-            pharmacy.ApiKey = GenerateApiKey();
-            repository.Add(pharmacy);
-            repository.Save();
-        }
-
-        private String GenerateApiKey()
-        {
-            const string src = "abcdefghijklmnopqrstuvwxyz0123456789";
-            var sb = new StringBuilder();
-            Random RNG = new Random();
-            for (var i = 0; i < APIKEYLENGTH; i++)
-            {
-                var c = src[RNG.Next(0, src.Length)];
-                sb.Append(c);
-            }
-            return sb.ToString();
-        }
-
-        public String GetPharmacyApiKey(String pharmacyName)
-        {
-            Model.Pharmacy pharmacy = repository.GetAll().Find(pharmacy => pharmacyName == pharmacy.PharmacyName);
-            return pharmacy.ApiKey;
+            return repository.GetAll().Find(pharmacy => pharmacyName == pharmacy.PharmacyName);
         }
 
         public List<PharmacyMedicineAvailabilityDTO> CheckPharmacyMedicines(MedicineDTO medicine)
@@ -64,7 +48,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             List<PharmacyMedicineAvailabilityDTO> pharmacies = new List<PharmacyMedicineAvailabilityDTO>();
             foreach(Model.Pharmacy pharmacy in repository.GetAll())
             {
-                bool isAvailable = PostRequest(server, medicine);
+                bool isAvailable = PostRequest(pharmacy.PharmacyConnectionInfo.Url, medicine);
                 if (isAvailable)
                 {
                     pharmacies.Add(new PharmacyMedicineAvailabilityDTO { PharmacyName = pharmacy.PharmacyName, IsAvailable = isAvailable });
@@ -79,7 +63,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             {
                 if (pharmacy.PharmacyName.Equals(availability.PharmacyName))
                 {
-                    return PostRequest(server, availability.Medicine);
+                    return PostRequest(pharmacy.PharmacyConnectionInfo.Url, availability.Medicine);
                 }
             }
             return false;
@@ -105,7 +89,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             {
                 if(pharmacy.PharmacyName == order.PharmacyName)
                 {
-                    OrderMedicine(server, order.Medicine);
+                    OrderMedicine(pharmacy.PharmacyConnectionInfo.Url, order.Medicine);
                 }
             }
         }
@@ -118,20 +102,6 @@ namespace IntegrationLibrary.Pharmacy.Service
             var response = client.Post(request);
         }
 
-        public Model.Pharmacy GetPharmacyByName(string pharmacyName)
-        {
-            Model.Pharmacy pharmacy = new Model.Pharmacy();
-            foreach(var p in repository.GetAll())
-            {
-                if (p.PharmacyName.Equals(pharmacyName))
-                {
-                    pharmacy = p;
-                    break;
-                }
-            }
-            return pharmacy;
-        }
-
         public void EditPharmacy(Model.Pharmacy pharmacy)
         {
             repository.Update(pharmacy);
@@ -140,19 +110,9 @@ namespace IntegrationLibrary.Pharmacy.Service
 
         public void AddPictureToPharmacy(string pharmacyName, string pharmacyPicture)
         {
-            List<Model.Pharmacy> pharmacies = repository.GetAll();
-            Model.Pharmacy pharmacy = new Model.Pharmacy();
-            foreach(var p in pharmacies)
-            {
-                if(p.PharmacyName.Equals(pharmacyName))
-                {
-                    pharmacy = p;
-                    break;
-                }
-            }
-
-            pharmacy.PharmacyPicture = pharmacyPicture;
-            repository.Update(pharmacy);
+          
+            GetPharmacyByName(pharmacyName).PharmacyPicture = pharmacyPicture;
+            repository.Update(GetPharmacyByName(pharmacyName));
             repository.Save();
 
         }

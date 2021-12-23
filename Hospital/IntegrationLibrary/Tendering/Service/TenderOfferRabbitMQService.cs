@@ -32,7 +32,7 @@ namespace IntegrationLibrary.Tendering.Service
             TenderOfferService offerService = new TenderOfferService(tenderOfferRepository);
             List<Pharmacy.Model.Pharmacy> pharmacies = pharmacyService.GetPharmacies();
 
-            foreach(string apiKey in pharmacies.Select(pharmacy => pharmacy.ApiKey))
+            foreach(string apiKey in pharmacies.Select(pharmacy => pharmacy.PharmacyConnectionInfo.ApiKey))
             {
                 var factory = new ConnectionFactory
                 {

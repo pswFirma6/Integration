@@ -1,39 +1,31 @@
 using System;
-using System.Runtime;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using RestSharp;
 using System.Text.Json;
-using System.Text;
 using IntegrationLibrary.Pharmacy.Service;
 using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationLibrary.Pharmacy.DTO;
 using IntegrationLibrary.Pharmacy.Model;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http.Headers;
-using Microsoft.AspNetCore.StaticFiles;
 using Grpc.Core;
+using Microsoft.Extensions.Configuration;
 
 namespace IntegrationAPI.Controller
 {
-    //[Route("api/[controller]")]
 
     [ApiController]
     public class PharmacyController : ControllerBase
     {
-        private PharmacyService service;
-        private IPharmacyRepository pharmacyRepository;
+        private readonly PharmacyService service;
+        private readonly IConfiguration _config;
 
-        public PharmacyController(DatabaseContext context)
+        public PharmacyController(DatabaseContext context, IConfiguration config)
         {
-            pharmacyRepository = new PharmacyRepository(context);
+            IPharmacyRepository pharmacyRepository = new PharmacyRepository(context);
             service = new PharmacyService(pharmacyRepository);
+            _config = config;
         }
 
         [HttpGet]
@@ -52,10 +44,11 @@ namespace IntegrationAPI.Controller
 
         [HttpPost]
         [Route("registerPharmacy")]
-        public IActionResult AddPharmacy(IntegrationLibrary.Pharmacy.Model.Pharmacy pharmacy)
+        public IActionResult RegisterPharmacy(PharmacyInfo info)
         {
-            service.AddPharmacy(pharmacy);
-            return Ok();
+            service.AddPharmacy(info);
+            var apiKey = _config.GetValue<string>("ApiKey");
+            return Ok(apiKey.ToString());
         }
 
         [HttpPost]
@@ -145,4 +138,5 @@ namespace IntegrationAPI.Controller
         }
  
     }
+
 }

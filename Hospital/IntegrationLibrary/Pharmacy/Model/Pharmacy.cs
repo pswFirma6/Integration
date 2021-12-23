@@ -1,29 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace IntegrationLibrary.Pharmacy.Model
 {
     public class Pharmacy
     {
         [Key]
+        public int Id { get; set; }
         public string PharmacyName { get; set; }
-        public string Address { get; set; }
-        public string City { get; set; }
-        public string ApiKey { get; set; }
         public string PharmacyPicture { get; set; }
-        public string FileProtocol { get; set; }
+
+        public Address PharmacyAddress { get; set; }
+        public ConnectionInfo PharmacyConnectionInfo { get; set; }
 
         public Pharmacy() { }
-        public Pharmacy(string pharmacyName, string apiKey, string address, string city, string pharmacyPicture, string fileProtocol)
+        public Pharmacy(int id,string pharmacyName, string picture,Address pharmacyAddress, ConnectionInfo pharmacyConnectionInfo)
         {
+            Id = id;
             PharmacyName = pharmacyName;
-            ApiKey = apiKey;
-            Address = address;
-            City = city;
-            PharmacyPicture = pharmacyPicture;
-            FileProtocol = fileProtocol;
+            PharmacyPicture = picture;
+            PharmacyAddress = pharmacyAddress;
+            PharmacyConnectionInfo = pharmacyConnectionInfo;
+        }
+
+        public Pharmacy(PharmacyInfo info)
+        {
+            PharmacyName = info.PharmacyName;
+            PharmacyAddress = new Address(info.Street, info.City);
+            PharmacyConnectionInfo = new ConnectionInfo(info.ApiKey, info.FileProtocol, info.Url);
         }
     }
 }
