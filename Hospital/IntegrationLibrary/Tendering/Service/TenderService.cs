@@ -77,7 +77,6 @@ namespace IntegrationLibrary.Tendering.Service
             {
                 channel.ExchangeDeclare(exchange: "tender-exchange-" + dto.HospitalApiKey, type: ExchangeType.Fanout);
 
-                // dto.Id = tenderRepository.GetAll().Count + 1;
                 dto.Id = GetLastID();
                 var message = dto;
                 var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
@@ -91,7 +90,6 @@ namespace IntegrationLibrary.Tendering.Service
             var client = new RestClient(url);
             var request = new RestRequest();
             request.AddJsonBody(offer);
-            var response = client.Post(request);
         }
         
 
