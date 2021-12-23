@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Http.Features;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Http;
+using AutoMapper;
+using static IntegrationAPI.Mapper.Mapper;
 
 namespace IntegrationAPI
 {
@@ -42,6 +44,14 @@ namespace IntegrationAPI
                 o.MemoryBufferThreshold = int.MaxValue;
             });
 
+            // Auto Mapper Configurations
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
         }
 
