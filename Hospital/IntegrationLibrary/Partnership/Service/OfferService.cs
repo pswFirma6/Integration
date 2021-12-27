@@ -28,20 +28,16 @@ namespace IntegrationLibrary.Partnership.Service
 
         public bool CheckEndDate(Offer offer)
         {
-            return DateTime.Compare(offer.EndDate, DateTime.Now) > 0;
+            return offer.CheckEndDate();
+
         }
 
-        public void PostOffer(Offer offer)
+        public void PostOffer(Offer o)
         {
-            foreach (Offer o in offerRepository.GetAll())
-            {
-                if (o.Id == offer.Id)
-                {
-                    o.Posted = true;
-                    offerRepository.Save();
-                    break;
-                }
-            }
+
+            Offer offer = offerRepository.FindById(o.Id);
+            offer.PostOffer();
+            offerRepository.Save();
         }
 
         public void AddOffer(Offer offer)

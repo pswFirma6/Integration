@@ -1,10 +1,10 @@
-﻿using System;
+﻿using IntegrationLibrary.Shared.Model;
 using System.Collections.Generic;
-using System.Text;
+
 
 namespace IntegrationLibrary.ReportingAndStatistics.Model
 {
-    public class MedicineInfo
+    public class MedicineInfo: ValueObject
     {
         public string Name { get; set; }
         public int Quantity { get; set; }
@@ -17,6 +17,13 @@ namespace IntegrationLibrary.ReportingAndStatistics.Model
             Name = name;
             Quantity = quantity;
             RecommendedDose = recommendedDose;
+        }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Name;
+            yield return Quantity;
+            yield return RecommendedDose;
         }
     }
 }

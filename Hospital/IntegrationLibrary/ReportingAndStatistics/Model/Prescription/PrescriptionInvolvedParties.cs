@@ -1,10 +1,11 @@
-﻿using System;
+﻿using IntegrationLibrary.Shared.Model;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace IntegrationLibrary.ReportingAndStatistics.Model
 {
-    public class PrescriptionInvolvedParties
+    public class PrescriptionInvolvedParties: ValueObject
     {
         public string PatientName { get; set; }
         public string DoctorName { get; set; }
@@ -15,6 +16,12 @@ namespace IntegrationLibrary.ReportingAndStatistics.Model
         {
             PatientName = patientName;
             DoctorName = doctorName;
+        }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return PatientName;
+            yield return DoctorName;
         }
     }
 }

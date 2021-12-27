@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using IntegrationLibrary.Shared.Model;
+using System.ComponentModel.DataAnnotations;
 
 namespace IntegrationLibrary.Pharmacy.Model
 {
-    public class Pharmacy
+    public class Pharmacy : Entity
     {
-        [Key]
-        public int Id { get; set; }
+        
         public string PharmacyName { get; set; }
         public string PharmacyPicture { get; set; }
 
@@ -27,6 +27,11 @@ namespace IntegrationLibrary.Pharmacy.Model
             PharmacyName = info.PharmacyName;
             PharmacyAddress = new Address(info.Street, info.City);
             PharmacyConnectionInfo = new ConnectionInfo(info.ApiKey, info.FileProtocol, info.Url);
+        }
+
+        public void SetPharmacyPicture(string pharmacyPicture)
+        {
+            PharmacyPicture = pharmacyPicture;
         }
     }
 }
