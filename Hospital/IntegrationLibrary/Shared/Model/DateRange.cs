@@ -17,6 +17,7 @@ namespace IntegrationLibrary.Shared.Model
             EndDate = endDate;
             ValidateDates();
         }
+
         protected override IEnumerable<object> GetEqualityComponents()
         {
             yield return StartDate;
@@ -25,17 +26,15 @@ namespace IntegrationLibrary.Shared.Model
 
         private void ValidateDates()
         {
-            if (this.EndDate < this.StartDate)
-            {
+            if (EndDate < StartDate)
                 throw new DateException(StartDate,EndDate);
-            }
         }
 
     }
 
     public class DateException: Exception
     {
-        public DateException(DateTime startDate, DateTime endDate) : base("End date should not be before start date") { }
+        public DateException(DateTime startDate, DateTime endDate) : base("End date " + endDate.ToString() + " should not be before start date: " + startDate.ToString()) { }
 
     }
 
