@@ -13,17 +13,21 @@ namespace IntegrationLibrary.Tendering.Service
     {
         private readonly ITenderOfferRepository offerRepository;
         private readonly TenderOfferService offerService;
+        private readonly TenderOfferItemService tenderOfferItemService;
+
         private List<TenderParticipantDto> tenderParticipants;
         private List<int> tenders;
 
-        public TenderChartsService()
+        public TenderChartsService(ITenderOfferRepository repository)
         {
-            DatabaseContext context = new DatabaseContext();
-            offerRepository = new TenderOfferRepository(context);
+            offerRepository = repository;
             offerService = new TenderOfferService(offerRepository);
+            DatabaseContext context = new DatabaseContext();
+            ITenderOfferItemRepository itemRepository = new TenderOfferItemRepository(context);
+            tenderOfferItemService = new TenderOfferItemService(itemRepository);
         }
 
-        public List<TenderParticipantDto> GetTendersParticipants()    // potrebna lista imena apoteka sa brojem ucestvovanja
+        public List<TenderParticipantDto> GetTendersParticipants()
         {
             tenderParticipants = new List<TenderParticipantDto>();
             SetTenderParticipants();
@@ -34,7 +38,7 @@ namespace IntegrationLibrary.Tendering.Service
             return tenderParticipants;
         }
 
-        private void SetTenderParticipants() // imena svih apoteka koje su bar jednom ucestvovale
+        private void SetTenderParticipants() 
         {
             foreach(TenderOffer offer in offerService.GetOffers())
             {
@@ -109,35 +113,44 @@ namespace IntegrationLibrary.Tendering.Service
         {
             tenderParticipants = new List<TenderParticipantDto>();
             SetTenderWinners();
-            foreach(TenderParticipantDto participant in tenderParticipants)
-            {
-                SetPharmacyWinnersNumber(participant.PharmacyName);
-            }
             return tenderParticipants;
         }
 
         private void SetTenderWinners()
         {
-            foreach (TenderOffer offer in offerService.GetOffers())
+            foreach(TenderOffer offer in offerService.GetWinningOffers())
             {
-                if (!IsPharmacyInParticipants(offer.PharmacyName) && offer.isWinner)
+                if (!IsPharmacyInParticipants(offer.PharmacyName))
                 {
                     TenderParticipantDto participant = new TenderParticipantDto { PharmacyName = offer.PharmacyName, Participations = 0 };
                     tenderParticipants.Add(participant);
                 }
+                UpdateParticipant(offer.PharmacyName);
             }
         }
 
-        private void SetPharmacyWinnersNumber(string pharmacy)
+        public List<double> GetWinningOffersPrices()
         {
-            foreach(TenderOffer offer in offerService.GetOffers())
+            List<double> winningPrices = new List<double>();
+            foreach(TenderOffer offer in offerService.GetWinningOffers())
             {
-                if (offer.isWinner && offer.PharmacyName.Equals(pharmacy))
-                {
-                    UpdateParticipant(pharmacy);
-                }
+                winningPrices.Add(GetOfferPrice(offer.Id));
             }
+            return winningPrices;
         }
+
+        private double GetOfferPrice(int offerId)
+        {
+            List<TenderOfferItemDto> items = tenderOfferItemService.GetTenderOfferItems(offerId);
+            double price = 0;
+            foreach (TenderOfferItemDto item in items)
+            {
+                price += item.Quantity * item.Price;
+            }
+            return price;
+        }
+
+        //private 
 
 
     }
