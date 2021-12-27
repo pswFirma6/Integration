@@ -43,5 +43,12 @@ namespace IntegrationAPI.Controller
             return chartsService.GetWinningOffersPrices();
         }
 
+        [HttpGet]
+        [Route("getPharmaciesEarnings")]
+        public List<TenderEarningDto> GetPharmaciesEarnings()
+        {
+            return chartsService.GetPharmaciesEarnings();
+        }
+
     }
 }
