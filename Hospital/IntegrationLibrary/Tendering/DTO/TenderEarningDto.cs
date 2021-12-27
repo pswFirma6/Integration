@@ -6,14 +6,14 @@ namespace IntegrationLibrary.Tendering.DTO
 {
     public class TenderEarningDto
     {
-        public string PharmacyName { get; set; }
+        public string Name { get; set; }
         public double Earning { get; set; }
 
         public TenderEarningDto() { }
 
-        public TenderEarningDto(string pharmacyName, double earning)
+        public TenderEarningDto(string name, double earning)
         {
-            PharmacyName = pharmacyName;
+            Name = name;
             Earning = earning;
         }
     }

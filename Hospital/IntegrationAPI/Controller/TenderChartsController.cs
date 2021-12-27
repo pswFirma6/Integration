@@ -50,5 +50,12 @@ namespace IntegrationAPI.Controller
             return chartsService.GetPharmaciesEarnings();
         }
 
+        [HttpGet]
+        [Route("pharmacyOffers/{pharmacyName}")]
+        public List<TenderEarningDto> GetPharmacyByName([FromRoute] string pharmacyName)
+        {
+            return chartsService.GetPharmacyOffers(pharmacyName);
+        }
+
     }
 }

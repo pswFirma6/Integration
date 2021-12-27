@@ -135,20 +135,9 @@ namespace IntegrationLibrary.Tendering.Service
             List<double> winningPrices = new List<double>();
             foreach(TenderOffer offer in offerService.GetWinningOffers())
             {
-                winningPrices.Add(GetOfferPrice(offer.Id));
+                winningPrices.Add(offerItemService.GetOfferPrice(offer.Id));
             }
             return winningPrices;
-        }
-
-        private double GetOfferPrice(int offerId)
-        {
-            double price = 0;
-            List<TenderOfferItemDto> items = offerItemService.GetTenderOfferItems(offerId);
-            foreach (TenderOfferItemDto item in items)
-            {
-                price += item.Quantity * item.Price;
-            }
-            return price;
         }
 
         public List<TenderEarningDto> GetPharmaciesEarnings()  
@@ -165,7 +154,7 @@ namespace IntegrationLibrary.Tendering.Service
             {
                 if (!IsPharmacyInEarnings(offer.PharmacyName))
                 {
-                    TenderEarningDto earning = new TenderEarningDto { PharmacyName = offer.PharmacyName, Earning = 0 };
+                    TenderEarningDto earning = new TenderEarningDto { Name = offer.PharmacyName, Earning = 0 };
                     earnings.Add(earning);
                 }
             }
@@ -175,7 +164,7 @@ namespace IntegrationLibrary.Tendering.Service
         {
             foreach(TenderEarningDto earning in earnings)
             {
-                if (earning.PharmacyName.Equals(pharmacy))
+                if (earning.Name.Equals(pharmacy))
                 {
                     return true;
                 }
@@ -195,11 +184,25 @@ namespace IntegrationLibrary.Tendering.Service
         {
             foreach (TenderOffer offer in offerService.GetWinningOffers())
             {
-                if (offer.PharmacyName.Equals(earning.PharmacyName))
+                if (offer.PharmacyName.Equals(earning.Name))
                 {
-                    earning.Earning += GetOfferPrice(offer.Id);
+                    earning.Earning += offerItemService.GetOfferPrice(offer.Id);
                 }
             }
+        }
+
+        public List<TenderEarningDto> GetPharmacyOffers(string pharmacyName)
+        {
+            List<TenderEarningDto> pharmacyOffers = new List<TenderEarningDto>();
+            foreach (TenderOffer offer in offerService.GetOffers())
+            {
+                if (offer.PharmacyName.Equals(pharmacyName))
+                {
+                    TenderEarningDto pharmacyOffer = new TenderEarningDto { Name = offer.TenderId.ToString(), Earning = offerItemService.GetOfferPrice(offer.Id) };
+                    pharmacyOffers.Add(pharmacyOffer);
+                }
+            }
+            return pharmacyOffers;
         }
 
     }

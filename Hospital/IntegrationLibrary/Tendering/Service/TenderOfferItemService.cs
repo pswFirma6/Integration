@@ -55,5 +55,16 @@ namespace IntegrationLibrary.Tendering.Service
             }
         }
 
+        public double GetOfferPrice(int offerId)
+        {
+            double price = 0;
+            List<TenderOfferItemDto> items = GetTenderOfferItems(offerId);
+            foreach (TenderOfferItemDto item in items)
+            {
+                price += item.Quantity * item.Price;
+            }
+            return price;
+        }
+
     }
 }
