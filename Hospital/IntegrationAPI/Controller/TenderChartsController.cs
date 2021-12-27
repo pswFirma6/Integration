@@ -18,7 +18,14 @@ namespace IntegrationAPI.Controller
         [Route("getTenderParticipants")]
         public List<TenderParticipantDto> GetTenderParticipants()
         {
-            return chartsService.TenderParticipants();
+            return chartsService.GetTendersParticipants();
+        }
+
+        [HttpGet]
+        [Route("getTenderWinners")]
+        public List<TenderParticipantDto> GetTenderWinners()
+        {
+            return chartsService.GetTenderWinners();
         }
 
     }

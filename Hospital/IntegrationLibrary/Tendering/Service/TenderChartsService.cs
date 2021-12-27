@@ -23,7 +23,7 @@ namespace IntegrationLibrary.Tendering.Service
             offerService = new TenderOfferService(offerRepository);
         }
 
-        public List<TenderParticipantDto> TenderParticipants()    // potrebna lista imena apoteka sa brojem ucestvovanja
+        public List<TenderParticipantDto> GetTendersParticipants()    // potrebna lista imena apoteka sa brojem ucestvovanja
         {
             tenderParticipants = new List<TenderParticipantDto>();
             SetTenderParticipants();
@@ -36,7 +36,6 @@ namespace IntegrationLibrary.Tendering.Service
 
         private void SetTenderParticipants() // imena svih apoteka koje su bar jednom ucestvovale
         {
-            tenderParticipants = new List<TenderParticipantDto>();
             foreach(TenderOffer offer in offerService.GetOffers())
             {
                 if (!IsPharmacyInParticipants(offer.PharmacyName))
@@ -61,17 +60,23 @@ namespace IntegrationLibrary.Tendering.Service
 
         private void SetPharmacyParticipationNumber(string pharmacy)
         {
-            tenders = new List<int>();
             foreach(TenderOffer offer in offerService.GetOffers())
             {
-                foreach(TenderOffer o in offerService.GetOffers())
+                tenders = new List<int>();
+                CheckIfTenderParticipant(offer.TenderId, pharmacy);
+            }
+        }
+
+        private void CheckIfTenderParticipant(int tenderId, string pharmacy)
+        {
+            foreach (TenderOffer o in offerService.GetOffers())
+            {
+                if (o.TenderId == tenderId && !IsTenderChecked(tenderId))
                 {
-                    if(o.TenderId == offer.TenderId && !IsTenderChecked(offer.TenderId))
+                    tenders.Add(tenderId);
+                    if (o.PharmacyName.Equals(pharmacy))
                     {
-                        if (o.PharmacyName.Equals(pharmacy))
-                        {
-                            UpdateParticipant(pharmacy);
-                        }
+                        UpdateParticipant(pharmacy);
                     }
                 }
             }
@@ -99,5 +104,41 @@ namespace IntegrationLibrary.Tendering.Service
                 }
             }
         }
+
+        public List<TenderParticipantDto> GetTenderWinners()
+        {
+            tenderParticipants = new List<TenderParticipantDto>();
+            SetTenderWinners();
+            foreach(TenderParticipantDto participant in tenderParticipants)
+            {
+                SetPharmacyWinnersNumber(participant.PharmacyName);
+            }
+            return tenderParticipants;
+        }
+
+        private void SetTenderWinners()
+        {
+            foreach (TenderOffer offer in offerService.GetOffers())
+            {
+                if (!IsPharmacyInParticipants(offer.PharmacyName) && offer.isWinner)
+                {
+                    TenderParticipantDto participant = new TenderParticipantDto { PharmacyName = offer.PharmacyName, Participations = 0 };
+                    tenderParticipants.Add(participant);
+                }
+            }
+        }
+
+        private void SetPharmacyWinnersNumber(string pharmacy)
+        {
+            foreach(TenderOffer offer in offerService.GetOffers())
+            {
+                if (offer.isWinner && offer.PharmacyName.Equals(pharmacy))
+                {
+                    UpdateParticipant(pharmacy);
+                }
+            }
+        }
+
+
     }
 }
