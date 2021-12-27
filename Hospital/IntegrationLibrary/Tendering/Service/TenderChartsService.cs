@@ -11,21 +11,19 @@ namespace IntegrationLibrary.Tendering.Service
 {
     public class TenderChartsService
     {
-        private readonly ITenderRepository tenderRepository;
         private readonly ITenderOfferRepository offerRepository;
         private readonly TenderOfferService offerService;
         private List<TenderParticipantDto> tenderParticipants;
         private List<int> tenders;
 
-        public TenderChartsService(ITenderRepository repository)
+        public TenderChartsService()
         {
-            tenderRepository = repository;
             DatabaseContext context = new DatabaseContext();
             offerRepository = new TenderOfferRepository(context);
             offerService = new TenderOfferService(offerRepository);
         }
 
-        public List<TenderParticipantDto> PharmacyParticipations()    // potrebna lista imena apoteka sa brojem ucestvovanja
+        public List<TenderParticipantDto> TenderParticipants()    // potrebna lista imena apoteka sa brojem ucestvovanja
         {
             tenderParticipants = new List<TenderParticipantDto>();
             SetTenderParticipants();
