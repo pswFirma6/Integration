@@ -1,4 +1,5 @@
-﻿using IntegrationLibrary.Pharmacy.Model;
+﻿using IntegrationLibrary.Pharmacy.DTO;
+using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Tendering.DTO;
 using IntegrationLibrary.Tendering.IRepository;
 using IntegrationLibrary.Tendering.Model;
@@ -18,6 +19,7 @@ namespace IntegrationLibrary.Tendering.Service
         private List<TenderParticipantDto> tenderParticipants;
         private List<int> tenders;
         private List<TenderEarningDto> earnings;
+        private List<MedicineDto> medicineConsumption;
 
         public TenderChartsService(ITenderOfferRepository repository)
         {
@@ -245,6 +247,58 @@ namespace IntegrationLibrary.Tendering.Service
                 }
             }
             return participations;
+        }
+
+        public List<MedicineDto> GetPharmacyMedicineConsumption(string pharmacyName)
+        {
+            medicineConsumption = new List<MedicineDto>();
+            foreach(TenderOffer offer in offerService.GetWinningOffers())
+            {
+                if (offer.PharmacyName.Equals(pharmacyName))
+                {
+                    UpdateMedicineConsumption(offer.Id);
+                }
+            }
+            return medicineConsumption;
+        }
+
+        private void UpdateMedicineConsumption(int offerId)
+        {
+            foreach (TenderOfferItemDto item in offerItemService.GetTenderOfferItems(offerId))
+            {
+                if (!IsMedicineInConsumption(item.Name))
+                {
+                    MedicineDto medicine = new MedicineDto { Name = item.Name, Quantity = item.Quantity };
+                    medicineConsumption.Add(medicine);
+                }
+                else
+                {
+                    UpdateMedicineQuantity(item.Name, item.Quantity);
+                }
+            }
+        }
+
+        private bool IsMedicineInConsumption(string medicine)
+        {
+            foreach(MedicineDto med in medicineConsumption)
+            {
+                if (med.Name.Equals(medicine))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void UpdateMedicineQuantity(string medicineName, int quantity)
+        {
+            foreach (MedicineDto med in medicineConsumption)
+            {
+                if (med.Name.Equals(medicineName))
+                {
+                    med.Quantity += quantity;
+                }
+            }
         }
 
     }

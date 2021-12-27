@@ -31,7 +31,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             repository.Save();
         }
 
-        public bool CheckIfMedicineIsAvailableInPharmacy(MedicineDTO medicine)
+        public bool CheckIfMedicineIsAvailableInPharmacy(MedicineDto medicine)
         {
             return true;
         }
@@ -41,7 +41,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             return repository.FindById(id);
         }
 
-        public void EditMedicine(MedicineDTO medicine)
+        public void EditMedicine(MedicineDto medicine)
         {
             foreach (Medicine med in GetMedicines())
             {
@@ -61,7 +61,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             repository.Update(newStateMedicine);
         }
 
-        public void OrderMedicine(CheckAvailabilityDTO order)
+        public void OrderMedicine(CheckAvailabilityDto order)
         {
             if (!CheckIfMedicineExists(order.Medicine.Name))
             {
