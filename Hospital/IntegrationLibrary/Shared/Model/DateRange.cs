@@ -41,7 +41,7 @@ namespace IntegrationLibrary.Shared.Model
         }
 
     }
-    public class DateException: Exception, ISerializable
+    public class DateException: Exception
     {
         public DateException(string message) : base(message) { }
 

@@ -48,7 +48,7 @@ namespace IntegrationLibrary.Pharmacy.Model
 
     }
 
-    public class ConnectionInfoException : Exception, ISerializable
+    public class ConnectionInfoException : Exception
     {
         public ConnectionInfoException(String message) : base(message) { }
 

@@ -30,7 +30,7 @@ namespace IntegrationLibrary.Pharmacy.Model
         }
     }
 
-    public class AddressException : Exception, ISerializable
+    public class AddressException : Exception
     {
         public AddressException(String message) : base(message) { }
     }
