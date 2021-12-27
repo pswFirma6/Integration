@@ -52,9 +52,16 @@ namespace IntegrationAPI.Controller
 
         [HttpGet]
         [Route("pharmacyOffers/{pharmacyName}")]
-        public List<TenderEarningDto> GetPharmacyByName([FromRoute] string pharmacyName)
+        public List<TenderEarningDto> GetPharmacyOffers([FromRoute] string pharmacyName)
         {
             return chartsService.GetPharmacyOffers(pharmacyName);
+        }
+
+        [HttpGet]
+        [Route("pharmacyWinningOffers/{pharmacyName}")]
+        public List<TenderEarningDto> GetPharmacyWinningOffers([FromRoute] string pharmacyName)
+        {
+            return chartsService.GetPharmacyWinningOffers(pharmacyName);
         }
 
     }

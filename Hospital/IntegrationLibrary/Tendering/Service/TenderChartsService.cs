@@ -205,5 +205,19 @@ namespace IntegrationLibrary.Tendering.Service
             return pharmacyOffers;
         }
 
+        public List<TenderEarningDto> GetPharmacyWinningOffers(string pharmacyName)
+        {
+            List<TenderEarningDto> pharmacyOffers = new List<TenderEarningDto>();
+            foreach (TenderOffer offer in offerService.GetWinningOffers())
+            {
+                if (offer.PharmacyName.Equals(pharmacyName))
+                {
+                    TenderEarningDto pharmacyOffer = new TenderEarningDto { Name = offer.TenderId.ToString(), Earning = offerItemService.GetOfferPrice(offer.Id) };
+                    pharmacyOffers.Add(pharmacyOffer);
+                }
+            }
+            return pharmacyOffers;
+        }
+
     }
 }
