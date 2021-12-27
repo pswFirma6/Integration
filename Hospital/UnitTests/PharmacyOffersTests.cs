@@ -23,7 +23,7 @@ namespace IntegrationAppTests.UnitTests
         {
             var stubRepository = new Mock<IOfferRepository>();
             service = new OfferService(stubRepository.Object);
-            DateRange dateRange = new DateRange(new DateTime(2021, 11, 11), new DateTime(2021, 11, 17));
+            DateRange dateRange = new DateRange(new DateTime(2021, 11, 11), new DateTime(2022, 11, 17));
             Offer offer = new Offer { Id = 1, Title = "Offer1", Content = "Offer1", OfferDateRange = dateRange, PharmacyName = "Pharmacy1", Posted = false };
 
             bool checkDates = service.CheckEndDate(offer);

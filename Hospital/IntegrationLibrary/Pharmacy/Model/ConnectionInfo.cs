@@ -1,7 +1,7 @@
 ﻿using IntegrationLibrary.Shared.Model;
 using System;
 using System.Collections.Generic;
-using System.Text;
+
 
 namespace IntegrationLibrary.Pharmacy.Model
 {
@@ -48,7 +48,7 @@ namespace IntegrationLibrary.Pharmacy.Model
 
     }
 
-
+    [Serializable]
     public class ConnectionInfoException : Exception
     {
         public ConnectionInfoException(String message) : base(message) { }

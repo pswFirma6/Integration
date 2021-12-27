@@ -28,7 +28,7 @@ namespace IntegrationLibrary.Pharmacy.Model
                 throw new ConnectionInfoException("Address cannot be empty");
         }
     }
-
+    [Serializable]
     public class AddressException : Exception
     {
         public AddressException(String message) : base(message) { }
