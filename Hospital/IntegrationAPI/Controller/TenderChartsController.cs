@@ -1,4 +1,4 @@
-﻿using Hospital.DTO;
+﻿using IntegrationLibrary.Pharmacy.DTO;
 using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Tendering.DTO;
 using IntegrationLibrary.Tendering.IRepository;
@@ -81,7 +81,7 @@ namespace IntegrationAPI.Controller
 
         [HttpGet]
         [Route("pharmacyMedicineConsumption/{pharmacyName}")]
-        public List<MedicineDTO> GetPharmacyMedicineConsumption([FromRoute] string pharmacyName)
+        public List<MedicineDto> GetPharmacyMedicineConsumption([FromRoute] string pharmacyName)
         {
             return chartsService.GetPharmacyMedicineConsumption(pharmacyName);
         }
