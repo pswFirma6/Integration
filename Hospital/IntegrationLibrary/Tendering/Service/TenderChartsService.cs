@@ -219,5 +219,33 @@ namespace IntegrationLibrary.Tendering.Service
             return pharmacyOffers;
         }
 
+        public int GetNumberOfPharmacyWins(string pharmacyName)
+        {
+            int wins = 0;
+            foreach(TenderOffer offer in offerService.GetWinningOffers())
+            {
+                if (offer.PharmacyName.Equals(pharmacyName))
+                {
+                    wins++;
+                }
+            }
+            return wins;
+        }
+
+        public int GetNumberOfPharmacyParticipations(string pharmacyName)
+        {
+            int participations = 0;
+            tenders = new List<int>();
+            foreach (TenderOffer offer in offerService.GetOffers())
+            {
+                if (!IsTenderChecked(offer.TenderId) && offer.PharmacyName.Equals(pharmacyName))
+                {
+                    participations++;
+                    tenders.Add(offer.TenderId);
+                }
+            }
+            return participations;
+        }
+
     }
 }

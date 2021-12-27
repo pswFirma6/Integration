@@ -64,5 +64,19 @@ namespace IntegrationAPI.Controller
             return chartsService.GetPharmacyWinningOffers(pharmacyName);
         }
 
+        [HttpGet]
+        [Route("pharmacyWins/{pharmacyName}")]
+        public int GetNumberOfPharmacyWins([FromRoute] string pharmacyName)
+        {
+            return chartsService.GetNumberOfPharmacyWins(pharmacyName);
+        }
+
+        [HttpGet]
+        [Route("pharmacyParticipations/{pharmacyName}")]
+        public int GetNumberOfPharmacyParticipations([FromRoute] string pharmacyName)
+        {
+            return chartsService.GetNumberOfPharmacyParticipations(pharmacyName);
+        }
+
     }
 }
