@@ -1,6 +1,7 @@
 ﻿using IntegrationLibrary.Shared.Model;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace IntegrationLibrary.Pharmacy.Model
 {
@@ -28,8 +29,8 @@ namespace IntegrationLibrary.Pharmacy.Model
                 throw new ConnectionInfoException("Address cannot be empty");
         }
     }
-    [Serializable]
-    public class AddressException : Exception
+
+    public class AddressException : Exception, ISerializable
     {
         public AddressException(String message) : base(message) { }
     }

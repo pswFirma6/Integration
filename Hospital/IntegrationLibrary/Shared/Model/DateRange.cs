@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Runtime.Serialization;
 
 namespace IntegrationLibrary.Shared.Model
 {
@@ -41,8 +41,7 @@ namespace IntegrationLibrary.Shared.Model
         }
 
     }
-    [Serializable]
-    public class DateException: Exception
+    public class DateException: Exception, ISerializable
     {
         public DateException(string message) : base(message) { }
 
