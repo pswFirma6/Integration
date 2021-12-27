@@ -4,6 +4,7 @@ using IntegrationLibrary.Partnership.Service;
 using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Pharmacy.Service;
+using IntegrationLibrary.Shared.Model;
 using Moq;
 using Shouldly;
 using System;
@@ -22,7 +23,8 @@ namespace IntegrationAppTests.UnitTests
         {
             var stubRepository = new Mock<IOfferRepository>();
             service = new OfferService(stubRepository.Object);
-            Offer offer = new Offer { Id = 1, Title = "Offer1", Content = "Offer1", StartDate = new DateTime(2021, 11, 11), EndDate = new DateTime(2030, 12, 17), PharmacyName = "Pharmacy1", Posted = false };
+            DateRange dateRange = new DateRange(new DateTime(2021, 11, 11), new DateTime(2021, 11, 17));
+            Offer offer = new Offer { Id = 1, Title = "Offer1", Content = "Offer1", OfferDateRange = dateRange, PharmacyName = "Pharmacy1", Posted = false };
 
             bool checkDates = service.CheckEndDate(offer);
 

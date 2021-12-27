@@ -27,14 +27,24 @@ namespace IntegrationLibrary.Shared.Model
         private void ValidateDates()
         {
             if (EndDate < StartDate)
-                throw new DateException(StartDate,EndDate);
+                throw new DateException("The end date cannot be before start date!");
+        }
+
+        public bool CheckIfEndDateIsBeforeToday()
+        {
+            return DateTime.Compare(EndDate, DateTime.Now) > 0;
+        }
+
+        public bool CheckIfStartDateIsBeforeToday()
+        {
+            return DateTime.Compare(StartDate, DateTime.Now) > 0;
         }
 
     }
 
     public class DateException: Exception
     {
-        public DateException(DateTime startDate, DateTime endDate) : base("End date " + endDate.ToString() + " should not be before start date: " + startDate.ToString()) { }
+        public DateException(string message) : base(message) { }
 
     }
 

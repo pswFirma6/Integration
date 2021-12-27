@@ -110,11 +110,10 @@ namespace IntegrationLibrary.Pharmacy.Service
 
         public void AddPictureToPharmacy(string pharmacyName, string pharmacyPicture)
         {
-          
-            GetPharmacyByName(pharmacyName).PharmacyPicture = pharmacyPicture;
-            repository.Update(GetPharmacyByName(pharmacyName));
+            Model.Pharmacy pharmacy = GetPharmacyByName(pharmacyName);
+            pharmacy.SetPharmacyPicture(pharmacyPicture);
+            repository.Update(pharmacy);
             repository.Save();
-
         }
 
 
