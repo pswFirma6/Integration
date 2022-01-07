@@ -5,9 +5,9 @@ using IntegrationLibrary.Tendering.IRepository;
 using IntegrationLibrary.Tendering.Repository;
 using IntegrationLibrary.Tendering.Service;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+
 using System.Threading.Tasks;
 
 namespace IntegrationAPI.Controller
@@ -39,7 +39,7 @@ namespace IntegrationAPI.Controller
 
         [HttpGet]
         [Route("getTendersWinningOffersPrices")]
-        public List<double> GetTendersWinningOffersPrices()
+        public List<TenderEarningDto> GetTendersWinningOffersPrices()
         {
             return chartsService.GetWinningOffersPrices();
         }
@@ -67,16 +67,18 @@ namespace IntegrationAPI.Controller
 
         [HttpGet]
         [Route("pharmacyWins/{pharmacyName}")]
-        public int GetNumberOfPharmacyWins([FromRoute] string pharmacyName)
+        public int[] GetNumberOfPharmacyWins([FromRoute] string pharmacyName)
         {
-            return chartsService.GetNumberOfPharmacyWins(pharmacyName);
+            int[] wins = { chartsService.GetNumberOfPharmacyWins(pharmacyName) };
+            return wins;
         }
 
         [HttpGet]
         [Route("pharmacyParticipations/{pharmacyName}")]
-        public int GetNumberOfPharmacyParticipations([FromRoute] string pharmacyName)
+        public int[] GetNumberOfPharmacyParticipations([FromRoute] string pharmacyName)
         {
-            return chartsService.GetNumberOfPharmacyParticipations(pharmacyName);
+            int[] participations = { chartsService.GetNumberOfPharmacyParticipations(pharmacyName) };
+            return participations;
         }
 
         [HttpGet]
@@ -85,6 +87,15 @@ namespace IntegrationAPI.Controller
         {
             return chartsService.GetPharmacyMedicineConsumption(pharmacyName);
         }
+
+        [HttpGet]
+        [Route("getPdf")]
+        public void GetFile()
+        {
+            chartsService.GenerateReport();
+            
+        }
+
 
     }
 }

@@ -4,8 +4,12 @@ using IntegrationLibrary.Tendering.DTO;
 using IntegrationLibrary.Tendering.IRepository;
 using IntegrationLibrary.Tendering.Model;
 using IntegrationLibrary.Tendering.Repository;
+using Spire.Pdf;
+using Spire.Pdf.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Text;
 
 namespace IntegrationLibrary.Tendering.Service
@@ -67,24 +71,13 @@ namespace IntegrationLibrary.Tendering.Service
 
         private void SetPharmacyParticipationNumber(string pharmacy)
         {
-            foreach(TenderOffer offer in offerService.GetOffers())
-            {
-                tenders = new List<int>();
-                CheckIfTenderParticipant(offer.TenderId, pharmacy);
-            }
-        }
-
-        private void CheckIfTenderParticipant(int tenderId, string pharmacy)
-        {
+            tenders = new List<int>();
             foreach (TenderOffer o in offerService.GetOffers())
             {
-                if (o.TenderId == tenderId && !IsTenderChecked(tenderId))
+                if (!IsTenderChecked(o.TenderId) && o.PharmacyName.Equals(pharmacy))
                 {
-                    tenders.Add(tenderId);
-                    if (o.PharmacyName.Equals(pharmacy))
-                    {
-                        UpdateParticipant(pharmacy);
-                    }
+                    tenders.Add(o.TenderId);
+                    UpdateParticipant(pharmacy);
                 }
             }
         }
@@ -132,14 +125,15 @@ namespace IntegrationLibrary.Tendering.Service
             }
         }
 
-        public List<double> GetWinningOffersPrices()
+        public List<TenderEarningDto> GetWinningOffersPrices()
         {
-            List<double> winningPrices = new List<double>();
+            List<TenderEarningDto> winnings = new List<TenderEarningDto>();
             foreach(TenderOffer offer in offerService.GetWinningOffers())
             {
-                winningPrices.Add(offerItemService.GetOfferPrice(offer.Id));
+                TenderEarningDto win = new TenderEarningDto { Name = offer.TenderId.ToString(), Earning = offerItemService.GetOfferPrice(offer.Id) };
+                winnings.Add(win);
             }
-            return winningPrices;
+            return winnings;
         }
 
         public List<TenderEarningDto> GetPharmaciesEarnings()  
@@ -299,6 +293,54 @@ namespace IntegrationLibrary.Tendering.Service
                     med.Quantity += quantity;
                 }
             }
+        }
+
+        public void GenerateReport()
+        {
+            string filePath = Directory.GetCurrentDirectory();
+            string fileName = "TenderReport.pdf";
+
+            PdfDocument doc = new PdfDocument();
+            PdfPageBase page = doc.Pages.Add();
+            page.Canvas.DrawString(GetReportContent(), new PdfFont(PdfFontFamily.Helvetica, 11f), new PdfSolidBrush(Color.Black), 10, 10);
+
+
+            StreamWriter File = new StreamWriter(Path.Combine(filePath, fileName), true);
+            doc.SaveToStream(File.BaseStream);
+            File.Close();
+     
+        }
+
+        private string GetReportContent()
+        {
+            string content = "\r\n\r\n";
+            foreach(TenderParticipantDto participant in GetTendersParticipants())
+            {
+                content += "Pharmacy " + participant.PharmacyName + "\r\n";
+                content += "Participated on: " + GetNumberOfPharmacyParticipations(participant.PharmacyName) + " tenders,won " + GetNumberOfPharmacyWins(participant.PharmacyName) + " of them" + "\r\n";
+                foreach(TenderEarningDto earningDto in GetPharmaciesEarnings())
+                {
+                    if (earningDto.Name.Equals(participant.PharmacyName))
+                    {
+                        content += "Total amount of profit earned: " + earningDto.Earning + "\r\n";
+                        break;
+                    }
+
+                }
+                content += "------------------------------------------------------------------" + "\r\n";
+            }
+            return content;
+        }
+
+        private string GetDirectory()
+        {
+            string path = Directory.GetParent(Environment.CurrentDirectory).ToString() + "/IntegrationAPI";
+            return path;
+        }
+
+        public string GetFile()
+        {
+            return Path.Combine(GetDirectory(), "TenderReport.pdf");
         }
 
     }
