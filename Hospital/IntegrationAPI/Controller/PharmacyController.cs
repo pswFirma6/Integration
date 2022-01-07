@@ -47,7 +47,7 @@ namespace IntegrationAPI.Controller
         public IActionResult RegisterPharmacy(PharmacyInfo info)
         {
             service.AddPharmacy(info);
-            var apiKey = _config.GetValue<string>("ApiKey");
+            var apiKey = Environment.GetEnvironmentVariable("API_KEY") ?? _config.GetValue<string>("ApiKey");
             return Ok(apiKey.ToString());
         }
 
