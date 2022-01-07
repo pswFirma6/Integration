@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace IntegrationLibrary.Tendering.Service
@@ -313,23 +314,20 @@ namespace IntegrationLibrary.Tendering.Service
 
         private string GetReportContent()
         {
-            string content = "\r\n\r\n";
-            foreach(TenderParticipantDto participant in GetTendersParticipants())
+            StringBuilder sb = new StringBuilder("\r\n\r\n");
+            foreach (var participant in GetTendersParticipants().Select(x => x.PharmacyName))
             {
-                content += "Pharmacy " + participant.PharmacyName + "\r\n";
-                content += "Participated on: " + GetNumberOfPharmacyParticipations(participant.PharmacyName) + " tenders,won " + GetNumberOfPharmacyWins(participant.PharmacyName) + " of them" + "\r\n";
-                foreach(TenderEarningDto earningDto in GetPharmaciesEarnings())
+                sb.AppendLine("Pharmacy " + participant + "\r");
+                sb.AppendLine("Participated on: " + GetNumberOfPharmacyParticipations(participant) + " tenders,won " + GetNumberOfPharmacyWins(participant) + " of them" + "\r\n");
+                foreach (var earningDto in GetPharmaciesEarnings().Where(earningDto => earningDto.Name.Equals(participant)))
                 {
-                    if (earningDto.Name.Equals(participant.PharmacyName))
-                    {
-                        content += "Total amount of profit earned: " + earningDto.Earning + "\r\n";
-                        break;
-                    }
-
+                    sb.AppendLine("Total amount of profit earned: " + earningDto.Earning + "\r");
+                    break;
                 }
-                content += "------------------------------------------------------------------" + "\r\n";
+
+                sb.AppendLine("------------------------------------------------------------------" + "\r");
             }
-            return content;
+            return sb.ToString();
         }
 
         private string GetDirectory()
