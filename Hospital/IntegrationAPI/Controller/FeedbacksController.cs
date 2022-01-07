@@ -43,7 +43,9 @@ namespace IntegrationAPI.Controller
         [HttpPost]
         public IActionResult PostFeedback(Feedback feedback)
         {
+           
             service.SendFeedback(feedback);
+           
             Response.Headers.Add("ApiKey",
                 pharmacyService.GetPharmacyByName(feedback.PharmacyName).PharmacyConnectionInfo.ApiKey);
             return Ok();

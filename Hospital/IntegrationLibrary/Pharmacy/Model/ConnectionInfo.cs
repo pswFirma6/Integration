@@ -30,8 +30,9 @@ namespace IntegrationLibrary.Pharmacy.Model
 
         private void ValidateProtocol()
         {
-            if (!FileProtocol.Equals("HTTP") || !FileProtocol.Equals("SFTP")) { }
-              //  throw new ConnectionInfoException("File protocol is not supported");
+            if (!FileProtocol.Equals("HTTP") || !FileProtocol.Equals("SFTP"))
+                Console.WriteLine("Ne radi exception!!!!");
+                //throw new ConnectionInfoException("File protocol is not supported");
         }
 
         private void ValidateUrl()
