@@ -1,5 +1,6 @@
 ﻿using IntegrationLibrary.Pharmacy.DTO;
 using IntegrationLibrary.Pharmacy.Model;
+using IntegrationLibrary.Shared.Model;
 using IntegrationLibrary.Tendering.DTO;
 using IntegrationLibrary.Tendering.IRepository;
 using IntegrationLibrary.Tendering.Model;
@@ -20,11 +21,14 @@ namespace IntegrationLibrary.Tendering.Service
         private readonly ITenderOfferRepository offerRepository;
         private readonly TenderOfferService offerService;
         private readonly TenderOfferItemService offerItemService;
+        private readonly ITenderRepository tenderRepository;
 
         private List<TenderParticipantDto> tenderParticipants;
         private List<int> tenders;
         private List<TenderEarningDto> earnings;
         private List<MedicineDto> medicineConsumption;
+        private DateTime startDate;
+        private DateTime endDate;
 
         public TenderChartsService(ITenderOfferRepository repository)
         {
@@ -33,34 +37,41 @@ namespace IntegrationLibrary.Tendering.Service
             DatabaseContext context = new DatabaseContext();
             ITenderOfferItemRepository itemRepository = new TenderOfferItemRepository(context);
             offerItemService = new TenderOfferItemService(itemRepository);
+            tenderRepository = new TenderRepository(context);
         }
 
-        public List<TenderParticipantDto> GetTendersParticipants()
+        public List<TenderParticipantDto> GetTendersParticipants(DateRange dateRange)
         {
+            this.startDate = dateRange.StartDate;
+            this.endDate = dateRange.EndDate;
             tenderParticipants = new List<TenderParticipantDto>();
             SetTenderParticipants();
-            foreach(TenderParticipantDto participant in tenderParticipants)
+            foreach (TenderParticipantDto participant in tenderParticipants)
             {
                 SetPharmacyParticipationNumber(participant.PharmacyName);
             }
             return tenderParticipants;
         }
 
-        private void SetTenderParticipants() 
+        private void SetTenderParticipants()
         {
-            foreach(TenderOffer offer in offerService.GetOffers())
+            foreach (TenderOffer offer in offerService.GetOffers())
             {
-                if (!IsPharmacyInParticipants(offer.PharmacyName))
+                Tender tender = tenderRepository.FindById(offer.TenderId);
+                if (startDate < tender.StartDate && !tender.Opened)
                 {
-                    TenderParticipantDto participant = new TenderParticipantDto { PharmacyName = offer.PharmacyName, Participations = 0 };
-                    tenderParticipants.Add(participant);
+                    if (!IsPharmacyInParticipants(offer.PharmacyName))
+                    {
+                        TenderParticipantDto participant = new TenderParticipantDto { PharmacyName = offer.PharmacyName, Participations = 0 };
+                        tenderParticipants.Add(participant);
+                    }
                 }
             }
         }
 
         private bool IsPharmacyInParticipants(string pharmacy)
         {
-            foreach(TenderParticipantDto participant in tenderParticipants)
+            foreach (TenderParticipantDto participant in tenderParticipants)
             {
                 if (participant.PharmacyName.Equals(pharmacy))
                 {
@@ -75,19 +86,24 @@ namespace IntegrationLibrary.Tendering.Service
             tenders = new List<int>();
             foreach (TenderOffer o in offerService.GetOffers())
             {
-                if (!IsTenderChecked(o.TenderId) && o.PharmacyName.Equals(pharmacy))
+                Tender tender = tenderRepository.FindById(o.TenderId);
+                if (startDate < tender.StartDate && endDate > tender.EndDate)
                 {
-                    tenders.Add(o.TenderId);
-                    UpdateParticipant(pharmacy);
+                    if (!IsTenderChecked(o.TenderId) && o.PharmacyName.Equals(pharmacy))
+                    {
+                        tenders.Add(o.TenderId);
+                        UpdateParticipant(pharmacy);
+                    }
                 }
+
             }
         }
 
         private bool IsTenderChecked(int tenderId)
         {
-            foreach(int tender in tenders)
+            foreach (int tender in tenders)
             {
-                if(tender == tenderId)
+                if (tender == tenderId)
                 {
                     return true;
                 }
@@ -97,7 +113,7 @@ namespace IntegrationLibrary.Tendering.Service
 
         private void UpdateParticipant(string participant)
         {
-            foreach(TenderParticipantDto p in tenderParticipants)
+            foreach (TenderParticipantDto p in tenderParticipants)
             {
                 if (p.PharmacyName.Equals(participant))
                 {
@@ -106,8 +122,10 @@ namespace IntegrationLibrary.Tendering.Service
             }
         }
 
-        public List<TenderParticipantDto> GetTenderWinners()
+        public List<TenderParticipantDto> GetTenderWinners(DateRange dateRange)
         {
+            this.startDate = dateRange.StartDate;
+            this.endDate = dateRange.EndDate;
             tenderParticipants = new List<TenderParticipantDto>();
             SetTenderWinners();
             return tenderParticipants;
@@ -115,30 +133,42 @@ namespace IntegrationLibrary.Tendering.Service
 
         private void SetTenderWinners()
         {
-            foreach(TenderOffer offer in offerService.GetWinningOffers())
+            foreach (TenderOffer offer in offerService.GetWinningOffers())
             {
-                if (!IsPharmacyInParticipants(offer.PharmacyName))
+                Tender tender = tenderRepository.FindById(offer.TenderId);
+                if (startDate < tender.StartDate && !tender.Opened)
                 {
-                    TenderParticipantDto participant = new TenderParticipantDto { PharmacyName = offer.PharmacyName, Participations = 0 };
-                    tenderParticipants.Add(participant);
+                    if (!IsPharmacyInParticipants(offer.PharmacyName))
+                    {
+                        TenderParticipantDto participant = new TenderParticipantDto { PharmacyName = offer.PharmacyName, Participations = 0 };
+                        tenderParticipants.Add(participant);
+                    }
+                    UpdateParticipant(offer.PharmacyName);
                 }
-                UpdateParticipant(offer.PharmacyName);
             }
         }
 
-        public List<TenderEarningDto> GetWinningOffersPrices()
+        public List<TenderEarningDto> GetWinningOffersPrices(DateRange dateRange)
         {
+            this.startDate = dateRange.StartDate;
+            this.endDate = dateRange.EndDate;
             List<TenderEarningDto> winnings = new List<TenderEarningDto>();
-            foreach(TenderOffer offer in offerService.GetWinningOffers())
+            foreach (TenderOffer offer in offerService.GetWinningOffers())
             {
-                TenderEarningDto win = new TenderEarningDto { Name = offer.TenderId.ToString(), Earning = offerItemService.GetOfferPrice(offer.Id) };
-                winnings.Add(win);
+                Tender tender = tenderRepository.FindById(offer.TenderId);
+                if (startDate < tender.StartDate && !tender.Opened)
+                {
+                    TenderEarningDto win = new TenderEarningDto { Name = offer.TenderId.ToString(), Earning = offerItemService.GetOfferPrice(offer.Id) };
+                    winnings.Add(win);
+                }
             }
             return winnings;
         }
 
-        public List<TenderEarningDto> GetPharmaciesEarnings()  
+        public List<TenderEarningDto> GetPharmaciesEarnings(DateRange dateRange)
         {
+            this.startDate = dateRange.StartDate;
+            this.endDate = dateRange.EndDate;
             earnings = new List<TenderEarningDto>();
             SetTenderEarnings();
             SetTenderEarningPrices();
@@ -149,17 +179,21 @@ namespace IntegrationLibrary.Tendering.Service
         {
             foreach (TenderOffer offer in offerService.GetWinningOffers())
             {
-                if (!IsPharmacyInEarnings(offer.PharmacyName))
+                Tender tender = tenderRepository.FindById(offer.TenderId);
+                if (startDate < tender.StartDate && !tender.Opened)
                 {
-                    TenderEarningDto earning = new TenderEarningDto { Name = offer.PharmacyName, Earning = 0 };
-                    earnings.Add(earning);
+                    if (!IsPharmacyInEarnings(offer.PharmacyName))
+                    {
+                        TenderEarningDto earning = new TenderEarningDto { Name = offer.PharmacyName, Earning = 0 };
+                        earnings.Add(earning);
+                    }
                 }
             }
         }
 
         private bool IsPharmacyInEarnings(string pharmacy)
         {
-            foreach(TenderEarningDto earning in earnings)
+            foreach (TenderEarningDto earning in earnings)
             {
                 if (earning.Name.Equals(pharmacy))
                 {
@@ -169,9 +203,9 @@ namespace IntegrationLibrary.Tendering.Service
             return false;
         }
 
-        private void SetTenderEarningPrices() 
+        private void SetTenderEarningPrices()
         {
-            foreach(TenderEarningDto earning in earnings)
+            foreach (TenderEarningDto earning in earnings)
             {
                 UpdateEarning(earning);
             }
@@ -181,10 +215,15 @@ namespace IntegrationLibrary.Tendering.Service
         {
             foreach (TenderOffer offer in offerService.GetWinningOffers())
             {
-                if (offer.PharmacyName.Equals(earning.Name))
+                Tender tender = tenderRepository.FindById(offer.TenderId);
+                if (startDate < tender.StartDate && !tender.Opened)
                 {
-                    earning.Earning += offerItemService.GetOfferPrice(offer.Id);
+                    if (offer.PharmacyName.Equals(earning.Name))
+                    {
+                        earning.Earning += offerItemService.GetOfferPrice(offer.Id);
+                    }
                 }
+
             }
         }
 
@@ -219,7 +258,7 @@ namespace IntegrationLibrary.Tendering.Service
         public int GetNumberOfPharmacyWins(string pharmacyName)
         {
             int wins = 0;
-            foreach(TenderOffer offer in offerService.GetWinningOffers())
+            foreach (TenderOffer offer in offerService.GetWinningOffers())
             {
                 if (offer.PharmacyName.Equals(pharmacyName))
                 {
@@ -247,7 +286,7 @@ namespace IntegrationLibrary.Tendering.Service
         public List<MedicineDto> GetPharmacyMedicineConsumption(string pharmacyName)
         {
             medicineConsumption = new List<MedicineDto>();
-            foreach(TenderOffer offer in offerService.GetWinningOffers())
+            foreach (TenderOffer offer in offerService.GetWinningOffers())
             {
                 if (offer.PharmacyName.Equals(pharmacyName))
                 {
@@ -275,7 +314,7 @@ namespace IntegrationLibrary.Tendering.Service
 
         private bool IsMedicineInConsumption(string medicine)
         {
-            foreach(MedicineDto med in medicineConsumption)
+            foreach (MedicineDto med in medicineConsumption)
             {
                 if (med.Name.Equals(medicine))
                 {
@@ -295,13 +334,11 @@ namespace IntegrationLibrary.Tendering.Service
                 }
             }
         }
-
-        public void GenerateReport()
+        public void GenerateReport(PdfDocument doc)
         {
             string filePath = Directory.GetCurrentDirectory();
             string fileName = "TenderReport.pdf";
 
-            PdfDocument doc = new PdfDocument();
             PdfPageBase page = doc.Pages.Add();
             page.Canvas.DrawString(GetReportContent(), new PdfFont(PdfFontFamily.Helvetica, 11f), new PdfSolidBrush(Color.Black), 10, 10);
 
@@ -315,18 +352,18 @@ namespace IntegrationLibrary.Tendering.Service
         private string GetReportContent()
         {
             StringBuilder sb = new StringBuilder("\r\n\r\n");
-            foreach (var participant in GetTendersParticipants().Select(x => x.PharmacyName))
+            /*foreach (var participant in GetTendersParticipants(startDate, endDate).Select(x => x.PharmacyName))
             {
                 sb.AppendLine("Pharmacy " + participant + "\r");
                 sb.AppendLine("Participated on: " + GetNumberOfPharmacyParticipations(participant) + " tenders,won " + GetNumberOfPharmacyWins(participant) + " of them" + "\r\n");
-                foreach (var earningDto in GetPharmaciesEarnings().Where(earningDto => earningDto.Name.Equals(participant)))
+                foreach (var earningDto in GetPharmaciesEarnings(startDate, endDate).Where(earningDto => earningDto.Name.Equals(participant)))
                 {
                     sb.AppendLine("Total amount of profit earned: " + earningDto.Earning + "\r");
-                    break;
+                
                 }
 
                 sb.AppendLine("------------------------------------------------------------------" + "\r");
-            }
+            }*/
             return sb.ToString();
         }
 

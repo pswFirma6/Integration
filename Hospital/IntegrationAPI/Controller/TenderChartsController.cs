@@ -1,19 +1,23 @@
 ﻿using IntegrationLibrary.Pharmacy.DTO;
 using IntegrationLibrary.Pharmacy.Model;
+using IntegrationLibrary.Shared.Model;
 using IntegrationLibrary.Tendering.DTO;
 using IntegrationLibrary.Tendering.IRepository;
 using IntegrationLibrary.Tendering.Repository;
 using IntegrationLibrary.Tendering.Service;
 using Microsoft.AspNetCore.Mvc;
+using Spire.Pdf;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-
 using System.Threading.Tasks;
 
+    
 namespace IntegrationAPI.Controller
 {
     [ApiController]
-    public class TenderChartsController
+    public class TenderChartsController : ControllerBase
     {
         private readonly TenderChartsService chartsService;
 
@@ -23,32 +27,32 @@ namespace IntegrationAPI.Controller
             chartsService = new TenderChartsService(offerRepository);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getTenderParticipants")]
-        public List<TenderParticipantDto> GetTenderParticipants()
+        public List<TenderParticipantDto> GetTenderParticipants(DateRange dateRange)
         {
-            return chartsService.GetTendersParticipants();
+            return chartsService.GetTendersParticipants(dateRange);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getTenderWinners")]
-        public List<TenderParticipantDto> GetTenderWinners()
+        public List<TenderParticipantDto> GetTenderWinners(DateRange dateRange)
         {
-            return chartsService.GetTenderWinners();
+            return chartsService.GetTenderWinners(dateRange);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getTendersWinningOffersPrices")]
-        public List<TenderEarningDto> GetTendersWinningOffersPrices()
+        public List<TenderEarningDto> GetTendersWinningOffersPrices(DateRange dateRange)
         {
-            return chartsService.GetWinningOffersPrices();
+            return chartsService.GetWinningOffersPrices(dateRange);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getPharmaciesEarnings")]
-        public List<TenderEarningDto> GetPharmaciesEarnings()
+        public List<TenderEarningDto> GetPharmaciesEarnings(DateRange dateRange)
         {
-            return chartsService.GetPharmaciesEarnings();
+            return chartsService.GetPharmaciesEarnings(dateRange);
         }
 
         [HttpGet]
@@ -88,12 +92,21 @@ namespace IntegrationAPI.Controller
             return chartsService.GetPharmacyMedicineConsumption(pharmacyName);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("getPdf")]
-        public void GetFile()
+        public async Task<IActionResult> GetFile(PdfDocument pdf)
         {
-            chartsService.GenerateReport();
-            
+            Debug.WriteLine(pdf);
+            chartsService.GenerateReport(pdf);
+            var memory = new MemoryStream();
+            Debug.WriteLine(chartsService.GetFile());
+            using (var stream = new FileStream(chartsService.GetFile(), FileMode.Open))
+                await stream.CopyToAsync(memory);
+
+            memory.Position = 0;
+            var contentType = "APPLICATION/octet-stream";
+            return File(memory, contentType, "TenderReport.pdf");
+      
         }
 
 
