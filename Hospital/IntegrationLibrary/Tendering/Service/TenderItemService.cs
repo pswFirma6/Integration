@@ -30,6 +30,7 @@ namespace IntegrationLibrary.Tendering.Service
                 {
                     TenderItemDto dto = new TenderItemDto
                     {
+                        
                         Name = item.Name, 
                         Quantity = item.Quantity
                     };
@@ -43,9 +44,16 @@ namespace IntegrationLibrary.Tendering.Service
         {
             foreach(TenderItem item in items)
             {
+                item.Id = GetLastID() + 1;
                 tenderItemRepository.Add(item);
                 tenderItemRepository.Save();
             }
+        }
+
+        private int GetLastID()
+        {
+            List<TenderItem> items = GetAll();
+            return items[items.Count - 1].Id;
         }
     }
 }

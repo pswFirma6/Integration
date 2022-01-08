@@ -4,17 +4,18 @@ using System.Text;
 
 namespace IntegrationLibrary.Pharmacy.DTO
 {
-    public class MedicineDTO
+    public class MedicineDto
     {
-        
         public string Name { get; set; }
         public int Quantity { get; set; }
-        public MedicineDTO(string name, int quantity)
+
+        public MedicineDto() { }
+
+        public MedicineDto(string name, int quantity)
         {
             Name = name;
             Quantity = quantity;
         }
 
-        public MedicineDTO() { }
     }
 }

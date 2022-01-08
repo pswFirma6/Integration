@@ -63,7 +63,8 @@ namespace IntegrationAPI
                                                        "http://localhost:4200",
                                                        "http://localhost:44377")
                                           .AllowAnyMethod()
-                                          .AllowAnyHeader());
+                                          .AllowAnyHeader()
+                                          );
 
 
             if (env.IsDevelopment())
