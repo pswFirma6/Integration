@@ -18,6 +18,7 @@ namespace IntegrationLibrary.Tendering.Service
 {
     public class TenderChartsService
     {
+        private readonly ITenderOfferRepository offerRepository;
         private readonly TenderOfferService offerService;
         private readonly TenderOfferItemService offerItemService;
         private readonly ITenderRepository tenderRepository;
@@ -31,7 +32,7 @@ namespace IntegrationLibrary.Tendering.Service
 
         public TenderChartsService(ITenderOfferRepository repository)
         {
-            ITenderOfferRepository offerRepository = repository;
+            offerRepository = repository;
             offerService = new TenderOfferService(offerRepository);
             DatabaseContext context = new DatabaseContext();
             ITenderOfferItemRepository itemRepository = new TenderOfferItemRepository(context);
@@ -58,22 +59,22 @@ namespace IntegrationLibrary.Tendering.Service
             {
                 Tender tender = tenderRepository.FindById(offer.TenderId);
                 if (startDate < tender.StartDate && !tender.Opened && !IsPharmacyInParticipants(offer.PharmacyName))
-                {                  
-                   TenderParticipantDto participant = new TenderParticipantDto { PharmacyName = offer.PharmacyName, Participations = 0 };
-                   tenderParticipants.Add(participant);                   
+                {
+                    TenderParticipantDto participant = new TenderParticipantDto { PharmacyName = offer.PharmacyName, Participations = 0 };
+                    tenderParticipants.Add(participant);
                 }
             }
         }
 
         private bool IsPharmacyInParticipants(string pharmacy)
         {
-            foreach (var _ in from TenderParticipantDto participant in tenderParticipants
-                              where participant.PharmacyName.Equals(pharmacy)
-                              select new { })
+            foreach (TenderParticipantDto participant in tenderParticipants)
             {
-                return true;
+                if (participant.PharmacyName.Equals(pharmacy))
+                {
+                    return true;
+                }
             }
-
             return false;
         }
 
@@ -83,12 +84,10 @@ namespace IntegrationLibrary.Tendering.Service
             foreach (TenderOffer o in offerService.GetOffers())
             {
                 Tender tender = tenderRepository.FindById(o.TenderId);
-                if (startDate < tender.StartDate && endDate > tender.EndDate && 
-                    !IsTenderChecked(o.TenderId) && o.PharmacyName.Equals(pharmacy))
+                if (startDate < tender.StartDate && endDate > tender.EndDate && !IsTenderChecked(o.TenderId) && o.PharmacyName.Equals(pharmacy))
                 {
                     tenders.Add(o.TenderId);
                     UpdateParticipant(pharmacy);
-                    
                 }
 
             }
@@ -131,13 +130,10 @@ namespace IntegrationLibrary.Tendering.Service
             foreach (TenderOffer offer in offerService.GetWinningOffers())
             {
                 Tender tender = tenderRepository.FindById(offer.TenderId);
-                if (startDate < tender.StartDate && !tender.Opened)
+                if (startDate < tender.StartDate && !tender.Opened && !IsPharmacyInParticipants(offer.PharmacyName))
                 {
-                    if (!IsPharmacyInParticipants(offer.PharmacyName))
-                    {
-                        TenderParticipantDto participant = new TenderParticipantDto { PharmacyName = offer.PharmacyName, Participations = 0 };
-                        tenderParticipants.Add(participant);
-                    }
+                    TenderParticipantDto participant = new TenderParticipantDto { PharmacyName = offer.PharmacyName, Participations = 0 };
+                    tenderParticipants.Add(participant);
                     UpdateParticipant(offer.PharmacyName);
                 }
             }
@@ -185,13 +181,13 @@ namespace IntegrationLibrary.Tendering.Service
 
         private bool IsPharmacyInEarnings(string pharmacy)
         {
-            foreach (var _ in from TenderEarningDto earning in earnings
-                              where earning.Name.Equals(pharmacy)
-                              select new { })
+            foreach (TenderEarningDto earning in earnings)
             {
-                return true;
+                if (earning.Name.Equals(pharmacy))
+                {
+                    return true;
+                }
             }
-
             return false;
         }
 
@@ -208,10 +204,9 @@ namespace IntegrationLibrary.Tendering.Service
             foreach (TenderOffer offer in offerService.GetWinningOffers())
             {
                 Tender tender = tenderRepository.FindById(offer.TenderId);
-                if (startDate < tender.StartDate && !tender.Opened && offer.PharmacyName.Equals(earning.Name)) 
+                if (startDate < tender.StartDate && !tender.Opened && offer.PharmacyName.Equals(earning.Name))
                 {
-                       earning.Earning += offerItemService.GetOfferPrice(offer.Id);
-                    
+                        earning.Earning += offerItemService.GetOfferPrice(offer.Id);
                 }
 
             }
@@ -219,18 +214,30 @@ namespace IntegrationLibrary.Tendering.Service
 
         public List<TenderEarningDto> GetPharmacyOffers(string pharmacyName)
         {
-            return (from TenderOffer offer in offerService.GetOffers()
-                    where offer.PharmacyName.Equals(pharmacyName)
-                    let pharmacyOffer = new TenderEarningDto { Name = offer.TenderId.ToString(), Earning = offerItemService.GetOfferPrice(offer.Id) }
-                    select pharmacyOffer).ToList();
+            List<TenderEarningDto> pharmacyOffers = new List<TenderEarningDto>();
+            foreach (TenderOffer offer in offerService.GetOffers())
+            {
+                if (offer.PharmacyName.Equals(pharmacyName))
+                {
+                    TenderEarningDto pharmacyOffer = new TenderEarningDto { Name = offer.TenderId.ToString(), Earning = offerItemService.GetOfferPrice(offer.Id) };
+                    pharmacyOffers.Add(pharmacyOffer);
+                }
+            }
+            return pharmacyOffers;
         }
 
         public List<TenderEarningDto> GetPharmacyWinningOffers(string pharmacyName)
         {
-            return (from TenderOffer offer in offerService.GetWinningOffers()
-                    where offer.PharmacyName.Equals(pharmacyName)
-                    let pharmacyOffer = new TenderEarningDto { Name = offer.TenderId.ToString(), Earning = offerItemService.GetOfferPrice(offer.Id) }
-                    select pharmacyOffer).ToList();
+            List<TenderEarningDto> pharmacyOffers = new List<TenderEarningDto>();
+            foreach (TenderOffer offer in offerService.GetWinningOffers())
+            {
+                if (offer.PharmacyName.Equals(pharmacyName))
+                {
+                    TenderEarningDto pharmacyOffer = new TenderEarningDto { Name = offer.TenderId.ToString(), Earning = offerItemService.GetOfferPrice(offer.Id) };
+                    pharmacyOffers.Add(pharmacyOffer);
+                }
+            }
+            return pharmacyOffers;
         }
 
         public int GetNumberOfPharmacyWins(string pharmacyName)
@@ -250,27 +257,27 @@ namespace IntegrationLibrary.Tendering.Service
         {
             int participations = 0;
             tenders = new List<int>();
-            foreach (var offer in from TenderOffer offer in offerService.GetOffers()
-                                  where !IsTenderChecked(offer.TenderId) && offer.PharmacyName.Equals(pharmacyName)
-                                  select offer)
+            foreach (TenderOffer offer in offerService.GetOffers())
             {
-                participations++;
-                tenders.Add(offer.TenderId);
+                if (!IsTenderChecked(offer.TenderId) && offer.PharmacyName.Equals(pharmacyName))
+                {
+                    participations++;
+                    tenders.Add(offer.TenderId);
+                }
             }
-
             return participations;
         }
 
         public List<MedicineDto> GetPharmacyMedicineConsumption(string pharmacyName)
         {
             medicineConsumption = new List<MedicineDto>();
-            foreach (var offer in from TenderOffer offer in offerService.GetWinningOffers()
-                                  where offer.PharmacyName.Equals(pharmacyName)
-                                  select offer)
+            foreach (TenderOffer offer in offerService.GetWinningOffers())
             {
-                UpdateMedicineConsumption(offer.Id);
+                if (offer.PharmacyName.Equals(pharmacyName))
+                {
+                    UpdateMedicineConsumption(offer.Id);
+                }
             }
-
             return medicineConsumption;
         }
 
@@ -292,23 +299,24 @@ namespace IntegrationLibrary.Tendering.Service
 
         private bool IsMedicineInConsumption(string medicine)
         {
-            foreach (var _ in from MedicineDto med in medicineConsumption
-                              where med.Name.Equals(medicine)
-                              select new { })
+            foreach (MedicineDto med in medicineConsumption)
             {
-                return true;
+                if (med.Name.Equals(medicine))
+                {
+                    return true;
+                }
             }
-
             return false;
         }
 
         private void UpdateMedicineQuantity(string medicineName, int quantity)
         {
-            foreach (var med in from MedicineDto med in medicineConsumption
-                                where med.Name.Equals(medicineName)
-                                select med)
+            foreach (MedicineDto med in medicineConsumption)
             {
-                med.Quantity += quantity;
+                if (med.Name.Equals(medicineName))
+                {
+                    med.Quantity += quantity;
+                }
             }
         }
         public void GenerateReport(PdfDocument doc)
