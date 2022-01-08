@@ -1,0 +1,44 @@
+name: Slack notifications
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    types: [opened]
+    branches: [ develop ]
+
+jobs:
+  slackpush:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+    if: github.event_name == 'push'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: |
+         curl -X POST -H 'Content-type: application/json' --data '{"text":"Develop branch updated! REPOSITORY: ${{ github.event.repository.name }} "}' ${{ secrets.SLACK_INTEGRATION }}
+         
+  slackpull:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+    if: github.event_name == 'pull_request'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: |
+         curl -X POST -H 'Content-type: application/json' --data '{"text":"New pull request from ${{ github.event.sender.login }}  in REPOSITORY: ${{ github.event.repository.name }} "}' ${{ secrets.SLACK_DEVOPS }}
+    

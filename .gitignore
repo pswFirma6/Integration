@@ -1,0 +1,14 @@
+*.log
+.DS_Store
+node_modules
+dist
+
+/Hospital/.vs/
+/Hospital/IntegrationAPI/bin
+/Hospital/IntegrationAPI/obj
+/Hospital/IntegrationLibrary/bin
+/Hospital/IntegrationLibrary/obj
+/Hospital/IntegrationTests/bin
+/Hospital/IntegrationTests/obj
+/Hospital/UnitTests/bin
+/Hospital/UnitTests/obj

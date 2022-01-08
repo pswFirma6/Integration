@@ -1,0 +1,10 @@
+﻿syntax = "proto3";	
+
+message MedicineAvailabilityMessage {
+	string medicineName = 1;	
+	int64 medicineQuantity = 2;	
+}
+
+message MedicineAvailabilityResponse{
+	bool isAvailable = 1;
+}
