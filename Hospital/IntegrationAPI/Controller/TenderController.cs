@@ -48,7 +48,7 @@ namespace IntegrationAPI.Controller
         [Route("addTender")]
         public void AddTender(TenderDto tender)
         {
-            var apiKey = _config.GetValue<string>("ApiKey");
+            var apiKey = Environment.GetEnvironmentVariable("API_KEY") ?? _config.GetValue<string>("ApiKey");
             tender.HospitalApiKey = apiKey;
             tenderService.AddTender(tender);
 
