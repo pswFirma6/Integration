@@ -25,11 +25,11 @@ namespace IntegrationAPI.Controller
 
         [HttpPost]
         [Route("sendPrescription")]
-        public String GeneratePrescriptionFile(PrescriptionDTO dto)
+        public IActionResult GeneratePrescriptionFile(PrescriptionDto dto)
         {
             var prescription = mapper.MapPharmacyPrescription(dto);
             service.GenerateReport(prescription);
-            return "OK";
+            return Ok();
         }
     }
 }

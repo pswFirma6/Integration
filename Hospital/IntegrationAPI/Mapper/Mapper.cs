@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using IntegrationLibrary.Pharmacy.DTO;
+using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.ReportingAndStatistics.Model;
 using IntegrationLibrary.Shared.Model;
 using System;
@@ -15,11 +16,19 @@ namespace IntegrationAPI.Mapper
         {
             public MappingProfile()
             {
-                CreateMap<PharmacyPrescription, PrescriptionDTO>();
-                CreateMap<PrescriptionDTO, PharmacyPrescription>();
+
+                CreateMap<PharmacyPrescription, PrescriptionDto>();
+                CreateMap<PrescriptionDto, PharmacyPrescription>();
+
+                CreateMap<PharmacyComment, PharmacyCommentDto>();
+                CreateMap<PharmacyCommentDto, PharmacyComment>();
+
+                CreateMap<Medicine, MedicineDto>();
+                CreateMap<MedicineDto, Medicine>();
+
             }
 
-            public PharmacyPrescription MapPharmacyPrescription(PrescriptionDTO dto)
+            public PharmacyPrescription MapPharmacyPrescription(PrescriptionDto dto)
             {
                 PharmacyPrescription prescription = new PharmacyPrescription
                 {

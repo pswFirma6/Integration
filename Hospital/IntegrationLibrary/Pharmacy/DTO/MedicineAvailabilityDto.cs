@@ -4,14 +4,14 @@ using System.Text;
 
 namespace IntegrationLibrary.Pharmacy.DTO
 {
-    public class PharmacyMedicineAvailabilityDTO
+    public class MedicineAvailabilityDto
     {
         public string PharmacyName { get; set; }
         public bool IsAvailable { get; set; }
 
-        public PharmacyMedicineAvailabilityDTO() { }
+        public MedicineAvailabilityDto() { }
 
-        public PharmacyMedicineAvailabilityDTO(string pharmacyName, bool isAvailable)
+        public MedicineAvailabilityDto(string pharmacyName, bool isAvailable)
         {
             PharmacyName = pharmacyName;
             IsAvailable = isAvailable;

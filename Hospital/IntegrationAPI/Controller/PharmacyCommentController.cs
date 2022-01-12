@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Pharmacy.DTO;
+using AutoMapper;
 
 namespace IntegrationAPI.Controller
 {
@@ -15,11 +16,13 @@ namespace IntegrationAPI.Controller
     public class PharmacyCommentController
     {
         private readonly CommentService service;
+        private readonly IMapper _mapper;
 
-        public PharmacyCommentController(DatabaseContext context)
+        public PharmacyCommentController(DatabaseContext context, IMapper mapper)
         {
             ICommentRepository repository = new CommentRepository(context);
             service = new CommentService(repository);
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -31,9 +34,10 @@ namespace IntegrationAPI.Controller
 
         [HttpPost]
         [Route("addComment")]
-        public void AddComment(PharmacyCommentDto pharmacyComment)
+        public void AddComment(PharmacyCommentDto commentDto)
         {
-            PharmacyComment comment = new PharmacyComment( pharmacyComment.PharmacyName, pharmacyComment.Content);
+            //PharmacyComment comment = new PharmacyComment( pharmacyComment.PharmacyName, pharmacyComment.Content);
+            var comment = _mapper.Map<PharmacyComment>(commentDto);
             service.AddComment(comment);
         }
 

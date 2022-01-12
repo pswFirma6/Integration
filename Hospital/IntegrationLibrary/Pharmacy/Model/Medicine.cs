@@ -9,15 +9,16 @@ namespace IntegrationLibrary.Pharmacy.Model
         public int Id { get; set; }
         public string Name { get; set; }
         public int Quantity { get; set; }
-        public double Intensity { get; set; }
 
-        public Medicine(int id, string name, int quantity, double intensity)
+        public Medicine() { }
+
+        public Medicine(int id, string name, int quantity)
         {
             Id = id;
             Name = name;
             Quantity = quantity;
-            Intensity = intensity;
         }
+
         public Medicine(string name, int quantity)
         {
             Name = name;

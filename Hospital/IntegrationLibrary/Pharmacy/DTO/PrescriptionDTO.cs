@@ -4,7 +4,7 @@ using System.Text;
 
 namespace IntegrationLibrary.Pharmacy.DTO
 {
-    public class PrescriptionDTO
+    public class PrescriptionDto
     {
         public int Id { get; set; }
         public string MedicineName { get; set; }
@@ -18,9 +18,9 @@ namespace IntegrationLibrary.Pharmacy.DTO
         public string Diagnosis { get; set; }
         public string PharmacyName { get; set; }
 
-        public PrescriptionDTO () { }
+        public PrescriptionDto () { }
 
-        public PrescriptionDTO (int id, string medicineName, int quantity, string recommendedDose, string prescriptionDate, string doctorName, 
+        public PrescriptionDto (int id, string medicineName, int quantity, string recommendedDose, string prescriptionDate, string doctorName, 
             string patientName, string therapyStart, string therapyEnd, string diagnosis, string pharmacyName)
         {
             Id = id;

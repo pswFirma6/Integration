@@ -53,8 +53,6 @@ namespace IntegrationLibrary.Tendering.Service
 
         public void AddTender(TenderDto dto)
         {
-
-
             Tender tender = new Tender
             {
                 Id = GetLastID() + 1,

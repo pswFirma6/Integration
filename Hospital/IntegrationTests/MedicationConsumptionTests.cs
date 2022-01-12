@@ -4,6 +4,7 @@ using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationLibrary.Pharmacy.Service;
 using IntegrationLibrary.ReportingAndStatistics.Service;
+using IntegrationLibrary.Shared.Model;
 using Moq;
 using Shouldly;
 using System;
@@ -31,8 +32,8 @@ namespace IntegrationAppTests.IntegrationTests
 
             stubRepository.Setup(m => m.GetAll()).Returns(consumptions);
 
-            TimePeriodDTO timePeriod = new TimePeriodDTO { StartDate = new DateTime(2021, 09, 28), EndDate = new DateTime(2021, 10, 31) };
-            requestedConsumptions = service.GetConsumptionsForTimePeriod(timePeriod);
+            DateRange dateRange = new DateRange { StartDate = new DateTime(2021, 09, 28), EndDate = new DateTime(2021, 10, 31) };
+            requestedConsumptions = service.GetConsumptionsForTimePeriod(dateRange);
 
             requestedConsumptions.ShouldNotBeEmpty();
             

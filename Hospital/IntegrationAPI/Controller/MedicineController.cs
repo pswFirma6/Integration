@@ -22,24 +22,17 @@ namespace IntegrationAPI.Controller
     [ApiController]
     public class MedicineController : ControllerBase
     {
-        private PharmacyService pharmacyService;
-        private IPharmacyRepository pharmacyRepository;
-
-        public MedicineController(DatabaseContext context)
-        {
-            pharmacyRepository = new PharmacyRepository(context);
-            pharmacyService = new PharmacyService(pharmacyRepository);
-        }
+        public MedicineController(){}
 
         [HttpPost]
         [Route("orderMedicine")]
-        public IActionResult OrderMedicine(CheckAvailabilityDto medicineForOrder)
+        public IActionResult OrderMedicine(OrderMedicineDto medicine)
         {
-            orderMedicineViaGrpc(medicineForOrder);
+            OrderMedicineViaGrpc(medicine);
             return Ok();
         }
 
-        private void orderMedicineViaGrpc(CheckAvailabilityDto medicine)
+        private void OrderMedicineViaGrpc(OrderMedicineDto medicine)
         {
             var request = new MedicineAvailabilityMessage
             {

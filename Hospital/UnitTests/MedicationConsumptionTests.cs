@@ -3,6 +3,7 @@ using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Pharmacy.Service;
 using IntegrationLibrary.ReportingAndStatistics.Service;
+using IntegrationLibrary.Shared.Model;
 using Moq;
 using Shouldly;
 using System;
@@ -29,7 +30,7 @@ namespace IntegrationAppTests.UnitTests
             service = new MedicineConsumptionService(stubRepository.Object);
 
             DateTime date = new DateTime(2021, 09, 16);
-            TimePeriodDTO range = new TimePeriodDTO { StartDate = new DateTime(2021, 07, 31), EndDate = new DateTime(2021, 09, 28) };
+            DateRange range = new DateRange { StartDate = new DateTime(2021, 07, 31), EndDate = new DateTime(2021, 09, 28) };
 
             service.IsWithinRange(date, range).ShouldBe(true);
         }
@@ -78,7 +79,7 @@ namespace IntegrationAppTests.UnitTests
             evaluetedConsumptions.Add("Brufen");
             evaluetedConsumptions.Add("Paracetamol");
 
-            bool isEvalueted = service.isEvaluated(evaluetedConsumptions, "Brufen");
+            bool isEvalueted = service.IsEvaluated(evaluetedConsumptions, "Brufen");
 
             isEvalueted.ShouldBe(true);
 

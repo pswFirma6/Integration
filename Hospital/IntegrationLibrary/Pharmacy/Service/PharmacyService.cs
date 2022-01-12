@@ -43,33 +43,21 @@ namespace IntegrationLibrary.Pharmacy.Service
             return repository.GetAll().Find(pharmacy => pharmacyName == pharmacy.PharmacyName);
         }
 
-        public List<PharmacyMedicineAvailabilityDTO> CheckPharmacyMedicines(MedicineDto medicine)
+        public List<MedicineAvailabilityDto> CheckPharmacyMedicines(Medicine medicine)
         {
-            List<PharmacyMedicineAvailabilityDTO> pharmacies = new List<PharmacyMedicineAvailabilityDTO>();
+            List<MedicineAvailabilityDto> pharmacies = new List<MedicineAvailabilityDto>();
             foreach(Model.Pharmacy pharmacy in repository.GetAll())
             {
-                bool isAvailable = PostRequest(pharmacy.PharmacyConnectionInfo.Url, medicine);
+                bool isAvailable = SendRequestToPharmacy(pharmacy.PharmacyConnectionInfo.Url, medicine);
                 if (isAvailable)
                 {
-                    pharmacies.Add(new PharmacyMedicineAvailabilityDTO { PharmacyName = pharmacy.PharmacyName, IsAvailable = isAvailable });
+                    pharmacies.Add(new MedicineAvailabilityDto { PharmacyName = pharmacy.PharmacyName, IsAvailable = isAvailable });
                 }
             }
             return pharmacies;
         }
 
-        public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDto availability)
-        {
-            foreach(Model.Pharmacy pharmacy in repository.GetAll())
-            {
-                if (pharmacy.PharmacyName.Equals(availability.PharmacyName))
-                {
-                    return PostRequest(pharmacy.PharmacyConnectionInfo.Url, availability.Medicine);
-                }
-            }
-            return false;
-        }
-
-        private bool PostRequest(string url, MedicineDto medicine)
+        private bool SendRequestToPharmacy(string url, Medicine medicine)
         {
             var client = new RestClient(url);
             var request = new RestRequest("/checkMedicine");
@@ -81,25 +69,6 @@ namespace IntegrationLibrary.Pharmacy.Service
         public List<Model.Pharmacy> GetPharmacies()
         {
             return repository.GetAll();
-        }
-
-        public void OrderFromCertainPharmacy(CheckAvailabilityDto order)
-        {
-            foreach(Model.Pharmacy pharmacy in GetPharmacies())
-            {
-                if(pharmacy.PharmacyName == order.PharmacyName)
-                {
-                    OrderMedicine(pharmacy.PharmacyConnectionInfo.Url, order.Medicine);
-                }
-            }
-        }
-
-        private void OrderMedicine(string url, MedicineDto medicine)
-        {
-            var client = new RestClient(url);
-            var request = new RestRequest("/orderMedicine");
-            request.AddJsonBody(medicine);
-            var response = client.Post(request);
         }
 
         public void EditPharmacy(Model.Pharmacy pharmacy)

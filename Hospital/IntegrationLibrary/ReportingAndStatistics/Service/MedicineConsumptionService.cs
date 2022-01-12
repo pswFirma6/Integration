@@ -9,6 +9,7 @@ using Renci.SshNet;
 using Spire.Pdf;
 using Spire.Pdf.Graphics;
 using System.Drawing;
+using IntegrationLibrary.Shared.Model;
 
 namespace IntegrationLibrary.ReportingAndStatistics.Service
 {
@@ -21,7 +22,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             repository = iRepository;
         }
 
-        public void GenerateReport(TimePeriodDTO timePeriod)
+        public void GenerateReport(DateRange dateRange)
         {
             String filePath = GetConsumptionsDirectory();
             String fileName = "MedicationConsumptionReport.pdf";
@@ -29,7 +30,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             PdfDocument doc = new PdfDocument();
             PdfPageBase page = doc.Pages.Add();
 
-            page.Canvas.DrawString(GetReportContent(timePeriod), new PdfFont(PdfFontFamily.Helvetica, 11f), new PdfSolidBrush(Color.Black), 10, 10);
+            page.Canvas.DrawString(GetReportContent(dateRange), new PdfFont(PdfFontFamily.Helvetica, 11f), new PdfSolidBrush(Color.Black), 10, 10);
 
             StreamWriter File = new StreamWriter(Path.Combine(filePath, fileName), true);
             doc.SaveToStream(File.BaseStream);
@@ -58,17 +59,17 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             }
         }
 
-        private String GetReportContent(TimePeriodDTO timePeriod)
+        private String GetReportContent(DateRange dateRange)
         {
 
-            String content = "Medication consumption report for " + timePeriod.StartDate.ToString("MM/dd/yyyy") + " - " + timePeriod.EndDate.ToString("MM/dd/yyyy") + " :\r\n\n";
+            String content = "Medication consumption report for " + dateRange.StartDate.ToString("MM/dd/yyyy") + " - " + dateRange.EndDate.ToString("MM/dd/yyyy") + " :\r\n\n";
 
-            List<MedicationConsumption> requiredConsumptions = GetConsumptionsForTimePeriod(timePeriod);
+            List<MedicationConsumption> requiredConsumptions = GetConsumptionsForTimePeriod(dateRange);
             List<String> evaluatedMedications = new List<String>();
 
             foreach (MedicationConsumption c in requiredConsumptions)
             {
-                if (!isEvaluated(evaluatedMedications, c.MedicationName))
+                if (!IsEvaluated(evaluatedMedications, c.MedicationName))
                 {
                     content += GetReportContentForCertainMedication(c.MedicationName, requiredConsumptions);
                     evaluatedMedications.Add(c.MedicationName);
@@ -78,7 +79,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
         }
 
 
-        public bool isEvaluated(List<String> list, String MedicationName)
+        public bool IsEvaluated(List<String> list, String MedicationName)
         {
             return list.Any(p => p.Equals(MedicationName));
         }
@@ -118,21 +119,21 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             return amount;
         }
 
-        public List<MedicationConsumption> GetConsumptionsForTimePeriod(TimePeriodDTO timePeriod)
+        public List<MedicationConsumption> GetConsumptionsForTimePeriod(DateRange dateRange)
         {
             List<MedicationConsumption> consumptionsForTimePeriod = new List<MedicationConsumption>();
 
             foreach (MedicationConsumption consumption in repository.GetAll())
             {
-                if (IsWithinRange(consumption.Date, timePeriod))
+                if (IsWithinRange(consumption.Date, dateRange))
                     consumptionsForTimePeriod.Add(consumption);
             }
             return consumptionsForTimePeriod;
         }
 
-        public bool IsWithinRange(DateTime consumptionDate, TimePeriodDTO timePeriod)
+        public bool IsWithinRange(DateTime consumptionDate, DateRange dateRange)
         {
-            return DateTime.Compare(timePeriod.StartDate, consumptionDate) <= 0 && DateTime.Compare(timePeriod.EndDate, consumptionDate) >= 0;
+            return DateTime.Compare(dateRange.StartDate, consumptionDate) <= 0 && DateTime.Compare(dateRange.EndDate, consumptionDate) >= 0;
         }
     }
 }

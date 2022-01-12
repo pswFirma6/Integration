@@ -4,14 +4,14 @@ using System.Text;
 
 namespace IntegrationLibrary.Pharmacy.DTO
 {
-    public class CheckAvailabilityDto
+    public class OrderMedicineDto
     {
         public string PharmacyName { get; set; }
         public MedicineDto Medicine { get; set; }
 
-        public CheckAvailabilityDto() {  }
+        public OrderMedicineDto() {  }
 
-        public CheckAvailabilityDto(string pharmacyName, MedicineDto medicine)
+        public OrderMedicineDto(string pharmacyName, MedicineDto medicine)
         {
             PharmacyName = pharmacyName;
             Medicine = medicine;

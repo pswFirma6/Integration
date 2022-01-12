@@ -61,7 +61,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             repository.Update(newStateMedicine);
         }
 
-        public void OrderMedicine(CheckAvailabilityDto order)
+        public void OrderMedicine(OrderMedicineDto order)
         {
             if (!CheckIfMedicineExists(order.Medicine.Name))
             {

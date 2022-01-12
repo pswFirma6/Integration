@@ -16,6 +16,7 @@ using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationAPI.DTO;
 using IntegrationLibrary.ReportingAndStatistics.Service;
 using IntegrationLibrary.ReportingAndStatistics.Model;
+using IntegrationLibrary.Shared.Model;
 
 namespace IntegrationAPI.Controller
 {
@@ -25,34 +26,32 @@ namespace IntegrationAPI.Controller
     {
         private readonly MedicineConsumptionService consumptionService;
         private readonly MedicineSpecificationService specificationService;
-        private readonly PrescriptionService prescriptionService;
 
         public ReportsController(DatabaseContext context)
         {
             IMedicationConsumptionRepository repository = new MedicationConsumptionRepository(context);
             consumptionService = new MedicineConsumptionService(repository);
             specificationService = new MedicineSpecificationService();
-            prescriptionService = new PrescriptionService();
         }
 
         [HttpPost]
         [Route("generateReport")]
-        public void MakeReport(TimePeriodStringDTO period)
+        public void MakeReport(DateRangeDto dto)
         {
-            DateTime startDate = DateTime.ParseExact(period.startDate, "yyyy-MM-dd",
+            DateTime startDate = DateTime.ParseExact(dto.StartDate, "yyyy-MM-dd",
                                        System.Globalization.CultureInfo.InvariantCulture);
-            DateTime endDate = DateTime.ParseExact(period.endDate, "yyyy-MM-dd",
+            DateTime endDate = DateTime.ParseExact(dto.EndDate, "yyyy-MM-dd",
                                        System.Globalization.CultureInfo.InvariantCulture);
 
-            TimePeriodDTO timePeriod = new TimePeriodDTO(startDate, endDate);
-            consumptionService.GenerateReport(timePeriod);
+            DateRange dateRange = new DateRange(startDate, endDate);
+            consumptionService.GenerateReport(dateRange);
         }
 
         [HttpPost]
         [Route("requestReport")]
-        public String RequestReport(ReportRequestDTO request)
+        public String RequestReport(MedicineSpecRequestDto request)
         {
-            return specificationService.RequestReport(request);
+            return specificationService.RequestReport(request.MedicineName);
         }
 
         [HttpPost]

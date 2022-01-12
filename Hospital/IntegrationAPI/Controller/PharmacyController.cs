@@ -11,6 +11,7 @@ using System.IO;
 using System.Net.Http.Headers;
 using Grpc.Core;
 using Microsoft.Extensions.Configuration;
+using AutoMapper;
 
 namespace IntegrationAPI.Controller
 {
@@ -20,17 +21,19 @@ namespace IntegrationAPI.Controller
     {
         private readonly PharmacyService service;
         private readonly IConfiguration _config;
+        private readonly IMapper _mapper;
 
-        public PharmacyController(DatabaseContext context, IConfiguration config)
+        public PharmacyController(DatabaseContext context, IMapper mapper, IConfiguration config)
         {
             IPharmacyRepository pharmacyRepository = new PharmacyRepository(context);
             service = new PharmacyService(pharmacyRepository);
             _config = config;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [Route("pharmacyNames")]
-        public List<string> getPharmacyNames()
+        public List<string> GetPharmacyNames()
         {  
             return service.GetPharmacyNames();
         }
@@ -53,19 +56,20 @@ namespace IntegrationAPI.Controller
 
         [HttpPost]
         [Route("checkMedicine")]
-        public List<PharmacyMedicineAvailabilityDTO> CheckMedicine(MedicineDto medicine)
+        public List<MedicineAvailabilityDto> CheckMedicine(MedicineDto dto)
         {
+            var medicine = _mapper.Map<Medicine>(dto);
             return service.CheckPharmacyMedicines(medicine);
         }
 
         [HttpPost]
         [Route("checkPharmacyMedicine")]
-        public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDto isAvailable)
+        public bool CheckMedicineOfCertainPharmacy(OrderMedicineDto isAvailable)
         {
-            return checkMedicineViaGrpc(isAvailable);
+            return CheckMedicineViaGrpc(isAvailable);
         }
 
-        private bool checkMedicineViaGrpc(CheckAvailabilityDto medicine)
+        private bool CheckMedicineViaGrpc(OrderMedicineDto medicine)
         {
             bool response = false;
             var request = new MedicineAvailabilityMessage

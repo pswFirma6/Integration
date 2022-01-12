@@ -21,5 +21,11 @@ namespace IntegrationLibrary.Tendering.Model
             TenderId = tenderId;
         }
 
+        public TenderItem(string name, int quantity)
+        {
+            Name = name;
+            Quantity = quantity;
+        }
+
     }
 }
