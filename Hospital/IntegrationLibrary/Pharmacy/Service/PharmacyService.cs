@@ -37,7 +37,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             return repository.GetAll().Find(pharmacy => pharmacyName == pharmacy.PharmacyName);
         }
 
-        public List<PharmacyMedicineAvailabilityDTO> CheckPharmacyMedicines(MedicineDTO medicine)
+        public List<PharmacyMedicineAvailabilityDTO> CheckPharmacyMedicines(MedicineDto medicine)
         {
             List<PharmacyMedicineAvailabilityDTO> pharmacies = new List<PharmacyMedicineAvailabilityDTO>();
             foreach(Model.Pharmacy pharmacy in repository.GetAll())
@@ -51,7 +51,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             return pharmacies;
         }
 
-        public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDTO availability)
+        public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDto availability)
         {
             foreach(Model.Pharmacy pharmacy in repository.GetAll())
             {
@@ -63,7 +63,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             return false;
         }
 
-        private bool PostRequest(string url, MedicineDTO medicine)
+        private bool PostRequest(string url, MedicineDto medicine)
         {
             var client = new RestClient(url);
             var request = new RestRequest("/checkMedicine");
@@ -77,7 +77,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             return repository.GetAll();
         }
 
-        public void OrderFromCertainPharmacy(CheckAvailabilityDTO order)
+        public void OrderFromCertainPharmacy(CheckAvailabilityDto order)
         {
             foreach(Model.Pharmacy pharmacy in GetPharmacies())
             {
@@ -88,7 +88,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             }
         }
 
-        private void OrderMedicine(string url, MedicineDTO medicine)
+        private void OrderMedicine(string url, MedicineDto medicine)
         {
             var client = new RestClient(url);
             var request = new RestRequest("/orderMedicine");
@@ -104,11 +104,10 @@ namespace IntegrationLibrary.Pharmacy.Service
 
         public void AddPictureToPharmacy(string pharmacyName, string pharmacyPicture)
         {
-          
-            GetPharmacyByName(pharmacyName).PharmacyPicture = pharmacyPicture;
-            repository.Update(GetPharmacyByName(pharmacyName));
+            Model.Pharmacy pharmacy = GetPharmacyByName(pharmacyName);
+            pharmacy.SetPharmacyPicture(pharmacyPicture);
+            repository.Update(pharmacy);
             repository.Save();
-
         }
 
 

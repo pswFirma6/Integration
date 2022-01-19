@@ -1,4 +1,5 @@
 ﻿using IntegrationLibrary.Partnership.Model;
+using IntegrationLibrary.Shared.Model;
 using IntegrationLibrary.Tendering.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -39,6 +40,7 @@ namespace IntegrationLibrary.Pharmacy.Model
 
             modelBuilder.Entity<Pharmacy>().OwnsOne(typeof(Address), "PharmacyAddress");
             modelBuilder.Entity<Pharmacy>().OwnsOne(typeof(ConnectionInfo), "PharmacyConnectionInfo");
+            modelBuilder.Entity<Offer>().OwnsOne(typeof(DateRange), "OfferDateRange");
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

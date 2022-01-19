@@ -53,14 +53,16 @@ namespace IntegrationLibrary.Tendering.Service
 
         public void AddTender(TenderDto dto)
         {
-           
+
 
             Tender tender = new Tender
             {
+                Id = GetLastID() + 1,
                 Opened = true,
                 CreationDate = DateTime.Now,
                 StartDate = DateTime.Parse(dto.StartDate),
                 EndDate = AssignEndDate(dto.EndDate)
+                
             };
             tenderRepository.Add(tender);
             tenderRepository.Save();
@@ -128,6 +130,8 @@ namespace IntegrationLibrary.Tendering.Service
             tenderRepository.Update(tender);
             tenderRepository.Save();
         }
+
+
 
     }
 }

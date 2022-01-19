@@ -60,9 +60,12 @@ namespace IntegrationAPI
         {
             app.UseCors(options => options.WithOrigins("http://localhost:4202",
                                                        "http://localhost:4201",
-                                                       "http://localhost:4200")
+                                                       "http://localhost:4200",
+                                                       "http://localhost:44377")
                                           .AllowAnyMethod()
-                                          .AllowAnyHeader());
+                                          .AllowAnyHeader()
+                                          );
+
 
             if (env.IsDevelopment())
             {

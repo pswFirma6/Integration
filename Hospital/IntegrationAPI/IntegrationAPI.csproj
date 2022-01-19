@@ -50,6 +50,8 @@
 		<Protobuf Include="Protos\medicineService.proto" GrpcServices="Client" />
 	</ItemGroup>
 
-
+  <ItemGroup>
+    <None Include="appsettings.json" CopyToPublishDirectory="Always" />
+  </ItemGroup>
 
 </Project>

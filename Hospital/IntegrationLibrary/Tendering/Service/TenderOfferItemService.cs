@@ -25,12 +25,12 @@ namespace IntegrationLibrary.Tendering.Service
             return tenderOfferItemRepository.GetAll();
         }
 
-        public List<TenderOfferItemDto> GetTenderOfferItems(int tenderId)
+        public List<TenderOfferItemDto> GetTenderOfferItems(int offerId)
         {
             List<TenderOfferItemDto> offerItems = new List<TenderOfferItemDto>();
             foreach (TenderOfferItem item in GetAll())
             {
-                if (item.Id == tenderId)
+                if (item.TenderOfferId == offerId)
                 {
                     TenderOfferItemDto dto = new TenderOfferItemDto
                     {
@@ -53,6 +53,17 @@ namespace IntegrationLibrary.Tendering.Service
                 tenderOfferItemRepository.Add(item);
                 tenderOfferItemRepository.Save();
             }
+        }
+
+        public double GetOfferPrice(int offerId)
+        {
+            double price = 0;
+            List<TenderOfferItemDto> items = GetTenderOfferItems(offerId);
+            foreach (TenderOfferItemDto item in items)
+            {
+                price += item.Quantity * item.Price;
+            }
+            return price;
         }
 
     }

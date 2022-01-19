@@ -47,25 +47,25 @@ namespace IntegrationAPI.Controller
         public IActionResult RegisterPharmacy(PharmacyInfo info)
         {
             service.AddPharmacy(info);
-            var apiKey = _config.GetValue<string>("ApiKey");
+            var apiKey = Environment.GetEnvironmentVariable("API_KEY") ?? _config.GetValue<string>("ApiKey");
             return Ok(apiKey.ToString());
         }
 
         [HttpPost]
         [Route("checkMedicine")]
-        public List<PharmacyMedicineAvailabilityDTO> CheckMedicine(MedicineDTO medicine)
+        public List<PharmacyMedicineAvailabilityDTO> CheckMedicine(MedicineDto medicine)
         {
             return service.CheckPharmacyMedicines(medicine);
         }
 
         [HttpPost]
         [Route("checkPharmacyMedicine")]
-        public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDTO isAvailable)
+        public bool CheckMedicineOfCertainPharmacy(CheckAvailabilityDto isAvailable)
         {
             return checkMedicineViaGrpc(isAvailable);
         }
 
-        private bool checkMedicineViaGrpc(CheckAvailabilityDTO medicine)
+        private bool checkMedicineViaGrpc(CheckAvailabilityDto medicine)
         {
             bool response = false;
             var request = new MedicineAvailabilityMessage

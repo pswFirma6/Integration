@@ -22,7 +22,7 @@ namespace IntegrationLibrary.Tendering.Service
             tenderOfferItemService = new TenderOfferItemService(itemRepository);
         }
 
-        public List<TenderOffer> GetTenderOffers()
+        public List<TenderOffer> GetOffers()
         {
             return tenderOfferRepository.GetAll();
         }
@@ -30,7 +30,7 @@ namespace IntegrationLibrary.Tendering.Service
         public List<TenderOfferDto> GetTendersWithItems()
         {
             List<TenderOfferDto> tenderOffersWithItems = new List<TenderOfferDto>();
-            foreach (TenderOffer tenderOffer in GetTenderOffers())
+            foreach (TenderOffer tenderOffer in GetOffers())
             {
                 TenderOfferDto dto = new TenderOfferDto
                 {
@@ -82,7 +82,16 @@ namespace IntegrationLibrary.Tendering.Service
             return items;
         }
 
-
+        public List<TenderOffer> GetWinningOffers()
+        {
+            List<TenderOffer> winningOffers = new List<TenderOffer>();
+            foreach(TenderOffer offer in GetOffers())
+            {
+                if (offer.isWinner)
+                    winningOffers.Add(offer);
+            }
+            return winningOffers;
+        }
 
     }
 }

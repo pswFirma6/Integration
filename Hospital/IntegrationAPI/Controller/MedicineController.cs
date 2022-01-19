@@ -33,13 +33,13 @@ namespace IntegrationAPI.Controller
 
         [HttpPost]
         [Route("orderMedicine")]
-        public IActionResult OrderMedicine(CheckAvailabilityDTO medicineForOrder)
+        public IActionResult OrderMedicine(CheckAvailabilityDto medicineForOrder)
         {
             orderMedicineViaGrpc(medicineForOrder);
             return Ok();
         }
 
-        private void orderMedicineViaGrpc(CheckAvailabilityDTO medicine)
+        private void orderMedicineViaGrpc(CheckAvailabilityDto medicine)
         {
             var request = new MedicineAvailabilityMessage
             {
