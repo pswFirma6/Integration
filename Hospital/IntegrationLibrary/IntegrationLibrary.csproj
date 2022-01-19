@@ -25,6 +25,8 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
     <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
     <PackageReference Include="RestSharp" Version="106.13.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.1.0" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="96.0.4664.4500" />
     <PackageReference Include="Spire.PDF" Version="7.11.1" />
     <PackageReference Include="SSH.NET" Version="2020.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />

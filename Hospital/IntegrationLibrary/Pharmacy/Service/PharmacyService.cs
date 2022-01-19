@@ -24,12 +24,6 @@ namespace IntegrationLibrary.Pharmacy.Service
             repository.Save();
 
         }
-        public void AddPharmacy(Model.Pharmacy pharmacy)
-        {
-            repository.Add(pharmacy);
-            repository.Save();
-
-        }
 
         public List<string> GetPharmacyNames()
         {
