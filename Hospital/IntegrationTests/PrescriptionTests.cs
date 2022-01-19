@@ -14,20 +14,11 @@ namespace IntegrationAppTests.IntegrationTests
     public class PrescriptionTests
     {
         private PrescriptionService service = new PrescriptionService();
-        private TestConfig config = new TestConfig();
+        
 
-
-        public PrescriptionTests()
-        {
-            //if (config.Environment.Equals("Development")) return;
-
-        }
-
-        [Fact]
+        [IgnoreOnNondevelopmentPhase]
         public void CheckPdfForHttpMethod()
         {
-            if (!config.Environment.Equals("Development")) return;
-
             Prescription prescription = new Prescription
                (9, "1.1.2022.", "",new TherapyInfo(new DateRange(new DateTime(),new DateTime()),"Diagnosis"),
                                 new PrescriptionInvolvedParties("Patient name", "Doctor name"), new MedicineInfo("Medicine name", 22 ,"recommended dose"));
@@ -41,14 +32,11 @@ namespace IntegrationAppTests.IntegrationTests
             //Empty(service.GetPrescriptionsDirectory());
             //Empty(service.GetQRcodesDirectory());      
 
-            string env = config.Environment;
-            env.ShouldBe("Development");
         }
 
-        [Fact]
+        [IgnoreOnNondevelopmentPhase]
         public void CheckPdfForSftpMethod()
         {
-            if (!config.Environment.Equals("Development")) return;
 
             Prescription prescription = new Prescription
                 (10, "1.1.2022.", "", new TherapyInfo(new DateRange(new DateTime(), new DateTime()), "Diagnosis"),
@@ -91,5 +79,22 @@ namespace IntegrationAppTests.IntegrationTests
         }
 
 
+    }
+
+    public sealed class IgnoreOnNondevelopmentPhase : FactAttribute
+    {
+        private static TestConfig config = new TestConfig();
+        public IgnoreOnNondevelopmentPhase()
+        {
+            if (!IsDevelopmentEnvironment())
+            {
+                Skip = "Written only for development phase.";
+            }
+        }
+
+        private static bool IsDevelopmentEnvironment()
+        {
+            return !config.Environment.Equals("Development");
+        }
     }
 }
