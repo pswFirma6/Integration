@@ -5,19 +5,22 @@ namespace IntegrationLibrary.Pharmacy.Model
 {
     public class Pharmacy : Entity
     {
-        
         public string PharmacyName { get; set; }
         public string PharmacyPicture { get; set; }
-
+        public string PharmacyEmail { get; set; }
+        public string PharmacyPassword { get; set; }
         public Address PharmacyAddress { get; set; }
         public ConnectionInfo PharmacyConnectionInfo { get; set; }
 
         public Pharmacy() { }
-        public Pharmacy(int id,string pharmacyName, string picture,Address pharmacyAddress, ConnectionInfo pharmacyConnectionInfo)
+        public Pharmacy(int id,string pharmacyName, string picture,Address pharmacyAddress, ConnectionInfo pharmacyConnectionInfo,
+            string pharmacyEmail, string pharmacyPassword)
         {
             Id = id;
             PharmacyName = pharmacyName;
             PharmacyPicture = picture;
+            PharmacyEmail = pharmacyEmail;
+            PharmacyPassword = pharmacyPassword;
             PharmacyAddress = pharmacyAddress;
             PharmacyConnectionInfo = pharmacyConnectionInfo;
         }
