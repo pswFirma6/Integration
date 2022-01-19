@@ -24,7 +24,15 @@ namespace IntegrationTests
             tenderService = new TenderService(stubRepository.Object);
 
             List<Tender> tenders = new List<Tender>();
-            Tender tender = new Tender { Id = 1, CreationDate = DateTime.Now, StartDate = new DateTime(2021, 12, 18), EndDate = new DateTime(2022, 3, 1) };
+            Tender tender = new Tender 
+            {
+                Id = 1, CreationDate = DateTime.Now,
+                TenderDateRange = new IntegrationLibrary.Shared.Model.DateRange
+                {
+                    StartDate = new DateTime(2021, 12, 18),
+                    EndDate = new DateTime(2022, 3, 1)
+                }
+            };
             tenders.Add(tender);
 
             stubRepository.Setup(m => m.GetAll()).Returns(tenders);

@@ -26,7 +26,7 @@ namespace IntegrationLibrary.Tendering.Service
             List<TenderItemDto> items = new List<TenderItemDto>();
             foreach(TenderItem item in GetAll())
             {
-                if(item.TenderId == tenderId)
+                /*if(item.TenderId == tenderId)
                 {
                     TenderItemDto dto = new TenderItemDto
                     {
@@ -35,7 +35,7 @@ namespace IntegrationLibrary.Tendering.Service
                         Quantity = item.Quantity
                     };
                     items.Add(dto);
-                }
+                }*/
             }
             return items;
         }

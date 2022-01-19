@@ -8,6 +8,6 @@ namespace IntegrationLibrary.Tendering.IRepository
 {
     public interface ITenderRepository : IRepo<Tender>
     {
-
+        List<Tender> GetTenders();
     }
 }

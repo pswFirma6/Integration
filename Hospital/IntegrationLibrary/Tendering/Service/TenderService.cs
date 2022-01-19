@@ -8,6 +8,7 @@ using RabbitMQ.Client;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace IntegrationLibrary.Tendering.Service
@@ -27,7 +28,7 @@ namespace IntegrationLibrary.Tendering.Service
 
         public List<Tender> GetTenders()
         {
-            return tenderRepository.GetAll();
+            return tenderRepository.GetTenders();
         }
 
         public List<TenderDto> GetTendersWithItems()
@@ -41,14 +42,24 @@ namespace IntegrationLibrary.Tendering.Service
                     {
                         Id = tender.Id,
                         CreationDate = tender.CreationDate.ToString(),
-                        StartDate = tender.StartDate.ToString(),
-                        EndDate = tender.EndDate.ToString(),
-                        TenderItems = tenderItemService.GetTenderItems(tender.Id)
+                        StartDate = tender.TenderDateRange.StartDate.ToString(),
+                        EndDate = tender.TenderDateRange.EndDate.ToString(),
+                        TenderItems = GetTenderItems(tender)
                     };
                     tendersWithItems.Add(dto);
                 }
             }
             return tendersWithItems;
+        }
+
+        private List<TenderItemDto> GetTenderItems(Tender tender)
+        {
+            List<TenderItemDto> items = new List<TenderItemDto>();
+            foreach(TenderItem tenderItem in tender.TenderItems){
+                TenderItemDto itemDto = new TenderItemDto { Name = tenderItem.Name, Quantity = tenderItem.Quantity };
+                items.Add(itemDto);
+            }
+            return items;
         }
 
         public void AddTender(TenderDto dto)
@@ -58,13 +69,16 @@ namespace IntegrationLibrary.Tendering.Service
                 Id = GetLastID() + 1,
                 Opened = true,
                 CreationDate = DateTime.Now,
-                StartDate = DateTime.Parse(dto.StartDate),
-                EndDate = AssignEndDate(dto.EndDate)
+                TenderDateRange = new Shared.Model.DateRange 
+                { 
+                    StartDate = DateTime.Parse(dto.StartDate), 
+                    EndDate = AssignEndDate(dto.EndDate)
+                }
                 
             };
+            SetTenderItems(dto.TenderItems, tender);
             tenderRepository.Add(tender);
             tenderRepository.Save();
-            tenderItemService.AddTenderItems(SetTenderItems(dto.TenderItems, tender.Id));
             var factory = new ConnectionFactory
             {
                 HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost",
@@ -97,6 +111,10 @@ namespace IntegrationLibrary.Tendering.Service
         private int GetLastID()
         {
             List<Tender> tenders = GetTenders();
+            if(tenders.Count == 0)
+            {
+                return 0;
+            }
             return tenders[tenders.Count - 1].Id;
         }
 
@@ -105,20 +123,13 @@ namespace IntegrationLibrary.Tendering.Service
             return string.IsNullOrEmpty(endDate) ? new DateTime(2050, 01, 01) : DateTime.Parse(endDate);
         }
 
-        private List<TenderItem> SetTenderItems(List<TenderItemDto> dtos, int tenderId)
+        private Tender SetTenderItems(List<TenderItemDto> dtos, Tender tender)
         {
-            List<TenderItem> items = new List<TenderItem>();
             foreach (TenderItemDto dto in dtos)
             {
-                TenderItem item = new TenderItem()
-                {
-                    Name = dto.Name,
-                    Quantity = dto.Quantity,
-                    TenderId = tenderId
-                };
-                items.Add(item);
+                tender.AddTenderItem(tender, dto.Name, dto.Quantity);
             }
-            return items;
+            return tender;
         }
 
         public void CloseTender(int tenderId)
