@@ -13,14 +13,14 @@ namespace IntegrationLibrary.Exceptions
             
         }
 
-        protected DomainException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+        //protected DomainException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
     }
 
     [Serializable]
     public class DomainNotFoundException: DomainException
     {
-        public DomainNotFoundException(string message): base(message)
+        protected DomainNotFoundException(string message): base(message)
         {
 
         }
@@ -29,9 +29,18 @@ namespace IntegrationLibrary.Exceptions
     [Serializable]
     public class ValidationException : DomainException
     {
-        public ValidationException(string message) : base(message)
+        protected ValidationException(string message) : base(message)
         {
 
+        }
+    }
+
+    [Serializable]
+    public class NotAuthenticatedException : DomainException
+    {
+        protected NotAuthenticatedException(string message) : base(message) 
+        {
+        
         }
     }
 
