@@ -1,4 +1,5 @@
-﻿using IntegrationLibrary.Pharmacy.DTO;
+﻿using IntegrationLibrary.Exceptions;
+using IntegrationLibrary.Pharmacy.DTO;
 using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Model;
 using RestSharp;
@@ -40,7 +41,12 @@ namespace IntegrationLibrary.Pharmacy.Service
 
         public Model.Pharmacy GetPharmacyByName(String pharmacyName)
         {
-            return repository.GetAll().Find(pharmacy => pharmacyName == pharmacy.PharmacyName);
+            Model.Pharmacy pharmacy = repository.GetAll().Find(ph => pharmacyName == ph.PharmacyName);
+            if(pharmacy == null)
+            {
+                throw new DomainNotFoundException("Pharmacy by name: " + pharmacyName + " doesn't exist!");
+            }
+            return pharmacy;
         }
 
         public List<PharmacyMedicineAvailabilityDTO> CheckPharmacyMedicines(MedicineDto medicine)
