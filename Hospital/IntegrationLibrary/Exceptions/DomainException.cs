@@ -8,7 +8,7 @@ namespace IntegrationLibrary.Exceptions
     [Serializable]
     public abstract class DomainException: Exception
     {
-        public DomainException(string message): base(message)
+        protected DomainException(string message): base(message)
         {
             
         }
@@ -17,6 +17,7 @@ namespace IntegrationLibrary.Exceptions
 
     }
 
+    [Serializable]
     public class DomainNotFoundException: DomainException
     {
         public DomainNotFoundException(string message): base(message)
@@ -25,6 +26,7 @@ namespace IntegrationLibrary.Exceptions
         }
     }
 
+    [Serializable]
     public class ValidationException : DomainException
     {
         public ValidationException(string message) : base(message)
