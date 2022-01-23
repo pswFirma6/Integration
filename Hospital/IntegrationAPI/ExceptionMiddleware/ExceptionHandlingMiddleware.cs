@@ -25,6 +25,11 @@ namespace IntegrationAPI.ExceptionMiddleware
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 await context.Response.WriteAsync(e.Message);
             }
+            catch(NotAuthenticatedException e)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                await context.Response.WriteAsync(e.Message);
+            }
             catch(Exception e)
             {
                 context.Response.StatusCode = 500;
