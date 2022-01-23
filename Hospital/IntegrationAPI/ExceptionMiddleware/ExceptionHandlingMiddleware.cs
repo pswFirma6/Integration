@@ -23,6 +23,7 @@ namespace IntegrationAPI.ExceptionMiddleware
             catch(ValidationException e)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                await context.Response.WriteAsync(e.Message);
             }
             catch(Exception e)
             {
