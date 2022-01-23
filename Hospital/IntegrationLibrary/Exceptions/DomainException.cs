@@ -8,40 +8,47 @@ namespace IntegrationLibrary.Exceptions
     [Serializable]
     public abstract class DomainException: Exception
     {
-        protected DomainException(string message): base(message)
+        public DomainException(string message): base(message)
         {
             
         }
 
-        //protected DomainException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+        protected DomainException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
     }
 
     [Serializable]
     public class DomainNotFoundException: DomainException
     {
-        protected DomainNotFoundException(string message): base(message)
+        public DomainNotFoundException(string message) : base(message)
         {
 
         }
+
+        protected DomainNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
     [Serializable]
     public class ValidationException : DomainException
     {
-        protected ValidationException(string message) : base(message)
+        public ValidationException(string message) : base(message)
         {
 
         }
+
+        protected ValidationException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 
     [Serializable]
     public class NotAuthenticatedException : DomainException
     {
-        protected NotAuthenticatedException(string message) : base(message) 
+        public NotAuthenticatedException(string message) : base(message) 
         {
         
         }
+
+        protected NotAuthenticatedException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+
     }
 
 }
