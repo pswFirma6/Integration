@@ -1,4 +1,5 @@
-﻿using IntegrationLibrary.Partnership.IRepo;
+﻿using IntegrationLibrary.Exceptions;
+using IntegrationLibrary.Partnership.IRepo;
 using IntegrationLibrary.Partnership.Model;
 using IntegrationLibrary.Partnership.Repository;
 using IntegrationLibrary.Pharmacy.IRepository;
@@ -24,42 +25,48 @@ namespace IntegrationLibrary.Partnership.Service
 
           public override Task StartAsync(CancellationToken cancellationToken)
           {
-              IOfferRepository repository = new OfferRepository(databaseContext);
-              service = new OfferService(repository);
+            IOfferRepository repository = new OfferRepository(databaseContext);
+            service = new OfferService(repository);
 
-              var factory = new ConnectionFactory
-              {
-                  HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost",
-                  UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? "guest",
-                  Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest",
-              };
-              connection = factory.CreateConnection();
-              channel = connection.CreateModel();
+            var factory = new ConnectionFactory
+            {
+                HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost",
+                UserName = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? "guest",
+                Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest",
+            };
+            try
+            {
+                connection = factory.CreateConnection();
+            } catch
+            {
+                throw new DomainNotFoundException("RabbitMQ server refuses to connect!");
+            }
+            channel = connection.CreateModel();
 
-              channel.ExchangeDeclare("offer-exchange", type: ExchangeType.Fanout);
-              channel.QueueDeclare("offer-queue",
-                                      durable: false,
-                                      exclusive: false,
-                                      autoDelete: false,
-                                      arguments: null);
+            channel.ExchangeDeclare("offer-exchange", type: ExchangeType.Fanout);
+            channel.QueueDeclare("offer-queue",
+                                    durable: false,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
 
-              channel.QueueBind("offer-queue", "offer-exchange", string.Empty);
+            channel.QueueBind("offer-queue", "offer-exchange", string.Empty);
 
-              var consumer = new EventingBasicConsumer(channel);
-              consumer.Received += (model, e) =>
-              {
-                  byte[] body = e.Body.ToArray();
-                  var jsonMessage = Encoding.UTF8.GetString(body);
-                  Offer message;
-                  message = JsonConvert.DeserializeObject<Offer>(jsonMessage);
-                  service.AddOffer(message);
-              };
+            var consumer = new EventingBasicConsumer(channel);
+            consumer.Received += (model, e) =>
+            {
+                byte[] body = e.Body.ToArray();
+                var jsonMessage = Encoding.UTF8.GetString(body);
+                Offer message;
+                message = JsonConvert.DeserializeObject<Offer>(jsonMessage);
+                service.AddOffer(message);
+            };
 
-              channel.BasicConsume(queue: "offer-queue",
-                                      autoAck: true,
-                                      consumer: consumer);
+            channel.BasicConsume(queue: "offer-queue",
+                                    autoAck: true,
+                                    consumer: consumer);
 
-              return base.StartAsync(cancellationToken);
+            return base.StartAsync(cancellationToken);
           }
 
           public override Task StopAsync(CancellationToken cancellationToken)

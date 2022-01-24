@@ -1,4 +1,5 @@
-﻿using IntegrationLibrary.Pharmacy.Model;
+﻿using IntegrationLibrary.Exceptions;
+using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Tendering.DTO;
 using IntegrationLibrary.Tendering.IRepository;
 using IntegrationLibrary.Tendering.Model;
@@ -74,16 +75,22 @@ namespace IntegrationLibrary.Tendering.Service
                 Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest",
             };
 
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            try
             {
-                channel.ExchangeDeclare(exchange: "tender-exchange-" + dto.HospitalApiKey, type: ExchangeType.Fanout);
+                using (var connection = factory.CreateConnection())
+                using (var channel = connection.CreateModel())
+                {
+                    channel.ExchangeDeclare(exchange: "tender-exchange-" + dto.HospitalApiKey, type: ExchangeType.Fanout);
 
-                dto.Id = GetLastID()+1;
-                var message = dto;
-                var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
+                    dto.Id = GetLastID() + 1;
+                    var message = dto;
+                    var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
 
-                channel.BasicPublish("tender-exchange-" + dto.HospitalApiKey, String.Empty, null, body);
+                    channel.BasicPublish("tender-exchange-" + dto.HospitalApiKey, String.Empty, null, body);
+                }
+            } catch
+            {
+                throw new DomainNotFoundException("RabbitMQ server refuses to connect!");
             }
         }
 

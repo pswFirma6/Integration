@@ -31,10 +31,7 @@ namespace IntegrationLibrary.Exceptions
     [Serializable]
     public class ValidationException : DomainException
     {
-        public ValidationException(string message) : base(message)
-        {
-
-        }
+        public ValidationException(string message) : base(message) { }
 
         protected ValidationException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
@@ -42,10 +39,7 @@ namespace IntegrationLibrary.Exceptions
     [Serializable]
     public class NotAuthenticatedException : DomainException
     {
-        public NotAuthenticatedException(string message) : base(message) 
-        {
-        
-        }
+        public NotAuthenticatedException(string message) : base(message) { }
 
         protected NotAuthenticatedException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 

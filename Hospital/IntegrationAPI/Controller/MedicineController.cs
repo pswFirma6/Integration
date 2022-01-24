@@ -15,6 +15,7 @@ using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationLibrary.Pharmacy.DTO;
 using System.Diagnostics;
 using Grpc.Core;
+using IntegrationLibrary.Exceptions;
 
 namespace IntegrationAPI.Controller
 {
@@ -41,14 +42,21 @@ namespace IntegrationAPI.Controller
 
         private void orderMedicineViaGrpc(CheckAvailabilityDto medicine)
         {
-            var request = new MedicineAvailabilityMessage
+            try
             {
-                MedicineName = medicine.Medicine.Name,
-                MedicineQuantity = medicine.Medicine.Quantity
-            };
-            var channel = new Channel("localhost:4111", ChannelCredentials.Insecure);
-            var client = new MedicineService.MedicineServiceClient(channel);
-            client.medicineUrgentProcurement(request);
+                var request = new MedicineAvailabilityMessage
+                {
+                    MedicineName = medicine.Medicine.Name,
+                    MedicineQuantity = medicine.Medicine.Quantity
+                };
+                var channel = new Channel("localhost:4111", ChannelCredentials.Insecure);
+                var client = new MedicineService.MedicineServiceClient(channel);
+                client.medicineUrgentProcurement(request);
+            }
+            catch
+            {
+                throw new DomainNotFoundException("Grpc refuses to connect!");
+            }
         }
 
 
