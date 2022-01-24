@@ -11,7 +11,7 @@ namespace IntegrationLibrary.Pharmacy.Service
 {
     public class PharmacyService
     {
-        private IPharmacyRepository repository;
+        private readonly IPharmacyRepository repository;
     
         public PharmacyService(IPharmacyRepository iRepository)
         {

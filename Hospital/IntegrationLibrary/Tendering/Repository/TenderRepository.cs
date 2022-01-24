@@ -12,8 +12,7 @@ namespace IntegrationLibrary.Tendering.Repository
 {
     public class TenderRepository : Repo<Tender>, ITenderRepository
     {
-        DatabaseContext _context = new DatabaseContext();
-        private DbSet<Tender> table;
+        readonly DatabaseContext _context = new DatabaseContext();
 
         public TenderRepository(DatabaseContext context) : base(context)
         {
@@ -21,7 +20,7 @@ namespace IntegrationLibrary.Tendering.Repository
 
         public List<Tender> GetTenders()
         {
-            table = _context.Set<Tender>();
+            DbSet<Tender>  table = _context.Set<Tender>();
             var tenders = table.Include(tender => tender.TenderItems).ToList();
             return tenders;
         }

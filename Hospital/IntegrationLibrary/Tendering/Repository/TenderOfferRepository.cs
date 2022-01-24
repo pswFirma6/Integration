@@ -13,7 +13,6 @@ namespace IntegrationLibrary.Tendering.Repository
     public class TenderOfferRepository : Repo<TenderOffer>, ITenderOfferRepository
     {
         readonly DatabaseContext _context = new DatabaseContext();
-        private DbSet<TenderOffer> table;
 
         public TenderOfferRepository(DatabaseContext context) : base(context)
         {
@@ -21,7 +20,7 @@ namespace IntegrationLibrary.Tendering.Repository
 
         public List<TenderOffer> GetTenderOffers()
         {
-            table = _context.Set<TenderOffer>();
+            DbSet<TenderOffer>  table = _context.Set<TenderOffer>();
             var offers = table.Include(offer => offer.OfferItems).ToList();
             return offers;
         }

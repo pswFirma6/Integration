@@ -12,14 +12,10 @@ namespace IntegrationLibrary.Tendering.Service
     public class TenderOfferService
     {
         private readonly ITenderOfferRepository tenderOfferRepository;
-        private readonly TenderOfferItemService tenderOfferItemService;
 
         public TenderOfferService(ITenderOfferRepository iRepository)
         {
             tenderOfferRepository = iRepository;
-            DatabaseContext context = new DatabaseContext();
-            ITenderOfferItemRepository itemRepository = new TenderOfferItemRepository(context);
-            tenderOfferItemService = new TenderOfferItemService(itemRepository);
         }
 
         public List<TenderOffer> GetOffers()
@@ -37,7 +33,6 @@ namespace IntegrationLibrary.Tendering.Service
                     Id = tenderOffer.Id,
                     TenderId = tenderOffer.TenderId,
                     PharmacyName = tenderOffer.PharmacyName,
-                    //TenderOfferItems = tenderOfferItemService.GetTenderOfferItems(tenderOffer.Id)
                     TenderOfferItems = GetOfferItems(tenderOffer)
                 };
                 tenderOffersWithItems.Add(dto);

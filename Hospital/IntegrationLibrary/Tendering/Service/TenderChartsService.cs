@@ -18,7 +18,6 @@ namespace IntegrationLibrary.Tendering.Service
 {
     public class TenderChartsService
     {
-        private readonly ITenderOfferRepository offerRepository;
         private readonly TenderOfferService offerService;
         private readonly TenderOfferItemService offerItemService;
         private readonly ITenderRepository tenderRepository;
@@ -32,7 +31,7 @@ namespace IntegrationLibrary.Tendering.Service
 
         public TenderChartsService(ITenderOfferRepository repository)
         {
-            offerRepository = repository;
+            ITenderOfferRepository offerRepository = repository;
             offerService = new TenderOfferService(offerRepository);
             DatabaseContext context = new DatabaseContext();
             ITenderOfferItemRepository itemRepository = new TenderOfferItemRepository(context);

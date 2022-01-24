@@ -16,14 +16,10 @@ namespace IntegrationLibrary.Tendering.Service
     public class TenderService
     {
         private readonly ITenderRepository tenderRepository;
-        private readonly TenderItemService tenderItemService;
         private readonly string url = "http://localhost:44377/tenderNotification";
         public TenderService(ITenderRepository iRepository)
         {
             tenderRepository = iRepository;
-            DatabaseContext context = new DatabaseContext();
-            ITenderItemRepository itemRepository = new TenderItemRepository(context);
-            tenderItemService = new TenderItemService(itemRepository);
         }
 
         public List<Tender> GetTenders()
