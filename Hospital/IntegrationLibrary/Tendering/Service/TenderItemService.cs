@@ -31,5 +31,10 @@ namespace IntegrationLibrary.Tendering.Service
             }
         }
 
+        private int GetLastID()
+        {
+            List<TenderItem> items = GetAll();
+            return items[items.Count - 1].Id;
+        }
     }
 }

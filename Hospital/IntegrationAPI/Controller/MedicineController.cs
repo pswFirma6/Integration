@@ -39,14 +39,14 @@ namespace IntegrationAPI.Controller
 
         [HttpPost]
         [Route("orderMedicine")]
-        public IActionResult OrderMedicine(CheckAvailabilityDto medicineForOrder)
+        public IActionResult OrderMedicine(OrderMedicineDto medicineForOrder)
         {
-            orderMedicineViaGrpc(medicineForOrder);
-            sendMessageToHospital(medicineForOrder);
+            OrderMedicineViaGrpc(medicineForOrder);
+            SendMessageToHospital(medicineForOrder);
             return Ok();
         }
 
-        private void orderMedicineViaGrpc(CheckAvailabilityDto medicine)
+        private void OrderMedicineViaGrpc(OrderMedicineDto medicine)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace IntegrationAPI.Controller
             }
         }
 
-        private void sendMessageToHospital(CheckAvailabilityDto medicine)
+        private void SendMessageToHospital(OrderMedicineDto medicine)
         {
             string hospitalEmail = _config.GetValue<string>("Email");
             var message = new Message(new string[] {hospitalEmail }, "URGENT PROCUREMENT", "You have successfully ordered:<br> " + medicine.Medicine.Name + ", quantity:"  + medicine.Medicine.Quantity + "<br>");
