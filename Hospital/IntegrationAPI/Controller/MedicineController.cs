@@ -15,6 +15,8 @@ using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationLibrary.Pharmacy.DTO;
 using System.Diagnostics;
 using Grpc.Core;
+using IntegrationLibrary.Exceptions;
+using Microsoft.Extensions.Configuration;
 
 namespace IntegrationAPI.Controller
 {
@@ -22,28 +24,54 @@ namespace IntegrationAPI.Controller
     [ApiController]
     public class MedicineController : ControllerBase
     {
-        public MedicineController(){}
+        private PharmacyService pharmacyService;
+        private readonly EmailService emailService;
+        private readonly IConfiguration _config;
+        private IPharmacyRepository pharmacyRepository;
+
+        public MedicineController(DatabaseContext context, IConfiguration config)
+        {
+            pharmacyRepository = new PharmacyRepository(context);
+            pharmacyService = new PharmacyService(pharmacyRepository);
+            _config = config;
+            emailService = new EmailService();
+        }
 
         [HttpPost]
         [Route("orderMedicine")]
-        public IActionResult OrderMedicine(OrderMedicineDto medicine)
+        public IActionResult OrderMedicine(CheckAvailabilityDto medicineForOrder)
         {
-            OrderMedicineViaGrpc(medicine);
+            orderMedicineViaGrpc(medicineForOrder);
+            sendMessageToHospital(medicineForOrder);
             return Ok();
         }
 
-        private void OrderMedicineViaGrpc(OrderMedicineDto medicine)
+        private void orderMedicineViaGrpc(CheckAvailabilityDto medicine)
         {
-            var request = new MedicineAvailabilityMessage
+            try
             {
-                MedicineName = medicine.Medicine.Name,
-                MedicineQuantity = medicine.Medicine.Quantity
-            };
-            var channel = new Channel("localhost:4111", ChannelCredentials.Insecure);
-            var client = new MedicineService.MedicineServiceClient(channel);
-            client.medicineUrgentProcurement(request);
+                var request = new MedicineAvailabilityMessage
+                {
+                    MedicineName = medicine.Medicine.Name,
+                    MedicineQuantity = medicine.Medicine.Quantity
+                };
+                var channel = new Channel("localhost:4111", ChannelCredentials.Insecure);
+                var client = new MedicineService.MedicineServiceClient(channel);
+                client.medicineUrgentProcurement(request);
+            }
+            catch
+            {
+                throw new DomainNotFoundException("Grpc refuses to connect!");
+            }
         }
 
+        private void sendMessageToHospital(CheckAvailabilityDto medicine)
+        {
+            string hospitalEmail = _config.GetValue<string>("Email");
+            var message = new Message(new string[] {hospitalEmail }, "URGENT PROCUREMENT", "You have successfully ordered:<br> " + medicine.Medicine.Name + ", quantity:"  + medicine.Medicine.Quantity + "<br>");
+            EmailDto pharmacyEmail = pharmacyService.GetPharmacyEmailByName(medicine.PharmacyName);
+            emailService.SendEmail(message, pharmacyEmail);
+        }
 
     }
 }

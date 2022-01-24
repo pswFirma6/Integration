@@ -12,6 +12,7 @@ using System.Net.Http.Headers;
 using Grpc.Core;
 using Microsoft.Extensions.Configuration;
 using AutoMapper;
+using IntegrationLibrary.Exceptions;
 
 namespace IntegrationAPI.Controller
 {
@@ -71,17 +72,24 @@ namespace IntegrationAPI.Controller
 
         private bool CheckMedicineViaGrpc(OrderMedicineDto medicine)
         {
-            bool response = false;
-            var request = new MedicineAvailabilityMessage
+            try
             {
-                MedicineName = medicine.Medicine.Name,
-                MedicineQuantity = medicine.Medicine.Quantity
-            };
-            var channel = new Channel("localhost:4111", ChannelCredentials.Insecure);
-            var client = new MedicineService.MedicineServiceClient(channel);
-            var reply = client.checkMedicineAvailability(request);
-            response = reply.IsAvailable;
-            return response;
+                bool response = false;
+                var request = new MedicineAvailabilityMessage
+                {
+                    MedicineName = medicine.Medicine.Name,
+                    MedicineQuantity = medicine.Medicine.Quantity
+                };
+                var channel = new Channel("localhost:4111", ChannelCredentials.Insecure);
+                var client = new MedicineService.MedicineServiceClient(channel);
+                var reply = client.checkMedicineAvailability(request);
+                response = reply.IsAvailable;
+                return response;
+            }
+            catch
+            {
+                throw new DomainNotFoundException("Grpc refuses to connect!");
+            }
         }
 
         [HttpGet]
@@ -144,3 +152,4 @@ namespace IntegrationAPI.Controller
     }
 
 }
+

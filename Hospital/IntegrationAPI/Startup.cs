@@ -18,6 +18,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Http;
 using AutoMapper;
 using static IntegrationAPI.Mapper.Mapper;
+using IntegrationAPI.ExceptionMiddleware;
 
 namespace IntegrationAPI
 {
@@ -33,6 +34,7 @@ namespace IntegrationAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<ExceptionHandlingMiddleware>();
             services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(CreateConnectionStringFromEnvironment()));
             services.AddMvc();
             services.AddControllers();
@@ -75,6 +77,8 @@ namespace IntegrationAPI
             //app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseMiddleware<ExceptionHandlingMiddleware>(); //ZA EXCEPTION-e
 
             app.UseAuthorization();
 

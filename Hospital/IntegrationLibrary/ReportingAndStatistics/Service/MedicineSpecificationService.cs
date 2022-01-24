@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using Renci.SshNet;
 using System.Diagnostics;
+using IntegrationLibrary.Exceptions;
 
 namespace IntegrationLibrary.ReportingAndStatistics.Service
 {
@@ -42,7 +43,13 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
 
             using (SftpClient client = new SftpClient(new PasswordConnectionInfo("127.0.0.1 ", "tester", "password")))
             {
-                client.Connect();
+                try
+                {
+                    client.Connect();
+                } catch
+                {
+                    throw new DomainNotFoundException("Sftp server refuses to connect!");
+                }
                 using (Stream stream = File.OpenWrite(localFile))
                 {
                     client.DownloadFile(serverFile, stream, null);

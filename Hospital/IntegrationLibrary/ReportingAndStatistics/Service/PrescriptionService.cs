@@ -11,6 +11,7 @@ using IntegrationLibrary.Pharmacy.Service;
 using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Pharmacy.Repository;
+using IntegrationLibrary.Exceptions;
 
 namespace IntegrationLibrary.ReportingAndStatistics.Service
 {
@@ -120,7 +121,13 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
         {
             using (SftpClient client = new SftpClient(new PasswordConnectionInfo("192.168.56.1", "tester", "password")))
             {
-                client.Connect();
+                try
+                {
+                    client.Connect();
+                } catch
+                {
+                    throw new DomainNotFoundException("Sftp server refuses to connect!");
+                }
 
                 using (Stream stream = File.OpenRead(fileName))
                 {

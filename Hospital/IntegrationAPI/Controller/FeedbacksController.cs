@@ -43,7 +43,6 @@ namespace IntegrationAPI.Controller
         [HttpPost]
         public IActionResult PostFeedback(Feedback feedback)
         {
-           
             service.SendFeedback(feedback);
            
             Response.Headers.Add("ApiKey",
