@@ -25,12 +25,6 @@ namespace IntegrationLibrary.Pharmacy.Service
             repository.Save();
 
         }
-        public void AddPharmacy(Model.Pharmacy pharmacy)
-        {
-            repository.Add(pharmacy);
-            repository.Save();
-
-        }
 
         public List<string> GetPharmacyNames()
         {
@@ -120,6 +114,11 @@ namespace IntegrationLibrary.Pharmacy.Service
             pharmacy.SetPharmacyPicture(pharmacyPicture);
             repository.Update(pharmacy);
             repository.Save();
+        }
+
+        public EmailDto GetPharmacyEmailByName(string pharmacyName)
+        {
+            return new EmailDto(GetPharmacyByName(pharmacyName).PharmacyEmail, GetPharmacyByName(pharmacyName).PharmacyPassword);
         }
 
 
