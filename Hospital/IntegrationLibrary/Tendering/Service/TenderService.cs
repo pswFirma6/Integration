@@ -79,6 +79,7 @@ namespace IntegrationLibrary.Tendering.Service
             SetTenderItems(dto.TenderItems, tender);
             tenderRepository.Add(tender);
             tenderRepository.Save();
+
             var factory = new ConnectionFactory
             {
                 HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost",
@@ -91,8 +92,18 @@ namespace IntegrationLibrary.Tendering.Service
             {
                 channel.ExchangeDeclare(exchange: "tender-exchange-" + dto.HospitalApiKey, type: ExchangeType.Fanout);
 
-                dto.Id = GetLastID();
-                var message = dto;
+                TenderForPharmacyDto tenderDto = new TenderForPharmacyDto
+                {
+                    Id = tender.Id,
+                    CreationDate = tender.CreationDate.ToString(),
+                    StartDate = tender.TenderDateRange.StartDate.ToString(),
+                    EndDate = tender.TenderDateRange.EndDate.ToString(),
+                    TenderItems = dto.TenderItems,
+                    HospitalApiKey = dto.HospitalApiKey,
+                    HospitalTenderId = tender.Id,
+                    Opened = true
+                };
+                var message = tenderDto;
                 var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
 
                 channel.BasicPublish("tender-exchange-" + dto.HospitalApiKey, String.Empty, null, body);
@@ -106,7 +117,6 @@ namespace IntegrationLibrary.Tendering.Service
             request.AddJsonBody(offer);
             client.Post(request);
         }
-
 
         private int GetLastID()
         {

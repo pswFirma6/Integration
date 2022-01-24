@@ -30,7 +30,7 @@ namespace IntegrationLibrary.Tendering.Service
             List<TenderOfferItemDto> offerItems = new List<TenderOfferItemDto>();
             foreach (TenderOfferItem item in GetAll())
             {
-                if (item.TenderOfferId == offerId)
+                if (item.OfferId == offerId)
                 {
                     TenderOfferItemDto dto = new TenderOfferItemDto
                     {

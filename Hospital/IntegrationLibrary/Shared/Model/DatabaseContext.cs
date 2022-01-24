@@ -38,6 +38,12 @@ namespace IntegrationLibrary.Pharmacy.Model
                 .HasForeignKey(item => item.TenderId)
                 .IsRequired();
 
+            modelBuilder.Entity<TenderOfferItem>()
+                .HasOne<TenderOffer>(item => item.Offer)
+                .WithMany(tender => tender.OfferItems)
+                .HasForeignKey(item => item.OfferId)
+                .IsRequired();
+
 
             modelBuilder.Entity<Pharmacy>().OwnsOne(typeof(Address), "PharmacyAddress");
             modelBuilder.Entity<Pharmacy>().OwnsOne(typeof(ConnectionInfo), "PharmacyConnectionInfo");

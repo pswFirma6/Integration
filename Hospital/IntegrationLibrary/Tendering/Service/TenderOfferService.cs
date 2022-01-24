@@ -24,10 +24,10 @@ namespace IntegrationLibrary.Tendering.Service
 
         public List<TenderOffer> GetOffers()
         {
-            return tenderOfferRepository.GetAll();
+            return tenderOfferRepository.GetTenderOffers();
         }
 
-        public List<TenderOfferDto> GetTendersWithItems()
+        public List<TenderOfferDto> GetTenderOffersWithItems()
         {
             List<TenderOfferDto> tenderOffersWithItems = new List<TenderOfferDto>();
             foreach (TenderOffer tenderOffer in GetOffers())
@@ -37,49 +37,68 @@ namespace IntegrationLibrary.Tendering.Service
                     Id = tenderOffer.Id,
                     TenderId = tenderOffer.TenderId,
                     PharmacyName = tenderOffer.PharmacyName,
-                    TenderOfferItems = tenderOfferItemService.GetTenderOfferItems(tenderOffer.Id)
+                    //TenderOfferItems = tenderOfferItemService.GetTenderOfferItems(tenderOffer.Id)
+                    TenderOfferItems = GetOfferItems(tenderOffer)
                 };
                 tenderOffersWithItems.Add(dto);
             }
             return tenderOffersWithItems;
         }
 
+        private List<TenderOfferItemDto> GetOfferItems(TenderOffer offer)
+        {
+            List<TenderOfferItemDto> items = new List<TenderOfferItemDto>();
+            foreach(TenderOfferItem offerItem in offer.OfferItems)
+            {
+                TenderOfferItemDto itemDto = new TenderOfferItemDto
+                {
+                    Name = offerItem.Name,
+                    Quantity = offerItem.Quantity,
+                    Price = offerItem.Price
+                };
+                items.Add(itemDto);
+            }
+            return items;
+        }
+
         public void AddTenderOffer(TenderOfferDto dto)
         {
             TenderOffer tenderOffer = new TenderOffer
             {
-                Id = dto.Id,
+                Id = GetLastID() + 1,
                 TenderId = dto.TenderId,
-                PharmacyName = dto.PharmacyName
+                PharmacyName = dto.PharmacyName,
+                PharmacyOfferId = dto.Id
             };
+            SetOfferItems(dto.TenderOfferItems, tenderOffer);
             tenderOfferRepository.Add(tenderOffer);
             tenderOfferRepository.Save();
-            tenderOfferItemService.AddTenderOfferItems(SetTenderOfferItems(dto.TenderOfferItems, tenderOffer.Id));
+        }
+
+        private TenderOffer SetOfferItems(List<TenderOfferItemDto> items, TenderOffer offer)
+        {
+            foreach(TenderOfferItemDto dto in items)
+            {
+                offer.AddOfferItem(offer, dto.Name, dto.Quantity, dto.Price);
+            }
+            return offer;
+        }
+
+        private int GetLastID()
+        {
+            List<TenderOffer> offers = GetOffers();
+            if (offers.Count == 0)
+            {
+                return 0;
+            }
+            return offers[offers.Count - 1].Id;
         }
 
         public void MakeOfferWinner(TenderOffer offer)
         {
-            offer.isWinner = true;
+            offer.IsWinner = true;
             tenderOfferRepository.Update(offer);
             tenderOfferRepository.Save();
-        }
-
-        private List<TenderOfferItem> SetTenderOfferItems(List<TenderOfferItemDto> dtos, int tenderOfferId)
-        {
-            List<TenderOfferItem> items = new List<TenderOfferItem>();
-            foreach (TenderOfferItemDto dto in dtos)
-            {
-                TenderOfferItem item = new TenderOfferItem()
-                {
-                    Id = dto.Id,
-                    Name = dto.Name,
-                    Quantity = dto.Quantity,
-                    Price = dto.Price,
-                    TenderOfferId = tenderOfferId
-                };
-                items.Add(item);
-            }
-            return items;
         }
 
         public List<TenderOffer> GetWinningOffers()
@@ -87,7 +106,7 @@ namespace IntegrationLibrary.Tendering.Service
             List<TenderOffer> winningOffers = new List<TenderOffer>();
             foreach(TenderOffer offer in GetOffers())
             {
-                if (offer.isWinner)
+                if (offer.IsWinner)
                     winningOffers.Add(offer);
             }
             return winningOffers;

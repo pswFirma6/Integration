@@ -41,7 +41,7 @@ namespace IntegrationAPI.Controller
         [Route("getTenderOffers")]
         public List<TenderOfferDto> GetTenderOffers()
         {
-            return tenderOfferService.GetTendersWithItems();
+            return tenderOfferService.GetTenderOffersWithItems();
         }
 
         [HttpPost]
