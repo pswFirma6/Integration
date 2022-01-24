@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Pharmacy.DTO;
+using IntegrationLibrary.Exceptions;
 
 namespace IntegrationAPI.Controller
 {
@@ -26,7 +27,12 @@ namespace IntegrationAPI.Controller
         [Route("comments/{pharmacyName}")]
         public List<PharmacyComment> GetPharmacyByName([FromRoute] string pharmacyName)
         {
-            return service.GetCommentsFromPharmacy(pharmacyName);
+            List<PharmacyComment> pharmacyComments = service.GetCommentsFromPharmacy(pharmacyName);
+            if (pharmacyComments == null)
+            {
+                throw new DomainNotFoundException("No comments from" + pharmacyName  +" pharmacy by name ");
+            }
+            return pharmacyComments;
         }
 
         [HttpPost]

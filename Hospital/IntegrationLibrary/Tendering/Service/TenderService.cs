@@ -79,7 +79,7 @@ namespace IntegrationLibrary.Tendering.Service
             {
                 channel.ExchangeDeclare(exchange: "tender-exchange-" + dto.HospitalApiKey, type: ExchangeType.Fanout);
 
-                dto.Id = GetLastID();
+                dto.Id = GetLastID()+1;
                 var message = dto;
                 var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
 
