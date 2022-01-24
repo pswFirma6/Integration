@@ -24,26 +24,13 @@ namespace IntegrationAppTests.IntegrationTests
         private IOfferRepository repository;
         private DatabaseContext context = new DatabaseContext();
 
-
-        //private static string _environmentVar = Environment.GetEnvironmentVariable("ASP_NET_CORE_ENVIRONMENT");
-
-        private readonly IConfiguration _config;
-
         public PharmacyOffersTests()
         {
         }
 
-        [Fact]
+        [IgnoreOnNondevelopmentPhase]
         public void Add_offer()
         {
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.test.json")
-                 .Build();
-
-             var apiKey = config["ApiKey"];
-             string s = apiKey.ToString();
-
-            /*
 
             repository = new OfferRepository(context);
             service = new OfferService(repository);
@@ -53,32 +40,29 @@ namespace IntegrationAppTests.IntegrationTests
             List<Offer> beforeAdding = service.GetOffers();
             service.AddOffer(offer);
             List<Offer> afterAdding = service.GetOffers();
-            */
-            //(afterAdding.Count - beforeAdding.Count).ShouldNotBe(0);
-            s.ShouldBe("jaksjdhagshjikps");
+            
+            (afterAdding.Count - beforeAdding.Count).ShouldNotBe(0);
 
         }
 
-        [Fact]
+        [IgnoreOnNondevelopmentPhase]
         public void Get_offers()
         {
-            /*
+            
             repository = new OfferRepository(context);
             service = new OfferService(repository);
                 
             List<Offer> offers = new List<Offer>();
 
             offers = service.GetOffers();
-            */
-            //offers.ShouldNotBeEmpty();
-            Boolean t = true;
-            t.ShouldBe(true);
+           
+            offers.ShouldNotBeEmpty();
         }
 
-        [Fact]
+        [IgnoreOnNondevelopmentPhase]
         public void Post_offer()
         {
-            /*
+            
             var stubRepository = new Mock<IOfferRepository>();
             service = new OfferService(stubRepository.Object);
             bool isChanged = false;
@@ -87,14 +71,14 @@ namespace IntegrationAppTests.IntegrationTests
             DateRange dateRange = new DateRange(new DateTime(2021, 11, 11), new DateTime(2021, 11, 17));
             Offer offer = new Offer { Id = 1, Title = "Offer1", Content = "Offer1", OfferDateRange = dateRange, PharmacyName = "Pharmacy1", Posted = false };
             offers.Add(offer);
-            */
-            //service.PostOffer(offer);
-            Boolean t = true;
-            t.ShouldBe(true);
-            //isChanged.ShouldBeFalse();
+            
+            service.PostOffer(offer);
+
+            isChanged.ShouldBeFalse();
         }
 
 
 
     }
+
 }
