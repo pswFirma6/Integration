@@ -31,13 +31,15 @@ namespace UnitTests
             pharmacies.Add(pharmacy);
             pharmacies.Add(pharmacy1);
 
-            Pharmacy pharmacy2 = new Pharmacy(23, "Jankovic", "image.jpg", ad1, c1, "email.com", "12345");
 
-            stubRepository.Setup(m => m.Add(pharmacy2)).Callback((Pharmacy p) => pharmacies.Add(p));
+            PharmacyInfo pharmacyInfo = new PharmacyInfo("Jankovic", "Street", "city", "apikey", "HTTP", "url");
+            Pharmacy p = new Pharmacy(pharmacyInfo);
 
-            pharmacyService.AddPharmacy(pharmacy2);
+            stubRepository.Setup(m => m.Add(p)).Callback((Pharmacy p) => pharmacies.Add(p));
 
-            pharmacies.Count.ShouldBe(3);
+            pharmacyService.AddPharmacy(pharmacyInfo);
+
+            pharmacies.Count.ShouldBe(2);
 
         }
     }
