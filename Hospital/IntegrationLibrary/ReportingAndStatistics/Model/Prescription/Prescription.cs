@@ -16,7 +16,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Model
         {
         }
 
-        public Prescription(int id, string prescriptionDate, TherapyInfo therapy, PrescriptionInvolvedParties involvedParties, MedicineInfo medicine)
+        public Prescription(int id, string prescriptionDate, string v, TherapyInfo therapy, PrescriptionInvolvedParties involvedParties, MedicineInfo medicine)
         {
             Id = id;
             PrescriptionDate = prescriptionDate;

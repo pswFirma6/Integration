@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 using Moq;
+using IntegrationAppTests.IntegrationTests;
 
 namespace IntegrationAppTests
 {
@@ -14,7 +15,7 @@ namespace IntegrationAppTests
     {
         private FeedbackService service;
 
-        [Fact]
+        [IgnoreOnNondevelopmentPhase]
         public void Get_feedbacks()
         {
             var stubRepository = new Mock<IFeedbackRepository>();

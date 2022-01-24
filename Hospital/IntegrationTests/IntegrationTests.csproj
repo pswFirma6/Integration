@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="DotNetZip" Version="1.16.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
     <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.1.1" />
@@ -27,6 +28,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IntegrationLibrary\IntegrationLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.test.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
