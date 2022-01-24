@@ -116,6 +116,11 @@ namespace IntegrationLibrary.Pharmacy.Service
             repository.Save();
         }
 
+        public EmailDto GetPharmacyEmailByName(string pharmacyName)
+        {
+            return new EmailDto(GetPharmacyByName(pharmacyName).PharmacyEmail, GetPharmacyByName(pharmacyName).PharmacyPassword);
+        }
+
 
     }
 }
