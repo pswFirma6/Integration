@@ -1,4 +1,5 @@
-﻿using IntegrationLibrary.Pharmacy.IRepository;
+﻿using IntegrationLibrary.Exceptions;
+using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Model;
 using System;
 using System.Collections.Generic;
@@ -37,8 +38,21 @@ namespace IntegrationLibrary.Pharmacy.Service
 
         public void DeleteComment(int id)
         {
+            if (!idExists(id))
+            {
+                throw new DomainNotFoundException("Comment by id: " + id + " doesn't exist!");
+            }
             repository.Delete(id);
             repository.Save();
+        }
+
+        private bool idExists(int id)
+        {
+            if(repository.FindById(id)==null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

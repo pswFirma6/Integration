@@ -1,4 +1,5 @@
-﻿using IntegrationLibrary.Pharmacy.IRepository;
+﻿using IntegrationLibrary.Exceptions;
+using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationLibrary.Pharmacy.Service;
@@ -34,6 +35,10 @@ namespace IntegrationLibrary.Tendering.Service
 
             foreach(string apiKey in pharmacies.Select(pharmacy => pharmacy.PharmacyConnectionInfo.ApiKey))
             {
+                if (apiKey == null)
+                {
+                    throw new DomainNotFoundException("No connected pharmacy!");
+                }
                 var factory = new ConnectionFactory
                 {
                     HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost",
@@ -58,10 +63,13 @@ namespace IntegrationLibrary.Tendering.Service
                 {
                     byte[] body = e.Body.ToArray();
                     var jsonMessage = Encoding.UTF8.GetString(body);
+                    if(jsonMessage == null)
+                    {
+                        throw new DomainNotFoundException("RabbitMQ server isn't receiving valid messages");
+                    }
                     TenderOfferDto message;
                     message = JsonConvert.DeserializeObject<TenderOfferDto>(jsonMessage);
-                    //if (message.HospitalApiKey.Equals(apiKey))
-                        offerService.AddTenderOffer(message);
+                    offerService.AddTenderOffer(message);
                 };
 
                 channel.BasicConsume(queue: "tender-offer-queue-" + apiKey,
