@@ -4,14 +4,14 @@ using System.Text;
 
 namespace IntegrationLibrary.Pharmacy.DTO
 {
-    public class EmailDTO
+    public class EmailDto
     {
         public string PharmacyEmail { get; set; }
         public string PharmacyPassword { get; set; }
 
-        public EmailDTO(){ }
+        public EmailDto(){ }
 
-        public EmailDTO(string pharmacyEmail, string pharmacyPassword)
+        public EmailDto(string pharmacyEmail, string pharmacyPassword)
         {
             PharmacyEmail = pharmacyEmail;
             PharmacyPassword = pharmacyPassword;

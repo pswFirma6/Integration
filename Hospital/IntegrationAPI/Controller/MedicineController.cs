@@ -24,7 +24,7 @@ namespace IntegrationAPI.Controller
     public class MedicineController : ControllerBase
     {
         private PharmacyService pharmacyService;
-        private EmailService emailService;
+        private readonly EmailService emailService;
         private readonly IConfiguration _config;
         private IPharmacyRepository pharmacyRepository;
 
@@ -33,7 +33,7 @@ namespace IntegrationAPI.Controller
             pharmacyRepository = new PharmacyRepository(context);
             pharmacyService = new PharmacyService(pharmacyRepository);
             _config = config;
-            emailService = new EmailService(_config);
+            emailService = new EmailService();
         }
 
         [HttpPost]
@@ -61,7 +61,7 @@ namespace IntegrationAPI.Controller
         {
             string hospitalEmail = _config.GetValue<string>("Email");
             var message = new Message(new string[] {hospitalEmail }, "URGENT PROCUREMENT", "You have successfully ordered:<br> " + medicine.Medicine.Name + ", quantity:"  + medicine.Medicine.Quantity + "<br>");
-            EmailDTO pharmacyEmail = pharmacyService.GetPharmacyEmailByName(medicine.PharmacyName);
+            EmailDto pharmacyEmail = pharmacyService.GetPharmacyEmailByName(medicine.PharmacyName);
             emailService.SendEmail(message, pharmacyEmail);
         }
 

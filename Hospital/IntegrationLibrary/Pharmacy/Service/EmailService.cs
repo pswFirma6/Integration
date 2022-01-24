@@ -9,21 +9,19 @@ namespace IntegrationLibrary.Pharmacy.Service
 {
     public class EmailService
     {
-        private readonly IConfiguration _config;
 
-        public EmailService(IConfiguration config)
+        public EmailService()
         {
-            _config = config;
         }
 
-        public void SendEmail(Message message, EmailDTO pharmacyEmail)
+        public void SendEmail(Message message, EmailDto pharmacyEmail)
         {
             var mailMessage = CreateEmailMessage(message, pharmacyEmail);
 
             Send(mailMessage, pharmacyEmail);
         }
 
-        public MimeMessage CreateEmailMessage(Message message, EmailDTO pharmacyEmail)
+        public MimeMessage CreateEmailMessage(Message message, EmailDto pharmacyEmail)
         {
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("", pharmacyEmail.PharmacyEmail));
@@ -40,7 +38,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             return emailMessage;
         }
 
-        private void Send(MimeMessage mailMessage, EmailDTO pharmacyEmail)
+        private void Send(MimeMessage mailMessage, EmailDto pharmacyEmail)
         {
             
             using (var client = new SmtpClient())
@@ -51,12 +49,7 @@ namespace IntegrationLibrary.Pharmacy.Service
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
                     client.Authenticate(pharmacyEmail.PharmacyEmail, pharmacyEmail.PharmacyPassword);
                     client.Send(mailMessage);
-                }
-                catch
-                {
-                    //log an error message or throw an exception, or both.
-                    throw;
-                }
+                }               
                 finally
                 {
                     client.Disconnect(true);
