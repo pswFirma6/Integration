@@ -21,25 +21,6 @@ namespace IntegrationLibrary.Tendering.Service
             return tenderItemRepository.GetAll();
         }
 
-        public List<TenderItemDto> GetTenderItems(int tenderId)
-        {
-            List<TenderItemDto> items = new List<TenderItemDto>();
-            foreach(TenderItem item in GetAll())
-            {
-                if(item.TenderId == tenderId)
-                {
-                    TenderItemDto dto = new TenderItemDto
-                    {
-                        
-                        Name = item.Name, 
-                        Quantity = item.Quantity
-                    };
-                    items.Add(dto);
-                }
-            }
-            return items;
-        }
-
         public void AddTenderItems(List<TenderItem> items)
         {
             foreach(TenderItem item in items)

@@ -10,8 +10,9 @@ namespace IntegrationLibrary.Tendering.DTO
         public int TenderId { get; set; }
         public string PharmacyName { get; set; }
         public string HospitalApiKey { get; set; }
-
         public List<TenderOfferItemDto> TenderOfferItems { get; set; }
+        public string CreationDate { get; set; }
+
         public TenderOfferDto() { }
 
         public TenderOfferDto(int id, int tenderId, string pharmacyName, List<TenderOfferItemDto> tenderOfferItems, string hospitalApiKey)

@@ -33,14 +33,24 @@ namespace IntegrationLibrary.Pharmacy.Model
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TenderItem>()
-                .HasOne<Tender>()
-                .WithMany()
-                .HasForeignKey(item => item.TenderId);
+                .HasOne<Tender>(item => item.Tender)
+                .WithMany(tender => tender.TenderItems)
+                .HasForeignKey(item => item.TenderId)
+                .IsRequired();
+
+            modelBuilder.Entity<TenderOfferItem>()
+                .HasOne<TenderOffer>(item => item.Offer)
+                .WithMany(tender => tender.OfferItems)
+                .HasForeignKey(item => item.OfferId)
+                .IsRequired();
 
 
             modelBuilder.Entity<Pharmacy>().OwnsOne(typeof(Address), "PharmacyAddress");
             modelBuilder.Entity<Pharmacy>().OwnsOne(typeof(ConnectionInfo), "PharmacyConnectionInfo");
             modelBuilder.Entity<Offer>().OwnsOne(typeof(DateRange), "OfferDateRange");
+            modelBuilder.Entity<Tender>().OwnsOne(typeof(DateRange), "TenderDateRange");
+
+            modelBuilder.UsePropertyAccessMode(PropertyAccessMode.Field);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

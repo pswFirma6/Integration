@@ -1,5 +1,4 @@
-﻿using IntegrationLibrary.Exceptions;
-using IntegrationLibrary.Pharmacy.Model;
+﻿using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Tendering.DTO;
 using IntegrationLibrary.Tendering.IRepository;
 using IntegrationLibrary.Tendering.Model;
@@ -9,6 +8,7 @@ using RabbitMQ.Client;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace IntegrationLibrary.Tendering.Service
@@ -16,19 +16,15 @@ namespace IntegrationLibrary.Tendering.Service
     public class TenderService
     {
         private readonly ITenderRepository tenderRepository;
-        private readonly TenderItemService tenderItemService;
         private readonly string url = "http://localhost:44377/tenderNotification";
         public TenderService(ITenderRepository iRepository)
         {
             tenderRepository = iRepository;
-            DatabaseContext context = new DatabaseContext();
-            ITenderItemRepository itemRepository = new TenderItemRepository(context);
-            tenderItemService = new TenderItemService(itemRepository);
         }
 
         public List<Tender> GetTenders()
         {
-            return tenderRepository.GetAll();
+            return tenderRepository.GetTenders();
         }
 
         public List<TenderDto> GetTendersWithItems()
@@ -42,9 +38,9 @@ namespace IntegrationLibrary.Tendering.Service
                     {
                         Id = tender.Id,
                         CreationDate = tender.CreationDate.ToString(),
-                        StartDate = tender.StartDate.ToString(),
-                        EndDate = tender.EndDate.ToString(),
-                        TenderItems = tenderItemService.GetTenderItems(tender.Id)
+                        StartDate = tender.TenderDateRange.StartDate.ToString(),
+                        EndDate = tender.TenderDateRange.EndDate.ToString(),
+                        TenderItems = GetTenderItems(tender)
                     };
                     tendersWithItems.Add(dto);
                 }
@@ -52,22 +48,34 @@ namespace IntegrationLibrary.Tendering.Service
             return tendersWithItems;
         }
 
+        private List<TenderItemDto> GetTenderItems(Tender tender)
+        {
+            List<TenderItemDto> items = new List<TenderItemDto>();
+            foreach(TenderItem tenderItem in tender.TenderItems){
+                TenderItemDto itemDto = new TenderItemDto { Name = tenderItem.Name, Quantity = tenderItem.Quantity };
+                items.Add(itemDto);
+            }
+            return items;
+        }
+
         public void AddTender(TenderDto dto)
         {
-
-
             Tender tender = new Tender
             {
                 Id = GetLastID() + 1,
                 Opened = true,
                 CreationDate = DateTime.Now,
-                StartDate = DateTime.Parse(dto.StartDate),
-                EndDate = AssignEndDate(dto.EndDate)
+                TenderDateRange = new Shared.Model.DateRange 
+                { 
+                    StartDate = DateTime.Parse(dto.StartDate), 
+                    EndDate = AssignEndDate(dto.EndDate)
+                }
                 
             };
+            SetTenderItems(dto.TenderItems, tender);
             tenderRepository.Add(tender);
             tenderRepository.Save();
-            tenderItemService.AddTenderItems(SetTenderItems(dto.TenderItems, tender.Id));
+
             var factory = new ConnectionFactory
             {
                 HostName = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost",
@@ -75,22 +83,26 @@ namespace IntegrationLibrary.Tendering.Service
                 Password = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest",
             };
 
-            try
+            using (var connection = factory.CreateConnection())
+            using (var channel = connection.CreateModel())
             {
-                using (var connection = factory.CreateConnection())
-                using (var channel = connection.CreateModel())
-                {
-                    channel.ExchangeDeclare(exchange: "tender-exchange-" + dto.HospitalApiKey, type: ExchangeType.Fanout);
-                  
-                    dto.Id = GetLastID() + 1;
-                    var message = dto;
-                    var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
+                channel.ExchangeDeclare(exchange: "tender-exchange-" + dto.HospitalApiKey, type: ExchangeType.Fanout);
 
-                    channel.BasicPublish("tender-exchange-" + dto.HospitalApiKey, String.Empty, null, body);
-                }
-            } catch
-            {
-                throw new DomainNotFoundException("RabbitMQ server refuses to connect!");
+                TenderForPharmacyDto tenderDto = new TenderForPharmacyDto
+                {
+                    Id = tender.Id,
+                    CreationDate = tender.CreationDate.ToString(),
+                    StartDate = tender.TenderDateRange.StartDate.ToString(),
+                    EndDate = tender.TenderDateRange.EndDate.ToString(),
+                    TenderItems = dto.TenderItems,
+                    HospitalApiKey = dto.HospitalApiKey,
+                    HospitalTenderId = tender.Id,
+                    Opened = true
+                };
+                var message = tenderDto;
+                var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
+
+                channel.BasicPublish("tender-exchange-" + dto.HospitalApiKey, String.Empty, null, body);
             }
         }
 
@@ -102,10 +114,13 @@ namespace IntegrationLibrary.Tendering.Service
             client.Post(request);
         }
 
-
         private int GetLastID()
         {
             List<Tender> tenders = GetTenders();
+            if(tenders.Count == 0)
+            {
+                return 0;
+            }
             return tenders[tenders.Count - 1].Id;
         }
 
@@ -114,20 +129,13 @@ namespace IntegrationLibrary.Tendering.Service
             return string.IsNullOrEmpty(endDate) ? new DateTime(2050, 01, 01) : DateTime.Parse(endDate);
         }
 
-        private List<TenderItem> SetTenderItems(List<TenderItemDto> dtos, int tenderId)
+        private Tender SetTenderItems(List<TenderItemDto> dtos, Tender tender)
         {
-            List<TenderItem> items = new List<TenderItem>();
             foreach (TenderItemDto dto in dtos)
             {
-                TenderItem item = new TenderItem()
-                {
-                    Name = dto.Name,
-                    Quantity = dto.Quantity,
-                    TenderId = tenderId
-                };
-                items.Add(item);
+                tender.AddTenderItem(tender, dto.Name, dto.Quantity);
             }
-            return items;
+            return tender;
         }
 
         public void CloseTender(int tenderId)

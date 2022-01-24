@@ -18,7 +18,6 @@ namespace IntegrationLibrary.Tendering.Service
 {
     public class TenderChartsService
     {
-        private readonly ITenderOfferRepository offerRepository;
         private readonly TenderOfferService offerService;
         private readonly TenderOfferItemService offerItemService;
         private readonly ITenderRepository tenderRepository;
@@ -32,7 +31,7 @@ namespace IntegrationLibrary.Tendering.Service
 
         public TenderChartsService(ITenderOfferRepository repository)
         {
-            offerRepository = repository;
+            ITenderOfferRepository offerRepository = repository;
             offerService = new TenderOfferService(offerRepository);
             DatabaseContext context = new DatabaseContext();
             ITenderOfferItemRepository itemRepository = new TenderOfferItemRepository(context);
@@ -58,7 +57,7 @@ namespace IntegrationLibrary.Tendering.Service
             foreach (TenderOffer offer in offerService.GetOffers())
             {
                 Tender tender = tenderRepository.FindById(offer.TenderId);
-                if (startDate < tender.StartDate && !tender.Opened && !IsPharmacyInParticipants(offer.PharmacyName))
+                if (startDate < tender.TenderDateRange.StartDate && !tender.Opened && !IsPharmacyInParticipants(offer.PharmacyName))
                 {
                     TenderParticipantDto participant = new TenderParticipantDto { PharmacyName = offer.PharmacyName, Participations = 0 };
                     tenderParticipants.Add(participant);
@@ -84,7 +83,7 @@ namespace IntegrationLibrary.Tendering.Service
             foreach (TenderOffer o in offerService.GetOffers())
             {
                 Tender tender = tenderRepository.FindById(o.TenderId);
-                if (startDate < tender.StartDate && endDate > tender.EndDate && !IsTenderChecked(o.TenderId) && o.PharmacyName.Equals(pharmacy))
+                if (startDate < tender.TenderDateRange.StartDate && endDate > tender.TenderDateRange.EndDate && !IsTenderChecked(o.TenderId) && o.PharmacyName.Equals(pharmacy))
                 {
                     tenders.Add(o.TenderId);
                     UpdateParticipant(pharmacy);
@@ -130,7 +129,7 @@ namespace IntegrationLibrary.Tendering.Service
             foreach (TenderOffer offer in offerService.GetWinningOffers())
             {
                 Tender tender = tenderRepository.FindById(offer.TenderId);
-                if (startDate < tender.StartDate && !tender.Opened && !IsPharmacyInParticipants(offer.PharmacyName))
+                if (startDate < tender.TenderDateRange.StartDate && !tender.Opened && !IsPharmacyInParticipants(offer.PharmacyName))
                 {
                     TenderParticipantDto participant = new TenderParticipantDto { PharmacyName = offer.PharmacyName, Participations = 0 };
                     tenderParticipants.Add(participant);
@@ -147,7 +146,7 @@ namespace IntegrationLibrary.Tendering.Service
             foreach (TenderOffer offer in offerService.GetWinningOffers())
             {
                 Tender tender = tenderRepository.FindById(offer.TenderId);
-                if (startDate < tender.StartDate && !tender.Opened)
+                if (startDate < tender.TenderDateRange.StartDate && !tender.Opened)
                 {
                     TenderEarningDto win = new TenderEarningDto { Name = offer.TenderId.ToString(), Earning = offerItemService.GetOfferPrice(offer.Id) };
                     winnings.Add(win);
@@ -171,7 +170,7 @@ namespace IntegrationLibrary.Tendering.Service
             foreach (TenderOffer offer in offerService.GetWinningOffers())
             {
                 Tender tender = tenderRepository.FindById(offer.TenderId);
-                if (startDate < tender.StartDate && !tender.Opened && !IsPharmacyInEarnings(offer.PharmacyName))
+                if (startDate < tender.TenderDateRange.StartDate && !tender.Opened && !IsPharmacyInEarnings(offer.PharmacyName))
                 {
                     TenderEarningDto earning = new TenderEarningDto { Name = offer.PharmacyName, Earning = 0 };
                     earnings.Add(earning);
@@ -204,7 +203,7 @@ namespace IntegrationLibrary.Tendering.Service
             foreach (TenderOffer offer in offerService.GetWinningOffers())
             {
                 Tender tender = tenderRepository.FindById(offer.TenderId);
-                if (startDate < tender.StartDate && !tender.Opened && offer.PharmacyName.Equals(earning.Name))
+                if (startDate < tender.TenderDateRange.StartDate && !tender.Opened && offer.PharmacyName.Equals(earning.Name))
                 {
                         earning.Earning += offerItemService.GetOfferPrice(offer.Id);
                 }

@@ -11,9 +11,7 @@ namespace IntegrationLibrary.Pharmacy.Service
 {
     public class MedicineService
     {
-        private string server = "http://localhost:44377/api";
-        private string orderServer = "http://localhost:44377";
-        private IMedicineRepository repository;
+        private readonly IMedicineRepository repository;
 
         public MedicineService(IMedicineRepository iRepository)
         {
@@ -61,7 +59,7 @@ namespace IntegrationLibrary.Pharmacy.Service
             repository.Update(newStateMedicine);
         }
 
-        public void OrderMedicine(CheckAvailabilityDto order)
+        public void OrderMedicine(OrderMedicineDto order)
         {
             if (!CheckIfMedicineExists(order.Medicine.Name))
             {

@@ -14,18 +14,17 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
     {
         private readonly string server = "http://localhost:44377/";
 
-        public MedicineSpecificationService()
-        {
-        }
-        public String RequestReport(ReportRequestDTO req)
+        public MedicineSpecificationService() { }
+
+        public String RequestReport(string medicineName) //MedicineSpecRequestDto req   //DA LI JE POTREBAN PharmacyName
         {
             var client = new RestClient(server + "report");
             var request = new RestRequest();
 
-            request.AddJsonBody(req.MedicationName);
+            request.AddJsonBody(medicineName);
             var response = client.Post(request);
             if (response.Content.ToString().Equals("\"OK\""))
-                GetSpecificationnReport(req.MedicationName);
+                GetSpecificationReport(medicineName);
             
             return response.Content.ToString();
         }
@@ -35,7 +34,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             return Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).ToString(), "Data\\Specifications");
         }
 
-        private void GetSpecificationnReport(String medicineName)
+        private void GetSpecificationReport(String medicineName)
         {
             String fileName = "MedicineSpecification (" + medicineName + ").pdf";
             String localFile = Path.Combine(GetSpecificationsDirectory(), fileName);
