@@ -27,6 +27,7 @@ namespace UnitTests
             Pharmacy pharmacy = new Pharmacy(31, "Benu", "image.jpg", ad1, c1, "email.com", "12345");
             Pharmacy pharmacy1 = new Pharmacy(32, "Jankovic", "image.jpg", ad1, c1, "email.com", "12345");
 
+
             pharmacies.Add(pharmacy);
             pharmacies.Add(pharmacy1);
 
