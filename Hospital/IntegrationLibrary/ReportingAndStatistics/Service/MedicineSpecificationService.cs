@@ -23,11 +23,13 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
 
             request.AddJsonBody(medicineName);
             var response = client.Post(request);
+
             if (response.Content.ToString().Equals("\"OK\""))
                 GetSpecificationReport(medicineName);
             
             return response.Content.ToString();
         }
+
 
         public string GetSpecificationsDirectory()
         {
@@ -39,9 +41,9 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             String fileName = "MedicineSpecification (" + medicineName + ").pdf";
             String localFile = Path.Combine(GetSpecificationsDirectory(), fileName);
             Debug.Write(localFile);
-            String serverFile = @"\public\specifications" + fileName;
+            String serverFile = @"\public\specifications\" + fileName;
 
-            using (SftpClient client = new SftpClient(new PasswordConnectionInfo("127.0.0.1 ", "tester", "password")))
+            using (SftpClient client = new SftpClient(new PasswordConnectionInfo("192.168.56.1 ", "tester", "password")))
             {
                 try
                 {

@@ -6,14 +6,14 @@ namespace IntegrationLibrary.Pharmacy.DTO
 {
     public class MedicineSpecRequestDto
     {
-        public string MedicineName { get; set; }
+        public string MedicationName { get; set; }
         public string PharmacyName { get; set; }
 
         public MedicineSpecRequestDto() { }
 
-        public MedicineSpecRequestDto(string medicineName, string pharmacyName)
+        public MedicineSpecRequestDto(string medicationName, string pharmacyName)
         {
-            MedicineName = medicineName;
+            MedicationName = medicationName;
             PharmacyName = pharmacyName;
         }
     }

@@ -11,6 +11,7 @@ using Spire.Pdf.Graphics;
 using System.Drawing;
 using IntegrationLibrary.Shared.Model;
 using IntegrationLibrary.Exceptions;
+using RestSharp;
 
 namespace IntegrationLibrary.ReportingAndStatistics.Service
 {
@@ -25,9 +26,10 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
 
         public void GenerateReport(DateRange dateRange)
         {
+            String today = DateTime.Now.ToShortDateString();
             String filePath = GetConsumptionsDirectory();
             String fileName = "MedicationConsumptionReport.pdf";
-
+            
             PdfDocument doc = new PdfDocument();
             PdfPageBase page = doc.Pages.Add();
 
@@ -60,16 +62,30 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
 
                 using (Stream stream = File.OpenRead(filePath))
                 {
-                    client.UploadFile(stream, @"\public\consumptions" + Path.GetFileName(filePath), null);
+                    client.UploadFile(stream, @"\public\consumptions\" + Path.GetFileName(filePath), null);
                 }
                 client.Disconnect();
             }
+
+            NotifyPharmacy(Path.GetFileName(filePath));
+        }
+
+
+        public void NotifyPharmacy(string fileName)
+        {
+            string server = "http://localhost:44377/";
+
+            var client = new RestClient(server +"downloadConsumption");
+            var request = new RestRequest();
+
+            request.AddJsonBody(fileName);
+            client.Post(request);
         }
 
         private String GetReportContent(DateRange dateRange)
         {
 
-            String content = "Medication consumption report for " + dateRange.StartDate.ToString("MM/dd/yyyy") + " - " + dateRange.EndDate.ToString("MM/dd/yyyy") + " :\r\n\n";
+            String content = "\n\nMedication consumption report for " + dateRange.StartDate.ToString("MM/dd/yyyy") + " - " + dateRange.EndDate.ToString("MM/dd/yyyy") + " :\r\n\n";
 
             List<MedicationConsumption> requiredConsumptions = GetConsumptionsForTimePeriod(dateRange);
             List<String> evaluatedMedications = new List<String>();
