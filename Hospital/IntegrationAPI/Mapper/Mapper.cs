@@ -36,7 +36,7 @@ namespace IntegrationAPI.Mapper
                     Prescription = new Prescription
                     {
                         Id = dto.Id,
-                        PrescriptionDate = dto.PrescriptionDate,
+                        PrescriptionDate = DateTime.Now.ToShortDateString(),
                         Therapy = new TherapyInfo
                         {
                             Diagnosis = dto.Diagnosis,

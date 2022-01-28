@@ -51,7 +51,7 @@ namespace IntegrationAPI.Controller
         [Route("requestReport")]
         public String RequestReport(MedicineSpecRequestDto request)
         {
-            return specificationService.RequestReport(request.MedicineName);
+            return specificationService.RequestReport(request.MedicationName);
         }
 
         [HttpPost]

@@ -20,9 +20,6 @@ namespace IntegrationLibrary.Pharmacy.Service
 
         public List<Model.Feedback> GetFeedbacks()
         {
-            var pom = "Nesto";
-            if (pom == "Nesto")
-                throw new DomainNotFoundException("Wrong!!!!!!!!!!");
             return repository.GetAll();
         }
 

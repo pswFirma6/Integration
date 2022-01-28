@@ -12,6 +12,7 @@ using IntegrationLibrary.Pharmacy.IRepository;
 using IntegrationLibrary.Pharmacy.Model;
 using IntegrationLibrary.Pharmacy.Repository;
 using IntegrationLibrary.Exceptions;
+using RestSharp;
 
 namespace IntegrationLibrary.ReportingAndStatistics.Service
 {
@@ -30,7 +31,11 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
         {
             String filePath = GetPrescriptionsDirectory();
             String QRCodesDirectoryPath = GetQRcodesDirectory();
-            String fileName = "Prescription" +prescription.Prescription.Id +".pdf";
+            String prescriptionName = prescription.Prescription.InvolvedParties.DoctorName+ "-27.01.2022";
+
+            string name = prescriptionName.Replace(' ', '_');
+            name = name.Replace('.', '-');
+            String fileName = "Prescription-" + name + ".pdf";
 
             PdfDocument doc = new PdfDocument();
             PdfPageBase page = doc.Pages.Add();
@@ -39,6 +44,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
 
             page.Canvas.DrawString(GetContent(prescription.Prescription), new PdfFont(PdfFontFamily.Helvetica, 11f), new PdfSolidBrush(Color.Black), 10, 10);
 
+            
             if (pharmacy.PharmacyConnectionInfo.FileProtocol.Equals("HTTP"))
             {
                 CreateQRCode(prescription.Prescription.Id.ToString(), QRCodesDirectoryPath);
@@ -47,11 +53,11 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
                 qrpage.Canvas.DrawImage(pdfimage, new PointF(5, 5));
             }
 
-
+            
             StreamWriter File = new StreamWriter(Path.Combine(filePath, fileName), true);
             doc.SaveToStream(File.BaseStream);
             File.Close();
-            SendReport(pharmacy.PharmacyConnectionInfo.FileProtocol,fileName);
+            SendReport(pharmacy.PharmacyConnectionInfo.FileProtocol,fileName, pharmacy.PharmacyConnectionInfo.Url);
         }
 
         public string GetPrescriptionsDirectory()
@@ -105,19 +111,42 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
             return result;
         }
 
-        public void SendReport(string method,string filePath)
+        public void SendReport(string method,string filePath,string pharmacyUrl)
         {
             if (method.Equals("HTTP"))
             {
-                //TODO: Send file using http requets
+                SendUsingHttp(filePath, pharmacyUrl);
             }
             else
             {
-                SendUsingSftp(Path.Combine(GetPrescriptionsDirectory(),filePath));
+                SendUsingSftp(Path.Combine(GetPrescriptionsDirectory(), filePath), Path.GetFileName(filePath));
+                NotifyPharmacy(filePath, pharmacyUrl);
             }
         }
 
-        public void SendUsingSftp(string fileName)
+        public void NotifyPharmacy(string fileName, string pharmacyUrl)
+        {
+            var client = new RestClient(pharmacyUrl+ "downloadPrescription");
+            var request = new RestRequest();
+
+            request.AddJsonBody(fileName);
+            client.Post(request);
+        }
+
+        public void SendUsingHttp(string fileName, string pharmacyUrl)
+        {
+            var client = new RestClient(pharmacyUrl);
+            var request = new RestRequest();
+
+            Byte[] biti = File.ReadAllBytes(fileName);
+            String file = Convert.ToBase64String(biti);
+
+            request.AddHeader("fileName", fileName);
+            request.AddJsonBody(file);
+            client.Post(request);
+        }
+
+        public void SendUsingSftp(string fileName,string fileNameName)
         {
             using (SftpClient client = new SftpClient(new PasswordConnectionInfo("192.168.56.1", "tester", "password")))
             {
@@ -131,7 +160,7 @@ namespace IntegrationLibrary.ReportingAndStatistics.Service
 
                 using (Stream stream = File.OpenRead(fileName))
                 {
-                    client.UploadFile(stream, @"\public\prescriptions\" + Path.GetFileName(fileName), null);
+                    client.UploadFile(stream, @"\public\prescriptions\" + fileNameName);
                 }
                 client.Disconnect();
             }
